@@ -10,6 +10,7 @@ import React, { useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import ROUTE_PATH from "@/libs/route-path";
 
 const { width, height } = Dimensions.get("window");
 
@@ -98,7 +99,7 @@ const LetsStartScreen = () => {
         }}
       >
         <Pressable
-          onPress={() => router.push("/(auth)/signup")}
+          onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           android_ripple={{ color: "#c53030" }}

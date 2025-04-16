@@ -16,6 +16,7 @@ import { useForm, Controller } from "react-hook-form";
 import Checkbox from "expo-checkbox";
 import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import ROUTE_PATH from "@/libs/route-path";
 
 // Validation schema
 const schema = Yup.object().shape({
@@ -173,7 +174,7 @@ export default function SignupScreen() {
 
           <Text className="text-center text-sm mt-6">
             Already have an account?{" "}
-            <Pressable onPress={() => router.push("/(auth)/login")}>
+            <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
               <Text className="text-[#E55150] font-semibold">Login</Text>
             </Pressable>
           </Text>
