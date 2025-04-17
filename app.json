@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/logo.png",
+      "image": "./assets/logos/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#A32022"
     },
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/logos/logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.medliveruserapp"
@@ -26,7 +26,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/logos/logo.png"
     },
     "plugins": [
       "expo-router",
@@ -34,9 +34,9 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#A32022",
-          "image": "./assets/logo.png",
+          "image": "./assets/logos/logo.png",
           "dark": {
-            "image": "./assets/logo.png",
+            "image": "./assets/logos/logo.png",
             "backgroundColor": "#A32022"
           }
         }

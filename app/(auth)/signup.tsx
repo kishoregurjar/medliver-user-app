@@ -57,7 +57,7 @@ export default function SignupScreen() {
   return (
     <GradientBackground
       animateBlobs
-      darkMode
+      darkMode={false}
       animationType="pulse"
       animationSpeed={1000}
     >

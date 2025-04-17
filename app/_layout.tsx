@@ -31,9 +31,10 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
-        <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+        <StatusBar style={"dark"} />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
+          <Stack.Screen name="/home" />
           <Stack.Screen name="(auth)/login" />
           <Stack.Screen name="(auth)/signup" />
           <Stack.Screen name="(home)" />

@@ -6,8 +6,8 @@ export const ROUTE_PATH = {
     SIGNUP: "/signup",
     FORGOT_PASSWORD: "/forgot-password",
   },
-  HOME: {
-    DASHBOARD: "/dashboard",
+  APP: {
+    HOME: "/home",
     SETTINGS: "/settings",
   },
 };

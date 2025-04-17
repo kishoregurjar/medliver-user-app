@@ -11,6 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
+import STATIC from "@/utils/constants";
 
 const { width, height } = Dimensions.get("window");
 
@@ -65,7 +66,7 @@ const LetsStartScreen = () => {
 
       {/* Illustration */}
       <Image
-        source={require("../assets/images/lets_start.png")}
+        source={STATIC.IMAGES.PAGES.LETS_START}
         style={{ width: width * 0.6, height: height * 0.3 }}
         resizeMode="contain"
         className="mb-6"
@@ -99,7 +100,7 @@ const LetsStartScreen = () => {
         }}
       >
         <Pressable
-          onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}
+          onPress={() => router.push(ROUTE_PATH.APP.HOME)}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           android_ripple={{ color: "#c53030" }}

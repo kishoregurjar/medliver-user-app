@@ -13,7 +13,7 @@ import {
   Keyboard,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function AuthLayout() {
@@ -21,8 +21,8 @@ export default function AuthLayout() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
-        <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+      <SafeAreaProvider>
+        <StatusBar style={"dark"} />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -40,7 +40,7 @@ export default function AuthLayout() {
             </ScrollView>
           </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
-      </SafeAreaView>
+      </SafeAreaProvider>
     </ThemeProvider>
   );
 }

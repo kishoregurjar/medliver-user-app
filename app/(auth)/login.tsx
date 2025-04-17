@@ -19,6 +19,8 @@ import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
 import ROUTE_PATH from "@/libs/route-path";
 import { useRouter } from "expo-router";
 import loginImage from "../../assets/images/login.png";
+import GradientBackground from "@/components/common/GradientEllipse";
+import STATIC from "@/utils/constants";
 
 // Validation schema
 const schema = Yup.object().shape({
@@ -47,113 +49,117 @@ const LoginScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        className="flex-1"
-      >
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ padding: 20 }}
+    <GradientBackground darkMode={false}>
+      <SafeAreaView className="flex-1">
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          className="flex-1"
         >
-          {/* Image Illustration */}
-          <View className="items-center my-4">
-            <Image
-              source={loginImage} // replace with your actual image
-              style={{ width: 200, height: 200, resizeMode: "contain" }}
-            />
-          </View>
-
-          <Text className="text-3xl font-bold mb-6 text-black">Sign in</Text>
-
-          <Text className="text-xs text-green-700 mb-1">Your Email</Text>
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { value, onChange } }) => (
-              <StyledInput
-                placeholder="Enter Your Email"
-                value={value}
-                onChangeText={onChange}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            )}
-          />
-          <FormError error={errors.email?.message} />
-
-          <Text className="text-xs text-green-700 mb-1 mt-2">Password</Text>
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { value, onChange } }) => (
-              <StyledInput
-                placeholder="Enter Your Password"
-                value={value}
-                onChangeText={onChange}
-                secureTextEntry
-              />
-            )}
-          />
-          <FormError error={errors.password?.message} />
-
-          {/* Remember Me and Forgot Password */}
-          <View className="flex-row items-center justify-between mt-2 mb-4">
-            <View className="flex-row items-center">
-              <Controller
-                control={control}
-                name="remember"
-                render={({ field: { value, onChange } }) => (
-                  <Checkbox value={value} onValueChange={onChange} />
-                )}
-              />
-              <Text className="ml-2 text-sm text-gray-700">Remember me</Text>
-            </View>
-            <Text className="text-sm text-violet-700 font-medium">
-              Forgot Password?
-            </Text>
-          </View>
-
-          {/* Sign In Button */}
-          <Pressable
-            onPress={handleSubmit(onSubmit)}
-            className="bg-[#E55150] rounded-lg py-3 items-center mb-4"
-            android_ripple={{ color: "#c53030" }}
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ padding: 20 }}
           >
-            <Text className="text-white font-semibold text-base">Sign in</Text>
-          </Pressable>
+            {/* Image Illustration */}
+            <View className="items-center my-4">
+              <Image
+                source={STATIC.IMAGES.PAGES.LOGIN}
+                style={{ width: 200, height: 200, resizeMode: "contain" }}
+              />
+            </View>
 
-          {/* Divider */}
-          <Text className="text-center text-gray-500 mb-4">
-            or Sign in with
-          </Text>
+            <Text className="text-3xl font-bold mb-6 text-black">Sign in</Text>
 
-          {/* OAuth Buttons */}
-          <View className="space-y-3">
-            <OAuthButton
-              icon={<AntDesign name="google" size={20} />}
-              text="Continue with Google"
+            <Text className="text-xs text-green-700 mb-1">Your Email</Text>
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { value, onChange } }) => (
+                <StyledInput
+                  placeholder="Enter Your Email"
+                  value={value}
+                  onChangeText={onChange}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              )}
             />
-            <OAuthButton
-              icon={<FontAwesome name="facebook" size={20} color="#4267B2" />}
-              text="Continue with Facebook"
-            />
-            <OAuthButton
-              icon={<Ionicons name="logo-apple" size={20} />}
-              text="Continue with Apple"
-            />
-          </View>
+            <FormError error={errors.email?.message} />
 
-          {/* Sign Up Prompt */}
-          <Text className="text-center text-sm mt-6">
-            New User?{" "}
-            <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}>
-              <Text className="text-[#E55150] font-semibold">Sign Up</Text>
+            <Text className="text-xs text-green-700 mb-1 mt-2">Password</Text>
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { value, onChange } }) => (
+                <StyledInput
+                  placeholder="Enter Your Password"
+                  value={value}
+                  onChangeText={onChange}
+                  secureTextEntry
+                />
+              )}
+            />
+            <FormError error={errors.password?.message} />
+
+            {/* Remember Me and Forgot Password */}
+            <View className="flex-row items-center justify-between mt-2 mb-4">
+              <View className="flex-row items-center">
+                <Controller
+                  control={control}
+                  name="remember"
+                  render={({ field: { value, onChange } }) => (
+                    <Checkbox value={value} onValueChange={onChange} />
+                  )}
+                />
+                <Text className="ml-2 text-sm text-gray-700">Remember me</Text>
+              </View>
+              <Text className="text-sm text-violet-700 font-medium">
+                Forgot Password?
+              </Text>
+            </View>
+
+            {/* Sign In Button */}
+            <Pressable
+              onPress={handleSubmit(onSubmit)}
+              className="bg-[#E55150] rounded-lg py-3 items-center mb-4"
+              android_ripple={{ color: "#c53030" }}
+            >
+              <Text className="text-white font-semibold text-base">
+                Sign in
+              </Text>
             </Pressable>
-          </Text>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+            {/* Divider */}
+            <Text className="text-center text-gray-500 mb-4">
+              or Sign in with
+            </Text>
+
+            {/* OAuth Buttons */}
+            <View className="space-y-3">
+              <OAuthButton
+                icon={<AntDesign name="google" size={20} />}
+                text="Continue with Google"
+              />
+              <OAuthButton
+                icon={<FontAwesome name="facebook" size={20} color="#4267B2" />}
+                text="Continue with Facebook"
+              />
+              <OAuthButton
+                icon={<Ionicons name="logo-apple" size={20} />}
+                text="Continue with Apple"
+              />
+            </View>
+
+            {/* Sign Up Prompt */}
+            <Text className="text-center text-sm mt-6">
+              New User?{" "}
+              <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}>
+                <Text className="text-[#E55150] font-semibold">Sign Up</Text>
+              </Pressable>
+            </Text>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </GradientBackground>
   );
 };
 
