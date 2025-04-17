@@ -17,6 +17,7 @@ import Checkbox from "expo-checkbox";
 import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
+import GradientBackground from "@/components/common/GradientEllipse";
 
 // Validation schema
 const schema = Yup.object().shape({
@@ -54,133 +55,138 @@ export default function SignupScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        className="flex-1"
-      >
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ padding: 20 }}
+    <GradientBackground>
+      <SafeAreaView className="flex-1 ">
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          className="flex-1"
         >
-          <Text className="text-3xl font-bold mb-6 text-black">
-            Create Account
-          </Text>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ padding: 20 }}
+          >
+            <Text className="text-3xl font-bold mb-6 text-black">
+              Create Account
+            </Text>
 
-          <FormLabel label="User Name" />
-          <Controller
-            control={control}
-            name="name"
-            render={({ field: { value, onChange } }) => (
-              <StyledInput
-                placeholder="Enter Your Name"
-                value={value}
-                onChangeText={onChange}
-              />
-            )}
-          />
-          <FormError error={errors.name?.message} />
-
-          <FormLabel label="Your Email" />
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { value, onChange } }) => (
-              <StyledInput
-                placeholder="Enter Your Email"
-                value={value}
-                onChangeText={onChange}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            )}
-          />
-          <FormError error={errors.email?.message} />
-
-          <FormLabel label="Password" />
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { value, onChange } }) => (
-              <StyledInput
-                placeholder="Enter Password"
-                secureTextEntry
-                value={value}
-                onChangeText={onChange}
-              />
-            )}
-          />
-          <FormError error={errors.password?.message} />
-
-          <FormLabel label="Confirm Password" />
-          <Controller
-            control={control}
-            name="confirmPassword"
-            render={({ field: { value, onChange } }) => (
-              <StyledInput
-                placeholder="Enter Password"
-                secureTextEntry
-                value={value}
-                onChangeText={onChange}
-              />
-            )}
-          />
-          <FormError error={errors.confirmPassword?.message} />
-
-          <View className="flex-row items-start mb-4 mt-2">
+            <FormLabel label="User Name" />
             <Controller
               control={control}
-              name="agree"
+              name="name"
               render={({ field: { value, onChange } }) => (
-                <Checkbox
+                <StyledInput
+                  placeholder="Enter Your Name"
                   value={value}
-                  onValueChange={onChange}
-                  color={value ? "#E55150" : undefined}
+                  onChangeText={onChange}
                 />
               )}
             />
-            <Text className="ml-2 text-xs text-gray-600 flex-1">
-              By continuing, you agree to our Terms of Services, Privacy Policy.
-            </Text>
-          </View>
-          <FormError error={errors.agree?.message} />
+            <FormError error={errors.name?.message} />
 
-          <Pressable
-            onPress={handleSubmit(onSubmit)}
-            className="bg-[#E55150] rounded-lg py-3 items-center mb-4"
-            android_ripple={{ color: "#c53030" }}
-          >
-            <Text className="text-white font-semibold text-base">Sign up</Text>
-          </Pressable>
-
-          <Text className="text-center text-gray-500 mb-4">
-            or Sign up with
-          </Text>
-
-          <View className="space-y-3">
-            <OAuthButton
-              icon={<AntDesign name="google" size={20} />}
-              text="Continue with Google"
+            <FormLabel label="Your Email" />
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { value, onChange } }) => (
+                <StyledInput
+                  placeholder="Enter Your Email"
+                  value={value}
+                  onChangeText={onChange}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              )}
             />
-            <OAuthButton
-              icon={<FontAwesome name="facebook" size={20} color="#4267B2" />}
-              text="Continue with Facebook"
-            />
-            <OAuthButton
-              icon={<Ionicons name="logo-apple" size={20} />}
-              text="Continue with Apple"
-            />
-          </View>
+            <FormError error={errors.email?.message} />
 
-          <Text className="text-center text-sm mt-6">
-            Already have an account?{" "}
-            <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
-              <Text className="text-[#E55150] font-semibold">Login</Text>
+            <FormLabel label="Password" />
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { value, onChange } }) => (
+                <StyledInput
+                  placeholder="Enter Password"
+                  secureTextEntry
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
+            />
+            <FormError error={errors.password?.message} />
+
+            <FormLabel label="Confirm Password" />
+            <Controller
+              control={control}
+              name="confirmPassword"
+              render={({ field: { value, onChange } }) => (
+                <StyledInput
+                  placeholder="Enter Password"
+                  secureTextEntry
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
+            />
+            <FormError error={errors.confirmPassword?.message} />
+
+            <View className="flex-row items-start mb-4 mt-2">
+              <Controller
+                control={control}
+                name="agree"
+                render={({ field: { value, onChange } }) => (
+                  <Checkbox
+                    value={value}
+                    onValueChange={onChange}
+                    color={value ? "#E55150" : undefined}
+                  />
+                )}
+              />
+              <Text className="ml-2 text-xs text-gray-600 flex-1">
+                By continuing, you agree to our Terms of Services, Privacy
+                Policy.
+              </Text>
+            </View>
+            <FormError error={errors.agree?.message} />
+
+            <Pressable
+              onPress={handleSubmit(onSubmit)}
+              className="bg-[#E55150] rounded-lg py-3 items-center mb-4"
+              android_ripple={{ color: "#c53030" }}
+            >
+              <Text className="text-white font-semibold text-base">
+                Sign up
+              </Text>
             </Pressable>
-          </Text>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+            <Text className="text-center text-gray-500 mb-4">
+              or Sign up with
+            </Text>
+
+            <View className="space-y-3">
+              <OAuthButton
+                icon={<AntDesign name="google" size={20} />}
+                text="Continue with Google"
+              />
+              <OAuthButton
+                icon={<FontAwesome name="facebook" size={20} color="#4267B2" />}
+                text="Continue with Facebook"
+              />
+              <OAuthButton
+                icon={<Ionicons name="logo-apple" size={20} />}
+                text="Continue with Apple"
+              />
+            </View>
+
+            <Text className="text-center text-sm mt-6">
+              Already have an account?{" "}
+              <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
+                <Text className="text-[#E55150] font-semibold">Login</Text>
+              </Pressable>
+            </Text>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </GradientBackground>
   );
 }
 
