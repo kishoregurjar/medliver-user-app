@@ -1,86 +1,201 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { View, Dimensions } from "react-native";
-import React from "react";
+import {
+  View,
+  Dimensions,
+  Animated,
+  Easing,
+  useColorScheme,
+} from "react-native";
+import React, { useEffect, useRef } from "react";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+
+type AnimationType = "float" | "pulse" | "none";
+
+type Props = {
+  children: React.ReactNode;
+  animateBlobs?: boolean;
+  animationType?: AnimationType;
+  animationSpeed?: number; // in ms
+  darkMode?: boolean;
+};
 
 const GradientEllipse = ({
   colors,
   style,
+  animate,
+  animationType = "float",
+  animationSpeed,
 }: {
   colors: string[];
   style: object;
+  animate: boolean;
+  animationType: AnimationType;
+  animationSpeed?: number;
 }) => {
+  const animation = useRef(new Animated.Value(0)).current;
+
+  const speed = animationSpeed ?? (animationType === "pulse" ? 2000 : 4000);
+
+  useEffect(() => {
+    if (!animate || animationType === "none") return;
+
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(animation, {
+          toValue: 1,
+          duration: speed,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(animation, {
+          toValue: 0,
+          duration: speed,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    );
+
+    loop.start();
+  }, [animate, animationType, animationSpeed]);
+
+  const animatedStyle =
+    animate && animationType === "float"
+      ? {
+          transform: [
+            {
+              translateY: animation.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, -10],
+              }),
+            },
+          ],
+        }
+      : animate && animationType === "pulse"
+      ? {
+          transform: [
+            {
+              scale: animation.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 1.1],
+              }),
+            },
+          ],
+        }
+      : {};
+
   return (
-    <LinearGradient
-      colors={colors}
-      start={{ x: 0.5, y: 0 }}
-      end={{ x: 0.5, y: 1 }}
-      style={[
-        {
-          position: "absolute",
+    <Animated.View style={[style, animatedStyle, { position: "absolute" }]}>
+      <LinearGradient
+        colors={colors}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={{
+          width: "100%",
+          height: "100%",
           borderRadius: 9999,
           opacity: 0.7,
           filter: "blur(50px)",
-        },
-        style,
-      ]}
-    />
+        }}
+      />
+    </Animated.View>
   );
 };
 
-const GradientBackground = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <View className="flex-1 bg-[#F2F2F2]">
-      {/* Gradient Blobs - scaled from original px values based on iPhone 14 Pro (393 x 852) */}
+const GradientBackground = ({
+  children,
+  animateBlobs = false,
+  animationType = "float",
+  animationSpeed,
+  darkMode,
+}: Props) => {
+  const systemColorScheme = useColorScheme();
+  const isDark =
+    darkMode !== undefined ? darkMode : systemColorScheme === "dark";
 
+  const getColors = (light: string[], dark: string[]) =>
+    isDark ? dark : light;
+
+  return (
+    <View className={`${isDark ? "bg-[#1C1C1E]" : "bg-[#F2F2F2]"} flex-1`}>
       <GradientEllipse
-        colors={["#2555FF", "rgba(37, 85, 255, 0.25)"]}
+        colors={getColors(
+          ["#2555FF", "rgba(37, 85, 255, 0.15)"],
+          ["#3D68FF", "rgba(61, 104, 255, 0.1)"]
+        )}
         style={{
-          width: 60,
-          height: 60,
+          width: 70,
+          height: 70,
           top: screenHeight * (232 / 852),
           left: screenWidth * (333 / 393),
         }}
+        animate={animateBlobs}
+        animationType={animationType}
+        animationSpeed={animationSpeed}
       />
       <GradientEllipse
-        colors={["#46BDF0", "rgba(70, 179, 240, 0.15)"]}
+        colors={getColors(
+          ["#46BDF0", "rgba(70, 179, 240, 0.15)"],
+          ["#3FADE0", "rgba(63, 173, 224, 0.1)"]
+        )}
         style={{
-          width: 58,
-          height: 58,
+          width: 70,
+          height: 70,
           top: screenHeight * (424 / 852),
           left: screenWidth * (76 / 393),
         }}
+        animate={animateBlobs}
+        animationType={animationType}
+        animationSpeed={animationSpeed}
       />
       <GradientEllipse
-        colors={["#F0B646", "rgba(240, 203, 70, 0.15)"]}
+        colors={getColors(
+          ["#F0B646", "rgba(240, 203, 70, 0.15)"],
+          ["#E9AA2F", "rgba(233, 170, 47, 0.1)"]
+        )}
         style={{
-          width: 58,
-          height: 58,
+          width: 70,
+          height: 70,
           top: screenHeight * (767 / 852),
           left: screenWidth * (240 / 393),
         }}
+        animate={animateBlobs}
+        animationType={animationType}
+        animationSpeed={animationSpeed}
       />
       <GradientEllipse
-        colors={["#46F080", "rgba(70, 240, 138, 0.15)"]}
+        colors={getColors(
+          ["#46F080", "rgba(70, 240, 138, 0.15)"],
+          ["#2CEB77", "rgba(44, 235, 119, 0.1)"]
+        )}
         style={{
           width: 70,
           height: 70,
           top: screenHeight * (126 / 852),
           left: screenWidth * (-15 / 393),
         }}
+        animate={animateBlobs}
+        animationType={animationType}
+        animationSpeed={animationSpeed}
       />
       <GradientEllipse
-        colors={["#EDF046", "rgba(240, 233, 70, 0.15)"]}
+        colors={getColors(
+          ["#EDF046", "rgba(240, 233, 70, 0.15)"],
+          ["#E6EA30", "rgba(230, 234, 48, 0.1)"]
+        )}
         style={{
           width: 70,
           height: 70,
           top: screenHeight * (7 / 852),
           left: screenWidth * (256 / 393),
         }}
+        animate={animateBlobs}
+        animationType={animationType}
+        animationSpeed={animationSpeed}
       />
 
-      {/* Children Content */}
+      {/* Screen Content */}
       {children}
     </View>
   );

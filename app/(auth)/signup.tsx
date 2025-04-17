@@ -55,7 +55,12 @@ export default function SignupScreen() {
   };
 
   return (
-    <GradientBackground>
+    <GradientBackground
+      animateBlobs
+      darkMode
+      animationType="pulse"
+      animationSpeed={1000}
+    >
       <SafeAreaView className="flex-1 ">
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
