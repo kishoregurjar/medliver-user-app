@@ -12,6 +12,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
 import STATIC from "@/utils/constants";
+import AppColorDemo from "@/components/common/AppColorDemo";
 
 const { width, height } = Dimensions.get("window");
 
@@ -113,6 +114,7 @@ const LetsStartScreen = () => {
           <AntDesign name="arrowright" size={20} color="white" />
         </Pressable>
       </Animated.View>
+      <AppColorDemo />
     </LinearGradient>
   );
 };
