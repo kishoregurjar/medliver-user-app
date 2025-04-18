@@ -20,7 +20,6 @@ import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
 import GradientBackground from "@/components/common/GradientEllipse";
 import axios from "axios";
-import useAxios from "@/hooks/useAxios";
 
 // Validation schema
 const schema = Yup.object().shape({
@@ -63,29 +62,21 @@ export default function SignupScreen() {
     mode: "onChange",
   });
 
-  const {
-    request: registerUser,
-    loading: isRegistering,
-    error: registerError,
-  } = useAxios();
-
   const onSubmit = async (payload: any) => {
     const payloadToSend = {
       ...payload,
       userCoordinates: location || { lat: 0, long: 0 },
     };
 
-    const { data, error } = await registerUser({
-      method: "POST",
-      url: "/api/auth/signup",
-      payload: payloadToSend,
-    });
-
-    if (!error) {
-      alert("Account created successfully");
-      router.push(ROUTE_PATH.LOGIN);
-    } else {
-      console.log(error);
+    try {
+      const response = await axios.post(
+        "http://192.168.1.3:4002/api/v1/user/register-user",
+        payloadToSend
+      );
+      console.log("Signup successful:", response.data);
+      // router.push(ROUTE_PATH.LOGIN);
+    } catch (error) {
+      console.error("Signup error:", error);
     }
   };
 
