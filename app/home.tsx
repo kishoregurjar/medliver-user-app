@@ -47,7 +47,7 @@ export default function HomeScreen() {
               className="w-10 h-10 rounded-full mr-3"
             />
             <View>
-              <Text className="text-xl font-bold">Hi Alex!</Text>
+              <Text className="text-xl font-lexendBold">Hi Alex!</Text>
               <Text className="text-gray-500">How can I help You Today?</Text>
             </View>
           </View>

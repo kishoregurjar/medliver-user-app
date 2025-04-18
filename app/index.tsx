@@ -100,7 +100,7 @@ const LetsStartScreen = () => {
         }}
       >
         <Pressable
-          onPress={() => router.push(ROUTE_PATH.APP.HOME)}
+          onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           android_ripple={{ color: "#c53030" }}
@@ -109,9 +109,12 @@ const LetsStartScreen = () => {
           <Text className="text-white text-lg font-semibold mr-2">
             Let’s Start
           </Text>
+
           <AntDesign name="arrowright" size={20} color="white" />
         </Pressable>
       </Animated.View>
+      <Text className="font-lexend font-bold">Hello</Text>
+      <Text className="font-lexendBold">Hello</Text>
     </LinearGradient>
   );
 };
