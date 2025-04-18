@@ -12,18 +12,6 @@ import "react-native-reanimated";
 import "./global.css";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import {
-  LexendDeca_100Thin,
-  LexendDeca_200ExtraLight,
-  LexendDeca_300Light,
-  LexendDeca_400Regular,
-  LexendDeca_500Medium,
-  LexendDeca_600SemiBold,
-  LexendDeca_700Bold,
-  LexendDeca_800ExtraBold,
-  LexendDeca_900Black,
-} from "@expo-google-fonts/lexend-deca";
-import { View } from "react-native";
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -31,15 +19,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    LexendDeca_100Thin,
-    LexendDeca_200ExtraLight,
-    LexendDeca_300Light,
-    LexendDeca_400Regular,
-    LexendDeca_500Medium,
-    LexendDeca_600SemiBold,
-    LexendDeca_700Bold,
-    LexendDeca_800ExtraBold,
-    LexendDeca_900Black,
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
   useEffect(() => {
@@ -52,15 +32,13 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
         <StatusBar style={"dark"} />
-        <View className="flex-1 font-lexendBold">
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="home" />
-            <Stack.Screen name="(auth)/login" />
-            <Stack.Screen name="(auth)/signup" />
-            <Stack.Screen name="(home)" />
-          </Stack>
-        </View>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="/home" />
+          <Stack.Screen name="(auth)/login" />
+          <Stack.Screen name="(auth)/signup" />
+          <Stack.Screen name="(home)" />
+        </Stack>
       </SafeAreaProvider>
     </ThemeProvider>
   );

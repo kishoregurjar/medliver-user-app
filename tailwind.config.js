@@ -4,13 +4,7 @@ module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {
-      fontFamily: {
-        lexend: ["LexendDeca_400Regular"],
-        lexendMedium: ["LexendDeca_500Medium"],
-        lexendBold: ["LexendDeca_700Bold"],
-      },
-    },
+    extend: {},
   },
   plugins: [],
 };

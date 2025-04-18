@@ -1,6 +1,6 @@
 // axiosInstance.js
 import axios from "axios";
-// import { showToast } from "@/components/_ui/toast-utils";
+import { showToast } from "@/components/_ui/toast-utils"; // Optional: Show toast messages
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4002/api/v1",
@@ -27,10 +27,10 @@ axiosInstance.interceptors.response.use(
     // ✅ Handle 401 Unauthorized Error
     if (error.response?.data?.status === 401) {
       console.error("Unauthorized Access:", error.response.data);
-      // showToast(
-      //   "error",
-      //   error.response?.data?.message || "Session expired. Please login again."
-      // );
+      showToast(
+        "error",
+        error.response?.data?.message || "Session expired. Please login again."
+      );
       localStorage.removeItem("authUser");
       window.location.href = "/"; // Ensures full reload
       return Promise.reject(error);
