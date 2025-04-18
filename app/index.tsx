@@ -113,8 +113,6 @@ const LetsStartScreen = () => {
           <AntDesign name="arrowright" size={20} color="white" />
         </Pressable>
       </Animated.View>
-      <Text className="font-lexend font-bold">Hello</Text>
-      <Text className="font-lexendBold">Hello</Text>
     </LinearGradient>
   );
 };

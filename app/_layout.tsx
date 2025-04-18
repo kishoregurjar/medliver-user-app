@@ -3,6 +3,8 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
+import "@/app\\global.css";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -49,19 +51,19 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <SafeAreaProvider>
-        <StatusBar style={"dark"} />
-        <View className="flex-1 font-lexendBold">
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="home" />
-            <Stack.Screen name="(auth)/login" />
-            <Stack.Screen name="(auth)/signup" />
-            <Stack.Screen name="(home)" />
-          </Stack>
-        </View>
-      </SafeAreaProvider>
-    </ThemeProvider>
+    <GluestackUIProvider mode="light"><ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <SafeAreaProvider>
+          <StatusBar style={"dark"} />
+          <View className="flex-1 font-lexendBold">
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="home" />
+              <Stack.Screen name="(auth)/login" />
+              <Stack.Screen name="(auth)/signup" />
+              <Stack.Screen name="(home)" />
+            </Stack>
+          </View>
+        </SafeAreaProvider>
+      </ThemeProvider></GluestackUIProvider>
   );
 }
