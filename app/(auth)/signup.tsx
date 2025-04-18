@@ -8,9 +8,10 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Yup from "yup";
+import * as Location from "expo-location";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller } from "react-hook-form";
 import Checkbox from "expo-checkbox";
@@ -18,11 +19,16 @@ import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
 import GradientBackground from "@/components/common/GradientEllipse";
+import axios from "axios";
+import useAxios from "@/hooks/useAxios";
 
 // Validation schema
 const schema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
+  fullName: Yup.string().required("Full Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
+  phoneNumber: Yup.string()
+    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+    .required("Phone number is required"),
   password: Yup.string()
     .min(6, "Min 6 characters")
     .required("Password is required"),
@@ -34,6 +40,12 @@ const schema = Yup.object().shape({
 
 export default function SignupScreen() {
   const router = useRouter();
+
+  const [location, setLocation] = useState<{
+    lat: number;
+    long: number;
+  } | null>(null);
+
   const {
     control,
     handleSubmit,
@@ -41,8 +53,9 @@ export default function SignupScreen() {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      name: "",
+      fullName: "",
       email: "",
+      phoneNumber: "", // <-- added
       password: "",
       confirmPassword: "",
       agree: false,
@@ -50,9 +63,47 @@ export default function SignupScreen() {
     mode: "onChange",
   });
 
-  const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
+  const {
+    request: registerUser,
+    loading: isRegistering,
+    error: registerError,
+  } = useAxios();
+
+  const onSubmit = async (payload: any) => {
+    const payloadToSend = {
+      ...payload,
+      userCoordinates: location || { lat: 0, long: 0 },
+    };
+
+    const { data, error } = await registerUser({
+      method: "POST",
+      url: "/api/auth/signup",
+      payload: payloadToSend,
+    });
+
+    if (!error) {
+      alert("Account created successfully");
+      router.push(ROUTE_PATH.LOGIN);
+    } else {
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.warn("Permission to access location was denied");
+        return;
+      }
+
+      const loc = await Location.getCurrentPositionAsync({});
+      setLocation({
+        lat: loc.coords.latitude,
+        long: loc.coords.longitude,
+      });
+    })();
+  }, []);
 
   return (
     <GradientBackground
@@ -74,19 +125,19 @@ export default function SignupScreen() {
               Create Account
             </Text>
 
-            <FormLabel label="User Name" />
+            <FormLabel label="Full Name" />
             <Controller
               control={control}
-              name="name"
+              name="fullName"
               render={({ field: { value, onChange } }) => (
                 <StyledInput
-                  placeholder="Enter Your Name"
+                  placeholder="Enter Your Full Name"
                   value={value}
                   onChangeText={onChange}
                 />
               )}
             />
-            <FormError error={errors.name?.message} />
+            <FormError error={errors.fullName?.message} />
 
             <FormLabel label="Your Email" />
             <Controller
@@ -103,6 +154,21 @@ export default function SignupScreen() {
               )}
             />
             <FormError error={errors.email?.message} />
+
+            <FormLabel label="Phone Number" />
+            <Controller
+              control={control}
+              name="phoneNumber"
+              render={({ field: { value, onChange } }) => (
+                <StyledInput
+                  placeholder="Enter Your Phone Number"
+                  value={value}
+                  onChangeText={onChange}
+                  keyboardType="phone-pad"
+                />
+              )}
+            />
+            <FormError error={errors.phoneNumber?.message} />
 
             <FormLabel label="Password" />
             <Controller
