@@ -109,9 +109,9 @@ const LetsStartScreen = () => {
         {/* CTA Button with Animated Press */}
         <AnimatedActionButton
           text="Let’s Start"
-          icon={<AntDesign name="arrowright" size={20} color="white" />}
+          icon={<AntDesign name="arrowright" size={24} color="white" />}
           onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}
-          textClassName="font-lexend-bold"
+          textClassName="font-lexend-bold text-white mr-2"
         />
       </SafeAreaView>
     </LinearGradient>

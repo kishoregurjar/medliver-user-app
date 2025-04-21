@@ -118,7 +118,7 @@ export default function SignupScreen() {
             }}
           >
             <View className="w-full max-w-md self-center">
-              <Text className="text-3xl font-bold mb-6 text-black">
+              <Text className="text-3xl mb-6 font-lexend-bold text-black">
                 Create Account
               </Text>
 
@@ -166,7 +166,7 @@ export default function SignupScreen() {
                 </View>
               ))}
 
-              <View className="flex-row items-start mb-4">
+              <View className="flex-row items-center mb-4">
                 <Controller
                   control={control}
                   name="agree"
@@ -175,22 +175,28 @@ export default function SignupScreen() {
                       value={value}
                       onValueChange={onChange}
                       color={value ? "#E55150" : undefined}
+                      className="mr-4"
                     />
                   )}
                 />
-                <Text className="ml-2 text-xs text-app-color-grey font-bold flex-1">
+                <Text className="text-xs text-app-color-grey font-lexend-bold flex-1">
                   By continuing, you agree to our Terms of Services, Privacy
                   Policy.
                 </Text>
               </View>
               <FormError error={errors.agree?.message} />
 
-              <AnimatedActionButton
-                text="Sign up"
+              <Pressable
                 onPress={handleSubmit(onSubmit)}
-              />
+                className="bg-app-color-red rounded-lg py-3 mx-7 items-center mb-4"
+                android_ripple={{ color: "#c53030" }}
+              >
+                <Text className="text-white font-semibold text-base">
+                  Sign up
+                </Text>
+              </Pressable>
 
-              <Text className="text-center text-gray-500 mb-4">
+              <Text className="text-center text-app-color-grey font-lexend mb-4">
                 or Sign up with
               </Text>
 
@@ -205,7 +211,7 @@ export default function SignupScreen() {
                     <View className="mr-3 w-6 items-center">
                       <Icon name={iconName} size={20} color={color} />
                     </View>
-                    <ButtonText className="text-sm font-medium">
+                    <ButtonText className="text-sm font-lexend">
                       {text}
                     </ButtonText>
                   </Button>
@@ -213,11 +219,11 @@ export default function SignupScreen() {
               )}
 
               <View className="flex-row items-center justify-center mt-6">
-                <Text className="text-app-color-grey font-bold">
+                <Text className="text-app-color-grey font-lexend-bold">
                   Already have an account?
                 </Text>
                 <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
-                  <Text className="text-app-color-softindigo font-bold ml-2">
+                  <Text className="text-app-color-softindigo font-lexend-bold ml-2">
                     Login
                   </Text>
                 </Pressable>
@@ -232,15 +238,19 @@ export default function SignupScreen() {
 
 // Reusable Components
 const FormLabel = ({ label }: { label: string }) => (
-  <Text className="text-xs text-app-color-grey mb-2 font-bold">{label}</Text>
+  <Text className="text-xs text-app-color-grey mb-2 font-lexend-bold">
+    {label}
+  </Text>
 );
 
 const FormError = ({ error }: { error?: string }) =>
-  error ? <Text className="text-red-500 text-xs mt-1">{error}</Text> : null;
+  error ? (
+    <Text className="text-red-500 font-lexend text-xs mt-1">{error}</Text>
+  ) : null;
 
 const StyledInput = (props: any) => (
   <TextInput
-    className="border border-app-color-warmgreylight rounded-md px-4 py-3 text-black"
+    className="border border-app-color-warmgreylight font-lexend rounded-md px-4 py-3 text-black"
     placeholderTextColor="#999"
     {...props}
   />
