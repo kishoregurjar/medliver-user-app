@@ -120,7 +120,7 @@ const LoginScreen = () => {
             {/* Sign In Button */}
             <Pressable
               onPress={handleSubmit(onSubmit)}
-              className="bg-[#E55150] rounded-lg py-3 items-center mb-4"
+              className="bg-app-color-red rounded-lg py-3 items-center mb-4"
               android_ripple={{ color: "#c53030" }}
             >
               <Text className="text-white font-semibold text-base">
@@ -153,7 +153,7 @@ const LoginScreen = () => {
             <Text className="text-center text-sm mt-6">
               New User?{" "}
               <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}>
-                <Text className="text-[#E55150] font-semibold">Sign Up</Text>
+                <Text className="text-app-color-red font-semibold">Sign Up</Text>
               </Pressable>
             </Text>
           </ScrollView>

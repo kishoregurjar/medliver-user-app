@@ -105,7 +105,7 @@ const LetsStartScreen = () => {
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           android_ripple={{ color: "#c53030" }}
-          className="flex-row items-center justify-center bg-[#E55150] px-6 py-3 rounded-2xl"
+          className="flex-row items-center justify-center bg-app-color-red px-6 py-3 rounded-2xl"
         >
           <Text className="text-white text-lg font-semibold mr-2">
             Let’s Start
@@ -114,7 +114,7 @@ const LetsStartScreen = () => {
           <AntDesign name="arrowright" size={20} color="white" />
         </Pressable>
       </Animated.View>
-      <AppColorDemo />
+      {/* <AppColorDemo /> */}
     </LinearGradient>
   );
 };

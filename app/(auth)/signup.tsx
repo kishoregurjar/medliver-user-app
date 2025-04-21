@@ -212,7 +212,7 @@ export default function SignupScreen() {
 
             <Pressable
               onPress={handleSubmit(onSubmit)}
-              className="bg-[#E55150] rounded-lg py-3 items-center mb-4"
+              className="bg-app-color-red rounded-lg py-3 items-center mb-4"
               android_ripple={{ color: "#c53030" }}
             >
               <Text className="text-white font-semibold text-base">
@@ -242,7 +242,7 @@ export default function SignupScreen() {
             <Text className="text-center text-sm mt-6">
               Already have an account?{" "}
               <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
-                <Text className="text-[#E55150] font-semibold">Login</Text>
+                <Text className="text-app-color-red font-semibold">Login</Text>
               </Pressable>
             </Text>
           </ScrollView>
