@@ -19,6 +19,7 @@ import { useRouter } from "expo-router";
 import GradientBackground from "@/components/common/GradientEllipse";
 import STATIC, { socialButtons } from "@/utils/constants";
 import { Button, ButtonText } from "@/components/ui/button";
+import axios from "axios";
 
 // Validation schema
 const schema = Yup.object().shape({
@@ -38,13 +39,23 @@ export default function LoginScreen() {
     defaultValues: {
       email: "",
       password: "",
-      remember: false,
+      // remember: false,
     },
     mode: "onChange",
   });
 
-  const onSubmit = (data: any) => {
-    console.log("Login data:", data);
+  const onSubmit = async (payload: any) => {
+    console.log("Login data:", payload);
+    try {
+      const response = await axios.post(
+        "http://192.168.1.3:4002/api/v1/user/user-login",
+        payload
+      );
+      console.log("Signin successful:", response.data);
+      // router.push(ROUTE_PATH.LOGIN);
+    } catch (error) {
+      console.error("Signin error:", error);
+    }
   };
 
   return (
@@ -102,7 +113,7 @@ export default function LoginScreen() {
             <FormError error={errors.password?.message} />
 
             {/* Remember + Forgot */}
-            <View className="flex-row items-center justify-between mt-2 mb-4">
+            {/* <View className="flex-row items-center justify-between mt-2 mb-4">
               <View className="flex-row items-center">
                 <Controller
                   control={control}
@@ -113,10 +124,10 @@ export default function LoginScreen() {
                 />
                 <Text className="ml-2 text-sm text-gray-700">Remember me</Text>
               </View>
-              <Text className="text-sm text-app-color-softindigo font-medium">
+              <Text className="text-sm text-app-color-softindigo font-bold">
                 Forgot Password?
               </Text>
-            </View>
+            </View> */}
 
             {/* Sign In Button */}
             <Pressable

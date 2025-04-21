@@ -14,7 +14,6 @@ import * as Location from "expo-location";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller } from "react-hook-form";
 import Checkbox from "expo-checkbox";
-import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
 import GradientBackground from "@/components/common/GradientEllipse";
