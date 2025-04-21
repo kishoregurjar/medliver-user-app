@@ -20,6 +20,7 @@ import GradientBackground from "@/components/common/GradientEllipse";
 import axios from "axios";
 import { Button, ButtonText } from "@/components/ui/button";
 import { socialButtons } from "@/utils/constants";
+import AnimatedActionButton from "@/components/common/AnimatedActionButton";
 
 // Validation schema
 const schema = Yup.object().shape({
@@ -105,102 +106,101 @@ export default function SignupScreen() {
       <SafeAreaView className="flex-1">
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
           className="flex-1"
         >
           <ScrollView
             keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ padding: 20 }}
+            contentContainerStyle={{
+              paddingHorizontal: 20,
+              paddingBottom: 100,
+              flexGrow: 1,
+            }}
           >
-            <Text className="text-3xl font-bold mb-6 text-black">
-              Create Account
-            </Text>
+            <View className="w-full max-w-md self-center">
+              <Text className="text-3xl font-bold mb-6 text-black">
+                Create Account
+              </Text>
 
-            {/* Form Inputs */}
-            {[
-              { name: "fullName", label: "Full Name", keyboardType: "default" },
-              {
-                name: "email",
-                label: "Your Email",
-                keyboardType: "email-address",
-              },
-              {
-                name: "phoneNumber",
-                label: "Phone Number",
-                keyboardType: "phone-pad",
-              },
-              { name: "password", label: "Password", secureTextEntry: true },
-              {
-                name: "confirmPassword",
-                label: "Confirm Password",
-                secureTextEntry: true,
-              },
-            ].map((field) => (
-              <View key={field.name}>
-                <FormLabel label={field.label} />
+              {[
+                {
+                  name: "fullName",
+                  label: "Full Name",
+                  keyboardType: "default",
+                },
+                {
+                  name: "email",
+                  label: "Your Email",
+                  keyboardType: "email-address",
+                },
+                {
+                  name: "phoneNumber",
+                  label: "Phone Number",
+                  keyboardType: "phone-pad",
+                },
+                { name: "password", label: "Password", secureTextEntry: true },
+                {
+                  name: "confirmPassword",
+                  label: "Confirm Password",
+                  secureTextEntry: true,
+                },
+              ].map((field) => (
+                <View key={field.name} className="mb-4">
+                  <FormLabel label={field.label} />
+                  <Controller
+                    control={control}
+                    name={field.name as any}
+                    render={({ field: { value, onChange } }) => (
+                      <StyledInput
+                        placeholder={`Enter ${field.label}`}
+                        value={value}
+                        onChangeText={onChange}
+                        keyboardType={field.keyboardType}
+                        secureTextEntry={field.secureTextEntry}
+                      />
+                    )}
+                  />
+                  <FormError
+                    error={errors?.[field.name as keyof typeof errors]?.message}
+                  />
+                </View>
+              ))}
+
+              <View className="flex-row items-start mb-4">
                 <Controller
                   control={control}
-                  name={field.name as any}
+                  name="agree"
                   render={({ field: { value, onChange } }) => (
-                    <StyledInput
-                      placeholder={`Enter ${field.label}`}
+                    <Checkbox
                       value={value}
-                      onChangeText={onChange}
-                      keyboardType={field.keyboardType}
-                      secureTextEntry={field.secureTextEntry}
+                      onValueChange={onChange}
+                      color={value ? "#E55150" : undefined}
                     />
                   )}
                 />
-                <FormError
-                  error={errors?.[field.name as keyof typeof errors]?.message}
-                />
+                <Text className="ml-2 text-xs text-app-color-grey font-bold flex-1">
+                  By continuing, you agree to our Terms of Services, Privacy
+                  Policy.
+                </Text>
               </View>
-            ))}
+              <FormError error={errors.agree?.message} />
 
-            {/* Checkbox */}
-            <View className="flex-row items-center mb-4 mt-2">
-              <Controller
-                control={control}
-                name="agree"
-                render={({ field: { value, onChange } }) => (
-                  <Checkbox
-                    value={value}
-                    onValueChange={onChange}
-                    color={value ? "#E55150" : undefined}
-                  />
-                )}
+              <AnimatedActionButton
+                text="Sign up"
+                onPress={handleSubmit(onSubmit)}
               />
-              <Text className="ml-2 text-xs text-app-color-grey font-bold flex-1">
-                By continuing, you agree to our Terms of Services, Privacy
-                Policy.
+
+              <Text className="text-center text-gray-500 mb-4">
+                or Sign up with
               </Text>
-            </View>
-            <FormError error={errors.agree?.message} />
 
-            {/* Submit Button */}
-            <Pressable
-              onPress={handleSubmit(onSubmit)}
-              className="bg-app-color-red rounded-lg py-3 mx-7 items-center mb-4"
-              android_ripple={{ color: "#c53030" }}
-            >
-              <Text className="text-white font-semibold text-base">
-                Sign up
-              </Text>
-            </Pressable>
-
-            {/* OR Divider */}
-            <Text className="text-center text-gray-500 mb-4">
-              or Sign up with
-            </Text>
-
-            {/* Social Buttons */}
-            <View>
               {socialButtons.map(
                 ({ icon: Icon, iconName, color, text }, index) => (
                   <Button
                     key={index}
                     variant="outline"
                     size="xl"
-                    className="my-1 mx-7 border border-app-color-warmgreylight rounded-lg flex-row items-center justify-center"
+                    className="my-1 mx-4 border border-app-color-warmgreylight rounded-lg flex-row items-center justify-center"
                   >
                     <View className="mr-3 w-6 items-center">
                       <Icon name={iconName} size={20} color={color} />
@@ -211,18 +211,17 @@ export default function SignupScreen() {
                   </Button>
                 )
               )}
-            </View>
 
-            {/* Already have account */}
-            <View className="flex-row items-center justify-center mt-6">
-              <Text className="text-app-color-grey font-bold">
-                Already have an account?
-              </Text>
-              <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
-                <Text className="text-app-color-softindigo font-bold ml-2">
-                  Login
+              <View className="flex-row items-center justify-center mt-6">
+                <Text className="text-app-color-grey font-bold">
+                  Already have an account?
                 </Text>
-              </Pressable>
+                <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
+                  <Text className="text-app-color-softindigo font-bold ml-2">
+                    Login
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -237,11 +236,11 @@ const FormLabel = ({ label }: { label: string }) => (
 );
 
 const FormError = ({ error }: { error?: string }) =>
-  error ? <Text className="text-red-500 text-xs mb-2">{error}</Text> : null;
+  error ? <Text className="text-red-500 text-xs mt-1">{error}</Text> : null;
 
 const StyledInput = (props: any) => (
   <TextInput
-    className="border border-app-color-warmgreylight rounded-md px-4 py-3 mb-3 text-black"
+    className="border border-app-color-warmgreylight rounded-md px-4 py-3 text-black"
     placeholderTextColor="#999"
     {...props}
   />

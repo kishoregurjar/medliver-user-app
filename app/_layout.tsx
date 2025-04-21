@@ -32,7 +32,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     LexendDeca_100Thin,
     LexendDeca_200ExtraLight,
     LexendDeca_300Light,
@@ -45,17 +45,17 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (loaded) SplashScreen.hideAsync();
-  }, [loaded]);
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded]);
 
-  if (!loaded) return null;
+  if (!fontsLoaded) return null;
 
   return (
     <GluestackUIProvider mode="light">
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <SafeAreaProvider>
           <StatusBar style={"dark"} />
-          <View className="flex-1 font-lexendBold">
+          <View className="flex-1 font-lexend">
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="index" />
               <Stack.Screen name="home" />

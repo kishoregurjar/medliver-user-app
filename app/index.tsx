@@ -15,6 +15,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
 import STATIC from "@/utils/constants";
+import AnimatedActionButton from "@/components/common/AnimatedActionButton";
 
 const LetsStartScreen = () => {
   const router = useRouter();
@@ -82,7 +83,7 @@ const LetsStartScreen = () => {
 
         {/* Headline */}
         <Text
-          className="text-center font-bold text-gray-900 mb-2"
+          className="text-center text-gray-900 mb-2 font-lexend-bold"
           style={{
             fontSize: Math.min(width * 0.06, 26),
             lineHeight: Math.min(width * 0.075, 32),
@@ -93,7 +94,7 @@ const LetsStartScreen = () => {
 
         {/* Subtext */}
         <Text
-          className="text-center text-gray-500 mb-8"
+          className="text-center text-gray-500 mb-8 font-lexend"
           style={{
             fontSize: Math.min(width * 0.04, 16),
             paddingHorizontal: 4,
@@ -106,38 +107,12 @@ const LetsStartScreen = () => {
         </Text>
 
         {/* CTA Button with Animated Press */}
-        <Animated.View
-          style={{
-            transform: [{ scale: scaleAnim }],
-            width: "100%",
-            maxWidth: 400,
-            borderRadius: 16,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-            overflow: "hidden", // clip ripple for Android
-          }}
-        >
-          <Pressable
-            onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            android_ripple={{ color: "#c53030" }}
-            className="flex-row items-center justify-center bg-app-color-red px-6 py-3 rounded-2xl"
-          >
-            <Text
-              className="text-white font-semibold mr-2 text-base"
-              style={{
-                fontSize: Math.min(width * 0.045, 18),
-              }}
-            >
-              Let’s Start
-            </Text>
-            <AntDesign name="arrowright" size={20} color="white" />
-          </Pressable>
-        </Animated.View>
+        <AnimatedActionButton
+          text="Let’s Start"
+          icon={<AntDesign name="arrowright" size={20} color="white" />}
+          onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}
+          textClassName="font-lexend-bold"
+        />
       </SafeAreaView>
     </LinearGradient>
   );
