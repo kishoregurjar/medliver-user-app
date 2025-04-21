@@ -20,6 +20,7 @@ import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
 import GradientBackground from "@/components/common/GradientEllipse";
 import axios from "axios";
+import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 
 // Validation schema
 const schema = Yup.object().shape({
@@ -191,7 +192,7 @@ export default function SignupScreen() {
             />
             <FormError error={errors.confirmPassword?.message} />
 
-            <View className="flex-row items-start mb-4 mt-2">
+            <View className="flex-row items-center mb-4 mt-2">
               <Controller
                 control={control}
                 name="agree"
@@ -203,7 +204,7 @@ export default function SignupScreen() {
                   />
                 )}
               />
-              <Text className="ml-2 text-xs text-gray-600 flex-1">
+              <Text className="ml-2 text-xs text-app-color-grey font-bold flex-1">
                 By continuing, you agree to our Terms of Services, Privacy
                 Policy.
               </Text>
@@ -212,7 +213,7 @@ export default function SignupScreen() {
 
             <Pressable
               onPress={handleSubmit(onSubmit)}
-              className="bg-app-color-red rounded-lg py-3 items-center mb-4"
+              className="bg-app-color-red rounded-lg py-3 mx-7 items-center mb-4"
               android_ripple={{ color: "#c53030" }}
             >
               <Text className="text-white font-semibold text-base">
@@ -224,27 +225,62 @@ export default function SignupScreen() {
               or Sign up with
             </Text>
 
-            <View className="space-y-3">
-              <OAuthButton
-                icon={<AntDesign name="google" size={20} />}
-                text="Continue with Google"
-              />
-              <OAuthButton
-                icon={<FontAwesome name="facebook" size={20} color="#4267B2" />}
-                text="Continue with Facebook"
-              />
-              <OAuthButton
-                icon={<Ionicons name="logo-apple" size={20} />}
-                text="Continue with Apple"
-              />
+            <View>
+              {[
+                {
+                  icon: AntDesign,
+                  iconName: "google",
+                  color: "#000",
+                  text: "Continue with Google",
+                },
+                {
+                  icon: FontAwesome,
+                  iconName: "facebook",
+                  color: "#4267B2",
+                  text: "Continue with Facebook",
+                },
+                {
+                  icon: Ionicons,
+                  iconName: "logo-apple",
+                  color: "#000",
+                  text: "Continue with Apple",
+                },
+              ].map((button, index) => {
+                const IconComponent = button.icon;
+                return (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    size="xl"
+                    className="my-1 mx-7 border border-app-color-warmgreylight rounded-lg flex-row items-center justify-center"
+                  >
+                    {/* Icon inside a View to apply spacing */}
+                    <View className="mr-3">
+                      <IconComponent
+                        name={button.iconName}
+                        size={20}
+                        color={button.color}
+                      />
+                    </View>
+
+                    <ButtonText className="text-sm font-medium">
+                      {button.text}
+                    </ButtonText>
+                  </Button>
+                );
+              })}
             </View>
 
-            <Text className="text-center text-sm mt-6">
-              Already have an account?{" "}
+            <View className="flex-row items-center justify-center mt-6">
+              <Text className="text-center text-app-color-grey font-bold">
+                Already have an account?
+              </Text>
               <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
-                <Text className="text-app-color-red font-semibold">Login</Text>
+                <Text className="text-app-color-softindigo font-bold ml-2">
+                  Login
+                </Text>
               </Pressable>
-            </Text>
+            </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -255,7 +291,7 @@ export default function SignupScreen() {
 // Reusable Components
 
 const FormLabel = ({ label }: { label: string }) => (
-  <Text className="text-xs text-green-700 mb-1">{label}</Text>
+  <Text className="text-xs text-app-color-grey mb-2 font-bold">{label}</Text>
 );
 
 const FormError = ({ error }: { error?: string }) =>
@@ -263,21 +299,8 @@ const FormError = ({ error }: { error?: string }) =>
 
 const StyledInput = (props: any) => (
   <TextInput
-    className="border border-gray-300 rounded-md px-4 py-3 mb-2 text-black"
+    className="border border-app-color-warmgreylight rounded-md px-4 py-3 mb-3 text-black"
     placeholderTextColor="#999"
     {...props}
   />
-);
-
-const OAuthButton = ({
-  icon,
-  text,
-}: {
-  icon: React.ReactNode;
-  text: string;
-}) => (
-  <TouchableOpacity className="flex-row items-center justify-center border border-gray-300 py-3 rounded-lg bg-white">
-    <View className="mr-3">{icon}</View>
-    <Text className="text-sm font-medium">{text}</Text>
-  </TouchableOpacity>
 );

@@ -175,17 +175,18 @@ module.exports = {
         "app-color-white": "#F2F2F2",
         "app-color-grey": "#6E6A7C",
         "app-color-green": "#3DF46E",
-        "app-color-pink": "#FFBDBC", // New
-        "app-color-lightgrey": "#E2E2E2", // New
-        "app-color-lightblue": "#DEEFFF", // New
-        "app-color-deepblue": "#4915FF", // New
-        "app-color-mintgreen": "#D2FFDE", // New
-        "app-color-indigo": "#6B41FF", // New
-        "app-color-softindigo": "#6C63FF", // Similar but distinct
-        "app-color-royalblue": "#1979FF", // New
-        "app-color-midblue": "#4575EB", // New
-        "app-color-maroon": "#A32022", // New
-        "app-color-blue": "#3072FF", // Similar to midblue/royal but slightly different
+        "app-color-pink": "#FFBDBC",
+        "app-color-lightgrey": "#E2E2E2",
+        "app-color-lightblue": "#DEEFFF",
+        "app-color-deepblue": "#4915FF",
+        "app-color-mintgreen": "#D2FFDE",
+        "app-color-indigo": "#6B41FF",
+        "app-color-softindigo": "#6C63FF",
+        "app-color-royalblue": "#1979FF",
+        "app-color-midblue": "#4575EB",
+        "app-color-maroon": "#A32022",
+        "app-color-blue": "#3072FF",
+        "app-color-warmgreylight": "#E4DCDC",
       },
       backgroundImage: {
         "app-color-gradient":
