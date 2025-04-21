@@ -118,7 +118,7 @@ export default function SignupScreen() {
             }}
           >
             <View className="w-full max-w-md self-center">
-              <Text className="text-3xl mb-6 font-lexend-bold text-black">
+              <Text className="text-3xl mb-6 mt-6 font-lexend-bold text-black">
                 Create Account
               </Text>
 
