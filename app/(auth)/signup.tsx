@@ -6,7 +6,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,7 +19,8 @@ import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
 import GradientBackground from "@/components/common/GradientEllipse";
 import axios from "axios";
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
+import { Button, ButtonText } from "@/components/ui/button";
+import { socialButtons } from "@/utils/constants";
 
 // Validation schema
 const schema = Yup.object().shape({
@@ -40,7 +40,6 @@ const schema = Yup.object().shape({
 
 export default function SignupScreen() {
   const router = useRouter();
-
   const [location, setLocation] = useState<{
     lat: number;
     long: number;
@@ -55,7 +54,7 @@ export default function SignupScreen() {
     defaultValues: {
       fullName: "",
       email: "",
-      phoneNumber: "", // <-- added
+      phoneNumber: "",
       password: "",
       confirmPassword: "",
       agree: false,
@@ -104,7 +103,7 @@ export default function SignupScreen() {
       animationType="pulse"
       animationSpeed={1000}
     >
-      <SafeAreaView className="flex-1 ">
+      <SafeAreaView className="flex-1">
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           className="flex-1"
@@ -117,81 +116,48 @@ export default function SignupScreen() {
               Create Account
             </Text>
 
-            <FormLabel label="Full Name" />
-            <Controller
-              control={control}
-              name="fullName"
-              render={({ field: { value, onChange } }) => (
-                <StyledInput
-                  placeholder="Enter Your Full Name"
-                  value={value}
-                  onChangeText={onChange}
+            {/* Form Inputs */}
+            {[
+              { name: "fullName", label: "Full Name", keyboardType: "default" },
+              {
+                name: "email",
+                label: "Your Email",
+                keyboardType: "email-address",
+              },
+              {
+                name: "phoneNumber",
+                label: "Phone Number",
+                keyboardType: "phone-pad",
+              },
+              { name: "password", label: "Password", secureTextEntry: true },
+              {
+                name: "confirmPassword",
+                label: "Confirm Password",
+                secureTextEntry: true,
+              },
+            ].map((field) => (
+              <View key={field.name}>
+                <FormLabel label={field.label} />
+                <Controller
+                  control={control}
+                  name={field.name as any}
+                  render={({ field: { value, onChange } }) => (
+                    <StyledInput
+                      placeholder={`Enter ${field.label}`}
+                      value={value}
+                      onChangeText={onChange}
+                      keyboardType={field.keyboardType}
+                      secureTextEntry={field.secureTextEntry}
+                    />
+                  )}
                 />
-              )}
-            />
-            <FormError error={errors.fullName?.message} />
-
-            <FormLabel label="Your Email" />
-            <Controller
-              control={control}
-              name="email"
-              render={({ field: { value, onChange } }) => (
-                <StyledInput
-                  placeholder="Enter Your Email"
-                  value={value}
-                  onChangeText={onChange}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
+                <FormError
+                  error={errors?.[field.name as keyof typeof errors]?.message}
                 />
-              )}
-            />
-            <FormError error={errors.email?.message} />
+              </View>
+            ))}
 
-            <FormLabel label="Phone Number" />
-            <Controller
-              control={control}
-              name="phoneNumber"
-              render={({ field: { value, onChange } }) => (
-                <StyledInput
-                  placeholder="Enter Your Phone Number"
-                  value={value}
-                  onChangeText={onChange}
-                  keyboardType="phone-pad"
-                />
-              )}
-            />
-            <FormError error={errors.phoneNumber?.message} />
-
-            <FormLabel label="Password" />
-            <Controller
-              control={control}
-              name="password"
-              render={({ field: { value, onChange } }) => (
-                <StyledInput
-                  placeholder="Enter Password"
-                  secureTextEntry
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            <FormError error={errors.password?.message} />
-
-            <FormLabel label="Confirm Password" />
-            <Controller
-              control={control}
-              name="confirmPassword"
-              render={({ field: { value, onChange } }) => (
-                <StyledInput
-                  placeholder="Enter Password"
-                  secureTextEntry
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            <FormError error={errors.confirmPassword?.message} />
-
+            {/* Checkbox */}
             <View className="flex-row items-center mb-4 mt-2">
               <Controller
                 control={control}
@@ -211,6 +177,7 @@ export default function SignupScreen() {
             </View>
             <FormError error={errors.agree?.message} />
 
+            {/* Submit Button */}
             <Pressable
               onPress={handleSubmit(onSubmit)}
               className="bg-app-color-red rounded-lg py-3 mx-7 items-center mb-4"
@@ -221,58 +188,35 @@ export default function SignupScreen() {
               </Text>
             </Pressable>
 
+            {/* OR Divider */}
             <Text className="text-center text-gray-500 mb-4">
               or Sign up with
             </Text>
 
+            {/* Social Buttons */}
             <View>
-              {[
-                {
-                  icon: AntDesign,
-                  iconName: "google",
-                  color: "#000",
-                  text: "Continue with Google",
-                },
-                {
-                  icon: FontAwesome,
-                  iconName: "facebook",
-                  color: "#4267B2",
-                  text: "Continue with Facebook",
-                },
-                {
-                  icon: Ionicons,
-                  iconName: "logo-apple",
-                  color: "#000",
-                  text: "Continue with Apple",
-                },
-              ].map((button, index) => {
-                const IconComponent = button.icon;
-                return (
+              {socialButtons.map(
+                ({ icon: Icon, iconName, color, text }, index) => (
                   <Button
                     key={index}
                     variant="outline"
                     size="xl"
                     className="my-1 mx-7 border border-app-color-warmgreylight rounded-lg flex-row items-center justify-center"
                   >
-                    {/* Icon inside a View to apply spacing */}
-                    <View className="mr-3">
-                      <IconComponent
-                        name={button.iconName}
-                        size={20}
-                        color={button.color}
-                      />
+                    <View className="mr-3 w-6 items-center">
+                      <Icon name={iconName} size={20} color={color} />
                     </View>
-
                     <ButtonText className="text-sm font-medium">
-                      {button.text}
+                      {text}
                     </ButtonText>
                   </Button>
-                );
-              })}
+                )
+              )}
             </View>
 
+            {/* Already have account */}
             <View className="flex-row items-center justify-center mt-6">
-              <Text className="text-center text-app-color-grey font-bold">
+              <Text className="text-app-color-grey font-bold">
                 Already have an account?
               </Text>
               <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
@@ -289,7 +233,6 @@ export default function SignupScreen() {
 }
 
 // Reusable Components
-
 const FormLabel = ({ label }: { label: string }) => (
   <Text className="text-xs text-app-color-grey mb-2 font-bold">{label}</Text>
 );

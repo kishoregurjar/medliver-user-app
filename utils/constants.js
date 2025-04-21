@@ -1,3 +1,26 @@
+import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
+
+export const socialButtons = [
+  {
+    icon: AntDesign,
+    iconName: "google",
+    color: "#000",
+    text: "Continue with Google",
+  },
+  {
+    icon: FontAwesome,
+    iconName: "facebook",
+    color: "#4267B2",
+    text: "Continue with Facebook",
+  },
+  {
+    icon: Ionicons,
+    iconName: "logo-apple",
+    color: "#000",
+    text: "Continue with Apple",
+  },
+];
+
 const IMAGES = {
   APP: {
     LOGO: require("../assets/logos/logo.png"),
