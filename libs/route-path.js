@@ -4,7 +4,7 @@ export const ROUTE_PATH = {
     LOGIN: "/login",
     LOGOUT: "/logout",
     SIGNUP: "/signup",
-    FORGOT_PASSWORD: "/forgot-password",
+    FORGOT_PASSWORD: "/forgot",
   },
   APP: {
     HOME: "/home",

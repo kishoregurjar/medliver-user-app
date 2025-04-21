@@ -51,7 +51,8 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
-    <GluestackUIProvider mode="light"><ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <GluestackUIProvider mode="light">
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <SafeAreaProvider>
           <StatusBar style={"dark"} />
           <View className="flex-1 font-lexendBold">
@@ -60,10 +61,12 @@ export default function RootLayout() {
               <Stack.Screen name="home" />
               <Stack.Screen name="(auth)/login" />
               <Stack.Screen name="(auth)/signup" />
+              <Stack.Screen name="(auth)/forgot" />
               <Stack.Screen name="(home)" />
             </Stack>
           </View>
         </SafeAreaProvider>
-      </ThemeProvider></GluestackUIProvider>
+      </ThemeProvider>
+    </GluestackUIProvider>
   );
 }

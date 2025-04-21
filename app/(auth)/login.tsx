@@ -113,7 +113,7 @@ export default function LoginScreen() {
             <FormError error={errors.password?.message} />
 
             {/* Remember + Forgot */}
-            {/* <View className="flex-row items-center justify-between mt-2 mb-4">
+            <View className="flex-row items-center justify-between mt-2 mb-4">
               <View className="flex-row items-center">
                 <Controller
                   control={control}
@@ -124,10 +124,15 @@ export default function LoginScreen() {
                 />
                 <Text className="ml-2 text-sm text-gray-700">Remember me</Text>
               </View>
-              <Text className="text-sm text-app-color-softindigo font-bold">
+              <Text
+                className="text-sm text-app-color-softindigo font-bold"
+                onPress={() => {
+                  router.push(ROUTE_PATH.AUTH.FORGOT_PASSWORD);
+                }}
+              >
                 Forgot Password?
               </Text>
-            </View> */}
+            </View>
 
             {/* Sign In Button */}
             <Pressable
