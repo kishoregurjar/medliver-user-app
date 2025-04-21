@@ -3,8 +3,11 @@ import {
   Text,
   Image,
   Pressable,
-  Dimensions,
+  useWindowDimensions,
   Animated,
+  SafeAreaView,
+  Platform,
+  StatusBar,
 } from "react-native";
 import React, { useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -12,13 +15,11 @@ import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
 import STATIC from "@/utils/constants";
-import AppColorDemo from "@/components/common/AppColorDemo";
-
-const { width, height } = Dimensions.get("window");
 
 const LetsStartScreen = () => {
   const router = useRouter();
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const { width, height } = useWindowDimensions();
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
@@ -45,76 +46,99 @@ const LetsStartScreen = () => {
   ];
 
   return (
-    <LinearGradient
-      colors={["#e0f7fa", "#fce4ec"]}
-      className="flex-1 justify-center items-center px-6 relative"
-    >
-      {/* Floating dots */}
-      <View className="absolute w-full h-full">
-        {dots.map((dot, index) => (
-          <View
-            key={index}
-            className={`absolute ${dot.color} opacity-${dot.opacity} rounded-full`}
-            style={{
-              width: dot.size,
-              height: dot.size,
-              top: dot.top,
-              left: dot.left,
-            }}
-          />
-        ))}
-      </View>
+    <LinearGradient colors={["#e0f7fa", "#fce4ec"]} className="flex-1 relative">
+      {/* Status bar padding for Android */}
+      {Platform.OS === "android" && (
+        <View style={{ height: StatusBar.currentHeight }} />
+      )}
 
-      {/* Illustration */}
-      <Image
-        source={STATIC.IMAGES.PAGES.LETS_START}
-        style={{ width: width * 0.6, height: height * 0.3 }}
-        resizeMode="contain"
-        className="mb-6"
-      />
+      <SafeAreaView className="flex-1 items-center justify-center px-4">
+        {/* Floating Dots */}
+        <View className="absolute w-full h-full">
+          {dots.map((dot, index) => (
+            <View
+              key={index}
+              className={`absolute ${dot.color} opacity-${dot.opacity} rounded-full`}
+              style={{
+                width: dot.size,
+                height: dot.size,
+                top: dot.top,
+                left: dot.left,
+              }}
+            />
+          ))}
+        </View>
 
-      {/* Headline */}
-      <Text className="text-2xl font-bold text-center text-gray-900 mb-2">
-        Your Health, Delivered{"\n"}Fast & Safe
-      </Text>
+        {/* Illustration */}
+        <Image
+          source={STATIC.IMAGES.PAGES.LETS_START}
+          resizeMode="contain"
+          style={{
+            width: width * 0.6,
+            height: height * 0.3,
+            marginBottom: height * 0.04,
+          }}
+        />
 
-      {/* Subtext */}
-      <Text className="text-base text-center text-gray-500 mb-8">
-        We believe that getting the care you need shouldn’t be complicated or
-        time-consuming. Whether it’s ordering medicines or booking diagnostic
-        tests.
-      </Text>
-
-      {/* CTA Button with Animated Press */}
-      <Animated.View
-        style={{
-          transform: [{ scale: scaleAnim }],
-          width: "100%",
-          maxWidth: 400,
-          borderRadius: 16,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 4,
-          overflow: "hidden", // ensures ripple doesn’t overflow
-        }}
-      >
-        <Pressable
-          onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-          android_ripple={{ color: "#c53030" }}
-          className="flex-row items-center justify-center bg-app-color-red px-6 py-3 rounded-2xl"
+        {/* Headline */}
+        <Text
+          className="text-center font-bold text-gray-900 mb-2"
+          style={{
+            fontSize: Math.min(width * 0.06, 26),
+            lineHeight: Math.min(width * 0.075, 32),
+          }}
         >
-          <Text className="text-white text-lg font-semibold mr-2">
-            Let’s Start
-          </Text>
+          Your Health, Delivered{"\n"}Fast & Safe
+        </Text>
 
-          <AntDesign name="arrowright" size={20} color="white" />
-        </Pressable>
-      </Animated.View>
-      {/* <AppColorDemo /> */}
+        {/* Subtext */}
+        <Text
+          className="text-center text-gray-500 mb-8"
+          style={{
+            fontSize: Math.min(width * 0.04, 16),
+            paddingHorizontal: 4,
+            lineHeight: 20,
+          }}
+        >
+          We believe that getting the care you need shouldn’t be complicated or
+          time-consuming. Whether it’s ordering medicines or booking diagnostic
+          tests.
+        </Text>
+
+        {/* CTA Button with Animated Press */}
+        <Animated.View
+          style={{
+            transform: [{ scale: scaleAnim }],
+            width: "100%",
+            maxWidth: 400,
+            borderRadius: 16,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+            overflow: "hidden", // clip ripple for Android
+          }}
+        >
+          <Pressable
+            onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            android_ripple={{ color: "#c53030" }}
+            className="flex-row items-center justify-center bg-app-color-red px-6 py-3 rounded-2xl"
+          >
+            <Text
+              className="text-white font-semibold mr-2 text-base"
+              style={{
+                fontSize: Math.min(width * 0.045, 18),
+              }}
+            >
+              Let’s Start
+            </Text>
+            <AntDesign name="arrowright" size={20} color="white" />
+          </Pressable>
+        </Animated.View>
+      </SafeAreaView>
     </LinearGradient>
   );
 };
