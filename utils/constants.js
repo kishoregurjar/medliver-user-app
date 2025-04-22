@@ -27,8 +27,9 @@ const IMAGES = {
     LOGO_H: require("../assets/logos/logo_horizontal.png"),
   },
   PAGES: {
-    LETS_START: require("../assets/images/lets_start.png"),
-    LOGIN: require("../assets/images/login.png"),
+    LETS_START: require("../assets/images/lets_start_screen.png"),
+    LOGIN: require("../assets/images/signin_registration_screen.png"),
+    FORGOT: require("../assets/images/forgot_screen.png"),
   },
   COMPONENTS: {
     USER: require("../assets/images/user.png"),

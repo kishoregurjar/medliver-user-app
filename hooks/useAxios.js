@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useAuthUser } from "@/contexts/AuthContext"; // Import AuthContext
 
 export default function useAxios() {
-  const { authUser } = useAuthUser(); // Get token from AuthContext
+  const { authUser } = useAuthUser();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -29,7 +29,7 @@ export default function useAxios() {
     payload = null,
     authRequired = false,
     headers = {},
-    params = {}, // ✅ Added params for GET requests
+    params = {},
   }) => {
     setLoading(true);
     setError(null);
@@ -37,20 +37,20 @@ export default function useAxios() {
     try {
       let requestHeaders = { ...headers };
 
-      // Handle JSON vs FormData dynamically
-      let requestData = payload;
-      if (payload instanceof FormData) {
-        delete requestHeaders["Content-Type"]; // ✅ Let the browser set Content-Type
-      } else if (typeof payload === "object" && payload !== null) {
-        requestHeaders["Content-Type"] = "application/json"; // ✅ Set Content-Type for JSON
-      }
-
       // Attach Authorization token if required
       if (authRequired && authUser?.token) {
         requestHeaders.Authorization = `${authUser.token}`;
       }
 
-      // ✅ Handle GET requests correctly (Axios doesn't allow `data` in GET)
+      let requestData = payload;
+
+      if (payload instanceof FormData) {
+        // In React Native, do NOT manually delete Content-Type. Let axios handle it.
+        // Axios in RN sets correct boundary automatically if you don't set Content-Type.
+      } else if (typeof payload === "object" && payload !== null) {
+        requestHeaders["Content-Type"] = "application/json";
+      }
+
       const axiosConfig = {
         method,
         url,
@@ -61,7 +61,6 @@ export default function useAxios() {
       };
 
       const response = await axiosInstance(axiosConfig);
-
       setData(response.data);
       return { data: response.data, error: null };
     } catch (error) {

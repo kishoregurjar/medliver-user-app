@@ -17,10 +17,10 @@ import Checkbox from "expo-checkbox";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
 import GradientBackground from "@/components/common/GradientEllipse";
-import axios from "axios";
 import { Button, ButtonText } from "@/components/ui/button";
 import { socialButtons } from "@/utils/constants";
-import AnimatedActionButton from "@/components/common/AnimatedActionButton";
+import { useAuthUser } from "@/contexts/AuthContext";
+import useAxios from "@/hooks/useAxios";
 
 // Validation schema
 const schema = Yup.object().shape({
@@ -40,6 +40,16 @@ const schema = Yup.object().shape({
 
 export default function SignupScreen() {
   const router = useRouter();
+  const { authUser } = useAuthUser();
+
+  const {
+    request: registerUser,
+    loading: registerUserLoading,
+    error: registerUserError,
+  } = useAxios();
+
+  console.log("authUser", authUser);
+
   const [location, setLocation] = useState<{
     lat: number;
     long: number;
@@ -68,15 +78,22 @@ export default function SignupScreen() {
       userCoordinates: location || { lat: 0, long: 0 },
     };
 
-    try {
-      const response = await axios.post(
-        "http://192.168.1.3:4002/api/v1/user/register-user",
-        payloadToSend
-      );
-      console.log("Signup successful:", response.data);
-      // router.push(ROUTE_PATH.LOGIN);
-    } catch (error) {
-      console.error("Signup error:", error);
+    const { data, error } = await registerUser({
+      url: "/user/register-user",
+      method: "POST",
+      payload: payloadToSend,
+    });
+
+    console.log("Signup response:", data, error);
+
+    if (!error) {
+      data.status === 200
+        ? router.push(ROUTE_PATH.AUTH.VERIFICATION)
+        : data.status === 201
+        ? router.push(ROUTE_PATH.AUTH.LOGIN)
+        : null;
+    } else {
+      console.log(error || "Something went wrong");
     }
   };
 
@@ -191,7 +208,7 @@ export default function SignupScreen() {
                 className="bg-app-color-red rounded-lg py-3 mx-7 items-center mb-4"
                 android_ripple={{ color: "#c53030" }}
               >
-                <Text className="text-white font-semibold text-base">
+                <Text className="text-white font-lexend-semibold text-base">
                   Sign up
                 </Text>
               </Pressable>

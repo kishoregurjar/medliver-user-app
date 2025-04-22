@@ -68,7 +68,7 @@ export default function ForgotScreen() {
             {/* Illustration */}
             <View className="items-center my-4">
               <Image
-                source={STATIC.IMAGES.PAGES.LOGIN} // Add image in your STATIC
+                source={STATIC.IMAGES.PAGES.FORGOT} // Add image in your STATIC
                 style={{ width: 200, height: 200, resizeMode: "contain" }}
               />
             </View>

@@ -3,7 +3,7 @@ import axios from "axios";
 // import { showToast } from "@/components/_ui/toast-utils";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4002/api/v1",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://192.168.1.3:4002/api/v1",
   // withCredentials: true, // Ensure cookies are sent
   headers: {
     "Content-Type": "application/json", // Default content type

@@ -26,6 +26,7 @@ import {
   LexendDeca_900Black,
 } from "@expo-google-fonts/lexend-deca";
 import { View } from "react-native";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -52,21 +53,26 @@ export default function RootLayout() {
 
   return (
     <GluestackUIProvider mode="light">
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <SafeAreaProvider>
-          <StatusBar style={"dark"} />
-          <View className="flex-1 font-lexend">
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="index" />
-              <Stack.Screen name="home" />
-              <Stack.Screen name="(auth)/login" />
-              <Stack.Screen name="(auth)/signup" />
-              <Stack.Screen name="(auth)/forgot" />
-              <Stack.Screen name="(home)" />
-            </Stack>
-          </View>
-        </SafeAreaProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <SafeAreaProvider>
+            <StatusBar style={"dark"} />
+            <View className="flex-1 font-lexend">
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="index" />
+                <Stack.Screen name="home" />
+                <Stack.Screen name="(auth)/login" />
+                <Stack.Screen name="(auth)/signup" />
+                <Stack.Screen name="(auth)/forgot" />
+                <Stack.Screen name="(auth)/verification" />
+                <Stack.Screen name="(home)" />
+              </Stack>
+            </View>
+          </SafeAreaProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </GluestackUIProvider>
   );
 }

@@ -1,9 +1,10 @@
 "use client";
 
-import ROUTE_PATH from "@/libs/route-path";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Progress } from "@/components/ui/progress"; // ✅ ShadCN Progress
+import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import ROUTE_PATH from "@/libs/route-path";
 
 const AuthContext = createContext();
 
@@ -13,28 +14,26 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [authUser, setAuthUser] = useState(null);
   const [isAuthLoaded, setIsAuthLoaded] = useState(false);
-  const [progress, setProgress] = useState(10); // ✅ Start from 10 for smoother effect
 
   useEffect(() => {
-    let storedUser = localStorage.getItem("authUser");
-
-    // ✅ Fast progress update every 100ms
-    let interval = setInterval(() => {
-      setProgress((prev) => (prev < 95 ? prev + 15 : prev)); // ✅ Faster increment
-    }, 100);
-
-    setTimeout(() => {
-      if (storedUser) {
-        setAuthUser(JSON.parse(storedUser));
+    const loadAuthUser = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("authUser");
+        if (storedUser) {
+          setAuthUser(JSON.parse(storedUser));
+        }
+      } catch (error) {
+        console.error("Failed to load auth user:", error);
+      } finally {
+        setIsAuthLoaded(true);
       }
-      setIsAuthLoaded(true);
-      clearInterval(interval);
-      setProgress(100);
-    }, 800); // ✅ Reduced delay for faster load
+    };
+
+    loadAuthUser();
   }, []);
 
-  const login = (response) => {
-    let { token, role, permissions } = response;
+  const login = async (response) => {
+    const { token, role, permissions } = response;
     const userData = {
       user: response,
       isAuthenticated: true,
@@ -43,12 +42,20 @@ export const AuthProvider = ({ children }) => {
       permissions,
     };
     setAuthUser(userData);
-    localStorage.setItem("authUser", JSON.stringify(userData));
+    try {
+      await AsyncStorage.setItem("authUser", JSON.stringify(userData));
+    } catch (error) {
+      console.error("Failed to save auth user:", error);
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
     setAuthUser(null);
-    localStorage.removeItem("authUser");
+    try {
+      await AsyncStorage.removeItem("authUser");
+    } catch (error) {
+      console.error("Failed to remove auth user:", error);
+    }
     router.push(ROUTE_PATH.AUTH.LOGIN);
   };
 
@@ -58,16 +65,10 @@ export const AuthProvider = ({ children }) => {
 
   if (!isAuthLoaded) {
     return (
-      <div className="flex h-screen items-center justify-center flex-col gap-6 px-4">
-        <h2 className="text-lg md:text-xl font-semibold text-gray-700 dark:text-gray-200 animate-pulse">
-          Please Wait...
-        </h2>
-
-        <Progress
-          value={progress}
-          className="w-full max-w-[300px] md:max-w-[400px] lg:max-w-[500px] h-3 md:h-4 rounded-full bg-gray-200 dark:bg-gray-700 transition-all duration-300"
-        />
-      </div>
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Please Wait...</Text>
+        <ActivityIndicator size="large" color="#4B5563" />
+      </View>
     );
   }
 
@@ -77,3 +78,19 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    backgroundColor: "#FFFFFF",
+  },
+  loadingText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#4B5563",
+    marginBottom: 20,
+  },
+});

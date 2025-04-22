@@ -2,8 +2,9 @@ export const ROUTE_PATH = {
   AUTH: {
     ROOT: "/",
     LOGIN: "/login",
-    LOGOUT: "/logout",
     SIGNUP: "/signup",
+    LOGOUT: "/logout",
+    VERIFICATION: "/verification",
     FORGOT_PASSWORD: "/forgot",
   },
   APP: {
