@@ -14,6 +14,7 @@ import GradientBackground from "@/components/common/GradientEllipse";
 import STATIC from "@/utils/constants";
 import ROUTE_PATH from "@/libs/route-path";
 import { useRouter } from "expo-router";
+import { generateRoute } from "@/routes/route.utils";
 
 export default function VerificationScreen() {
   const router = useRouter();
@@ -125,7 +126,7 @@ export default function VerificationScreen() {
           {/* Back to login */}
           <TouchableOpacity
             className="items-center"
-            onPress={() => router.replace(ROUTE_PATH.AUTH.LOGIN)}
+            onPress={() => router.replace(generateRoute("AUTH", "LOGIN"))}
           >
             <Text className="text-gray-600 text-sm">← Back to Login</Text>
           </TouchableOpacity>

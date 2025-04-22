@@ -21,6 +21,7 @@ import FORM_VALIDATIONS from "@/libs/form-validations";
 import FormError from "@/components/inputs/FormError";
 import FormStyledInput from "@/components/inputs/FormStyledInput";
 import FormLabel from "@/components/inputs/FormLabel";
+import ROUTE_PATH from "@/libs/route-path";
 
 export default function ForgotScreen() {
   const router = useRouter();
@@ -54,7 +55,7 @@ export default function ForgotScreen() {
     console.log("Signin response:", data, error);
 
     if (!error) {
-      data.status === 200 ? router.push(ROUTE_PATH.AUTH.LOGIN) : null;
+      data.status === 200 ? router.push(ROUTE_PATH.AUTH.LOGIN ) : null;
     } else {
       console.log(error || "Something went wrong");
     }
