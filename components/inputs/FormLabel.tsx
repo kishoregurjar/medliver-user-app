@@ -1,5 +1,4 @@
 import { Text } from "react-native";
-import React from "react";
 
 const FormLabel = ({
   label,
@@ -8,7 +7,9 @@ const FormLabel = ({
   label: string;
   className?: string;
 }) => (
-  <Text className={`text-xs text-app-color-grey mb-2 font-bold ${className}`}>
+  <Text
+    className={`text-xs text-app-color-grey mb-2 font-lexend-bold ${className}`}
+  >
     {label}
   </Text>
 );

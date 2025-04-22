@@ -1,5 +1,4 @@
 import { Text } from "react-native";
-import React from "react";
 
 const FormError = ({
   error,
@@ -9,7 +8,9 @@ const FormError = ({
   className?: string;
 }) =>
   error ? (
-    <Text className={`text-red-500 text-xs mb-2 ${className}`}>{error}</Text>
+    <Text className={`text-red-500 text-xs mb-2 font-lexend-bold ${className}`}>
+      {error}
+    </Text>
   ) : null;
 
 export default FormError;

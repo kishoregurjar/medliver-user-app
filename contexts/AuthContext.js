@@ -65,8 +65,10 @@ export const AuthProvider = ({ children }) => {
 
   if (!isAuthLoaded) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Please Wait...</Text>
+      <View className="flex-1 justify-center items-center px-4 bg-white">
+        <Text className="text-xl font-semibold text-gray-600 mb-5">
+          Please Wait...
+        </Text>
         <ActivityIndicator size="large" color="#4B5563" />
       </View>
     );
@@ -78,19 +80,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    backgroundColor: "#FFFFFF",
-  },
-  loadingText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#4B5563",
-    marginBottom: 20,
-  },
-});

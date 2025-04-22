@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as Yup from "yup";
 import * as Location from "expo-location";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller } from "react-hook-form";
@@ -21,22 +20,12 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { socialButtons } from "@/utils/constants";
 import { useAuthUser } from "@/contexts/AuthContext";
 import useAxios from "@/hooks/useAxios";
-
-// Validation schema
-const schema = Yup.object().shape({
-  fullName: Yup.string().required("Full Name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  phoneNumber: Yup.string()
-    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
-    .required("Phone number is required"),
-  password: Yup.string()
-    .min(6, "Min 6 characters")
-    .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords must match")
-    .required("Confirm your password"),
-  agree: Yup.boolean().oneOf([true], "You must agree to the terms"),
-});
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { TouchableOpacity } from "react-native";
+import FORM_VALIDATIONS from "@/libs/form-validations";
+import FormError from "@/components/inputs/FormError";
+import FormLabel from "@/components/inputs/FormLabel";
+import FormStyledInput from "@/components/inputs/FormStyledInput";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -44,8 +33,8 @@ export default function SignupScreen() {
 
   const {
     request: registerUser,
-    loading: registerUserLoading,
-    error: registerUserError,
+    loading: isLoading,
+    error: hasError,
   } = useAxios();
 
   console.log("authUser", authUser);
@@ -60,7 +49,7 @@ export default function SignupScreen() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(FORM_VALIDATIONS.SIGN_UP),
     defaultValues: {
       fullName: "",
       email: "",
@@ -90,7 +79,7 @@ export default function SignupScreen() {
       data.status === 200
         ? router.push(ROUTE_PATH.AUTH.VERIFICATION)
         : data.status === 201
-        ? router.push(ROUTE_PATH.AUTH.LOGIN)
+        ? router.push(ROUTE_PATH.AUTH.VERIFICATION)
         : null;
     } else {
       console.log(error || "Something went wrong");
@@ -104,6 +93,8 @@ export default function SignupScreen() {
         console.warn("Permission to access location was denied");
         return;
       }
+
+      console.log("registerUser", await AsyncStorage.getAllKeys());
 
       const loc = await Location.getCurrentPositionAsync({});
       setLocation({
@@ -168,7 +159,7 @@ export default function SignupScreen() {
                     control={control}
                     name={field.name as any}
                     render={({ field: { value, onChange } }) => (
-                      <StyledInput
+                      <FormStyledInput
                         placeholder={`Enter ${field.label}`}
                         value={value}
                         onChangeText={onChange}
@@ -203,15 +194,14 @@ export default function SignupScreen() {
               </View>
               <FormError error={errors.agree?.message} />
 
-              <Pressable
+              <TouchableOpacity
                 onPress={handleSubmit(onSubmit)}
-                className="bg-app-color-red rounded-lg py-3 mx-7 items-center mb-4"
-                android_ripple={{ color: "#c53030" }}
+                className="bg-app-color-red rounded-xl py-4 mb-4"
               >
-                <Text className="text-white font-lexend-semibold text-base">
-                  Sign up
+                <Text className="text-white text-center font-semibold text-base">
+                  Sign Up
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
 
               <Text className="text-center text-app-color-grey font-lexend mb-4">
                 or Sign up with
@@ -252,23 +242,3 @@ export default function SignupScreen() {
     </GradientBackground>
   );
 }
-
-// Reusable Components
-const FormLabel = ({ label }: { label: string }) => (
-  <Text className="text-xs text-app-color-grey mb-2 font-lexend-bold">
-    {label}
-  </Text>
-);
-
-const FormError = ({ error }: { error?: string }) =>
-  error ? (
-    <Text className="text-red-500 font-lexend text-xs mt-1">{error}</Text>
-  ) : null;
-
-const StyledInput = (props: any) => (
-  <TextInput
-    className="border border-app-color-warmgreylight font-lexend rounded-md px-4 py-3 text-black"
-    placeholderTextColor="#999"
-    {...props}
-  />
-);

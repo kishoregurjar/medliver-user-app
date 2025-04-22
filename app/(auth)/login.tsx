@@ -12,30 +12,34 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Checkbox from "expo-checkbox";
 import { Controller, useForm } from "react-hook-form";
-import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ROUTE_PATH from "@/libs/route-path";
 import { useRouter } from "expo-router";
 import GradientBackground from "@/components/common/GradientEllipse";
 import STATIC, { socialButtons } from "@/utils/constants";
 import { Button, ButtonText } from "@/components/ui/button";
-import axios from "axios";
-
-// Validation schema
-const schema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string().required("Password is required"),
-});
+import useAxios from "@/hooks/useAxios";
+import { TouchableOpacity } from "react-native";
+import FORM_VALIDATIONS from "@/libs/form-validations";
+import FormError from "@/components/inputs/FormError";
+import FormStyledInput from "@/components/inputs/FormStyledInput";
+import FormLabel from "@/components/inputs/FormLabel";
 
 export default function LoginScreen() {
   const router = useRouter();
+
+  const {
+    request: loginUser,
+    loading: isLoading,
+    error: hasError,
+  } = useAxios();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(FORM_VALIDATIONS.LOGIN),
     defaultValues: {
       email: "",
       password: "",
@@ -46,15 +50,19 @@ export default function LoginScreen() {
 
   const onSubmit = async (payload: any) => {
     console.log("Login data:", payload);
-    try {
-      const response = await axios.post(
-        "http://192.168.1.3:4002/api/v1/user/user-login",
-        payload
-      );
-      console.log("Signin successful:", response.data);
-      // router.push(ROUTE_PATH.LOGIN);
-    } catch (error) {
-      console.error("Signin error:", error);
+
+    const { data, error } = await loginUser({
+      url: "/user/user-login",
+      method: "POST",
+      payload: payload,
+    });
+
+    console.log("Signin response:", data, error);
+
+    if (!error) {
+      data.status === 200 ? router.push(ROUTE_PATH.AUTH.LOGIN) : null;
+    } else {
+      console.log(error || "Something went wrong");
     }
   };
 
@@ -85,7 +93,7 @@ export default function LoginScreen() {
               control={control}
               name="email"
               render={({ field: { value, onChange } }) => (
-                <StyledInput
+                <FormStyledInput
                   placeholder="Enter Your Email"
                   value={value}
                   onChangeText={onChange}
@@ -102,7 +110,7 @@ export default function LoginScreen() {
               control={control}
               name="password"
               render={({ field: { value, onChange } }) => (
-                <StyledInput
+                <FormStyledInput
                   placeholder="Enter Your Password"
                   value={value}
                   onChangeText={onChange}
@@ -135,15 +143,14 @@ export default function LoginScreen() {
             </View>
 
             {/* Sign In Button */}
-            <Pressable
+            <TouchableOpacity
               onPress={handleSubmit(onSubmit)}
-              className="bg-app-color-red rounded-lg py-3 items-center mb-4"
-              android_ripple={{ color: "#c53030" }}
+              className="bg-app-color-red rounded-xl py-4 mb-4"
             >
-              <Text className="text-white font-semibold text-base">
-                Sign in
+              <Text className="text-white text-center font-semibold text-base">
+                Login
               </Text>
-            </Pressable>
+            </TouchableOpacity>
 
             {/* Divider */}
             <Text className="text-center text-gray-500 mb-4">
@@ -186,27 +193,3 @@ export default function LoginScreen() {
     </GradientBackground>
   );
 }
-
-// Reusable components
-const FormLabel = ({
-  label,
-  className = "",
-}: {
-  label: string;
-  className?: string;
-}) => (
-  <Text className={`text-xs text-app-color-grey mb-2 font-bold ${className}`}>
-    {label}
-  </Text>
-);
-
-const FormError = ({ error }: { error?: string }) =>
-  error ? <Text className="text-red-500 text-xs mb-2">{error}</Text> : null;
-
-const StyledInput = (props: any) => (
-  <TextInput
-    className="border border-app-color-warmgreylight rounded-md px-4 py-3 mb-3 text-black"
-    placeholderTextColor="#999"
-    {...props}
-  />
-);
