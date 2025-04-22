@@ -97,11 +97,11 @@ export default function ForgotScreen() {
                 />
               )}
             />
-            <FormError error={errors.email?.message} />
+            <FormError error={errors.email?.message} className="mt-2" />
 
             <TouchableOpacity
               onPress={handleSubmit(onSubmit)}
-              className="bg-app-color-red rounded-xl py-4 mb-4"
+              className="bg-app-color-red rounded-xl py-3 my-4"
             >
               <Text className="text-white text-center font-semibold text-base">
                 Send Email

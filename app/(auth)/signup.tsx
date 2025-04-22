@@ -170,6 +170,7 @@ export default function SignupScreen() {
                   />
                   <FormError
                     error={errors?.[field.name as keyof typeof errors]?.message}
+                    className="mt-2"
                   />
                 </View>
               ))}
@@ -192,7 +193,7 @@ export default function SignupScreen() {
                   Policy.
                 </Text>
               </View>
-              <FormError error={errors.agree?.message} />
+              <FormError error={errors.agree?.message} className="mt-2" />
 
               <TouchableOpacity
                 onPress={handleSubmit(onSubmit)}

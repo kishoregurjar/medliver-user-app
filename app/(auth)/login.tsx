@@ -102,7 +102,7 @@ export default function LoginScreen() {
                 />
               )}
             />
-            <FormError error={errors.email?.message} />
+            <FormError error={errors.email?.message} className="mt-2" />
 
             {/* Password Input */}
             <FormLabel label="Password" className="mt-2" />
@@ -118,7 +118,7 @@ export default function LoginScreen() {
                 />
               )}
             />
-            <FormError error={errors.password?.message} />
+            <FormError error={errors.password?.message} className="mt-2" />
 
             {/* Remember + Forgot */}
             <View className="flex-row items-center justify-between mt-2 mb-4">
