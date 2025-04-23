@@ -13,7 +13,7 @@ import {
   Keyboard,
   View,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function AuthLayout() {
