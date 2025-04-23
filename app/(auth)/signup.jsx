@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  TextInput,
   Pressable,
   KeyboardAvoidingView,
   Platform,
@@ -39,10 +38,7 @@ export default function SignupScreen() {
 
   console.log("authUser", authUser);
 
-  const [location, setLocation] = useState<{
-    lat: number;
-    long: number;
-  } | null>(null);
+  const [location, setLocation] = useState(null);
 
   const {
     control,
@@ -61,7 +57,7 @@ export default function SignupScreen() {
     mode: "onChange",
   });
 
-  const onSubmit = async (payload: any) => {
+  const onSubmit = async (payload) => {
     const payloadToSend = {
       ...payload,
       userCoordinates: location || { lat: 0, long: 0 },
@@ -157,7 +153,7 @@ export default function SignupScreen() {
                   <FormLabel label={field.label} />
                   <Controller
                     control={control}
-                    name={field.name as any}
+                    name={field.name}
                     render={({ field: { value, onChange } }) => (
                       <FormStyledInput
                         placeholder={`Enter ${field.label}`}
@@ -169,7 +165,7 @@ export default function SignupScreen() {
                     )}
                   />
                   <FormError
-                    error={errors?.[field.name as keyof typeof errors]?.message}
+                    error={errors?.[field.name]?.message}
                     className="mt-2"
                   />
                 </View>
