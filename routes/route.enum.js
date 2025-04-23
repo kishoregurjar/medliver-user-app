@@ -5,9 +5,9 @@ export const AuthRouteEnum = {
   LOGOUT: "/logout",
   VERIFICATION: "/verification",
   FORGOT_PASSWORD: "/forgot",
-} as const;
+};
 
 export const AppRouteEnum = {
   HOME: "/home",
   SETTINGS: "/settings",
-} as const;
+};

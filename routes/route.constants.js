@@ -1,7 +1,6 @@
 import { AuthRouteEnum, AppRouteEnum } from "./route.enum";
-import type { RoutePaths } from "./route.types";
 
-const ROUTE_PATH: RoutePaths = {
+const ROUTE_PATH = {
   AUTH: AuthRouteEnum,
   APP: AppRouteEnum,
 };
