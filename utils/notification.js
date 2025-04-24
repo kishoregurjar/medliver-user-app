@@ -2,6 +2,7 @@
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
+import Constants from "expo-constants";
 
 export async function registerForPushNotificationsAsync() {
   let token;
@@ -36,3 +37,15 @@ export async function registerForPushNotificationsAsync() {
 
   return token;
 }
+
+// Only works on physical device (not simulator)
+export const getFCMToken = async () => {
+  const { status } = await Notifications.getPermissionsAsync();
+  if (status !== "granted") {
+    await Notifications.requestPermissionsAsync();
+  }
+  const tokenData = await Notifications.getDevicePushTokenAsync({
+    type: "fcm",
+  });
+  console.log(":fire: FCM Token:", tokenData.data);
+};

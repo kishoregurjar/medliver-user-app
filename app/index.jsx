@@ -15,7 +15,10 @@ import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import STATIC from "@/utils/constants";
 import AnimatedActionButton from "@/components/common/AnimatedActionButton";
-import { registerForPushNotificationsAsync } from "@/utils/notification";
+import {
+  getFCMToken,
+  registerForPushNotificationsAsync,
+} from "@/utils/notification";
 import ROUTE_PATH from "@/routes/route.constants";
 
 const LetsStartScreen = () => {
@@ -49,6 +52,7 @@ const LetsStartScreen = () => {
     };
 
     setupNotifications();
+    getFCMToken();
   }, []);
 
   const dots = [
