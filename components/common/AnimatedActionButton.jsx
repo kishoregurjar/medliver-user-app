@@ -14,21 +14,6 @@ import Animated, {
 } from "react-native-reanimated";
 import clsx from "clsx";
 
-type AnimatedActionButtonProps = {
-  text: string;
-  onPress: () => void;
-  icon?: ReactNode;
-  className?: string;
-  textClassName?: string;
-  style?: ViewStyle;
-  disabled?: boolean;
-  loading?: boolean;
-  rippleColor?: string;
-  maxWidth?: number;
-  scaleTo?: number;
-  fontSize?: number;
-};
-
 const AnimatedActionButton = ({
   text,
   onPress,
@@ -42,7 +27,7 @@ const AnimatedActionButton = ({
   maxWidth = 400,
   scaleTo = 0.95,
   fontSize,
-}: AnimatedActionButtonProps) => {
+}) => {
   const { width } = useWindowDimensions();
   const scaleAnim = useSharedValue(1);
 

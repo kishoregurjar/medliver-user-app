@@ -1,3 +1,4 @@
+import React, { useEffect, useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   View,
@@ -6,19 +7,8 @@ import {
   Easing,
   useColorScheme,
 } from "react-native";
-import React, { useEffect, useRef } from "react";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
-
-type AnimationType = "float" | "pulse" | "none";
-
-type Props = {
-  children: React.ReactNode;
-  animateBlobs?: boolean;
-  animationType?: AnimationType;
-  animationSpeed?: number; // in ms
-  darkMode?: boolean;
-};
 
 const GradientEllipse = ({
   colors,
@@ -26,12 +16,6 @@ const GradientEllipse = ({
   animate,
   animationType = "float",
   animationSpeed,
-}: {
-  colors: string[];
-  style: object;
-  animate: boolean;
-  animationType: AnimationType;
-  animationSpeed?: number;
 }) => {
   const animation = useRef(new Animated.Value(0)).current;
 
@@ -96,7 +80,6 @@ const GradientEllipse = ({
           height: "100%",
           borderRadius: 9999,
           opacity: 0.7,
-          filter: "blur(50px)",
         }}
       />
     </Animated.View>
@@ -109,16 +92,15 @@ const GradientBackground = ({
   animationType = "float",
   animationSpeed,
   darkMode,
-}: Props) => {
+}) => {
   const systemColorScheme = useColorScheme();
   const isDark =
     darkMode !== undefined ? darkMode : systemColorScheme === "dark";
 
-  const getColors = (light: string[], dark: string[]) =>
-    isDark ? dark : light;
+  const getColors = (light, dark) => (isDark ? dark : light);
 
   return (
-    <View className={`${isDark ? "bg-[#1C1C1E]" : "bg-[#F2F2F2]"} flex-1`}>
+    <View style={{ flex: 1, backgroundColor: isDark ? "#1C1C1E" : "#F2F2F2" }}>
       <GradientEllipse
         colors={getColors(
           ["#2555FF", "rgba(37, 85, 255, 0.15)"],
@@ -195,7 +177,6 @@ const GradientBackground = ({
         animationSpeed={animationSpeed}
       />
 
-      {/* Screen Content */}
       {children}
     </View>
   );
