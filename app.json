@@ -4,12 +4,12 @@
     "slug": "medliver-user-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logos/logo.png",
+    "icon": "./assets/logos/logo_s.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/logos/logo.png",
+      "image": "./assets/logos/logo_s.png",
       "resizeMode": "contain",
       "backgroundColor": "#A32022"
     },
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logos/logo.png",
+        "foregroundImage": "./assets/logos/logo_s.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.medliveruserapp",
@@ -27,7 +27,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/logos/logo.png"
+      "favicon": "./assets/logos/logo_s.png"
     },
     "plugins": [
       "expo-router",
@@ -35,9 +35,9 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#A32022",
-          "image": "./assets/logos/logo.png",
+          "image": "./assets/logos/logo_s.png",
           "dark": {
-            "image": "./assets/logos/logo.png",
+            "image": "./assets/logos/logo_s.png",
             "backgroundColor": "#A32022"
           }
         }
@@ -47,9 +47,9 @@
     "experiments": {
       "typedRoutes": true
     },
-    "notifications":{
-       "vapidPublicKey": "BMlqa2AGc04Gwa8NCeTw9nsY9x0ZGTEPBGtCxpHTihLfxfyiqwqM3YDVAZRQ5WovUKGzM1kumMcS0v3KL2PR-Ks"
-    },
+    // "notifications":{
+    //    "vapidPublicKey": "BMlqa2AGc04Gwa8NCeTw9nsY9x0ZGTEPBGtCxpHTihLfxfyiqwqM3YDVAZRQ5WovUKGzM1kumMcS0v3KL2PR-Ks"
+    // },
     "extra": {
       "router": {
         "origin": false
