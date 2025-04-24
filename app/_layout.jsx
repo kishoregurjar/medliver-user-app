@@ -66,7 +66,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(auth)/login" />
                 <Stack.Screen name="(auth)/signup" />
                 <Stack.Screen name="(auth)/forgot" />
-                <Stack.Screen name="(auth)/verification" />
+                <Stack.Screen name="(auth)/otp-verification.jsx" />
                 <Stack.Screen name="(home)" />
               </Stack>
             </View>

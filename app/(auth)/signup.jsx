@@ -13,7 +13,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller } from "react-hook-form";
 import Checkbox from "expo-checkbox";
 import { useRouter } from "expo-router";
-import ROUTE_PATH from "@/libs/route-path";
 import GradientBackground from "@/components/common/GradientEllipse";
 import { Button, ButtonText } from "@/components/ui/button";
 import { socialButtons } from "@/utils/constants";
@@ -25,6 +24,8 @@ import FORM_VALIDATIONS from "@/libs/form-validations";
 import FormError from "@/components/inputs/FormError";
 import FormLabel from "@/components/inputs/FormLabel";
 import FormStyledInput from "@/components/inputs/FormStyledInput";
+import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
+import ROUTE_PATH from "@/routes/route.constants";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -63,6 +64,8 @@ export default function SignupScreen() {
       userCoordinates: location || { lat: 0, long: 0 },
     };
 
+    console.log("Signup data:", payloadToSend);
+
     const { data, error } = await registerUser({
       url: "/user/register-user",
       method: "POST",
@@ -73,9 +76,25 @@ export default function SignupScreen() {
 
     if (!error) {
       data.status === 200
-        ? router.push(ROUTE_PATH.AUTH.VERIFICATION)
+        ? router.push(
+            generateDynamicRoute(
+              ROUTE_PATH.AUTH.OTP_VERIFICATION,
+              {
+                email: payload.email,
+              },
+              "queryParams"
+            )
+          )
         : data.status === 201
-        ? router.push(ROUTE_PATH.AUTH.VERIFICATION)
+        ? router.push(
+            generateDynamicRoute(
+              ROUTE_PATH.AUTH.OTP_VERIFICATION,
+              {
+                email: payload.email,
+              },
+              "queryParams"
+            )
+          )
         : null;
     } else {
       console.log(error || "Something went wrong");

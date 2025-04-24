@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import ROUTE_PATH from "@/libs/route-path";
+import ROUTE_PATH from "@/routes/route.constants";
 
 const AuthContext = createContext();
 
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Failed to remove auth user:", error);
     }
-    router.push(ROUTE_PATH.AUTH.LOGIN);
+    router.replace(ROUTE_PATH.AUTH.LOGIN);
   };
 
   const updateUser = (user) => {

@@ -1,0 +1,30 @@
+// src/themes/colorTokens.js
+
+export const appColors = {
+  gray100: "#F3F4F6",
+  gray300: "#D1D5DB",
+  gray400: "#9CA3AF",
+  black: "#000000",
+  white: "#ffffff",
+  green500: "#22c55e",
+
+  brown: "#E2AD5F",
+  lightbrown: "#FCDEC7",
+  red: "#E55150",
+  appBlack: "#212121",
+  appWhite: "#F2F2F2",
+  grey: "#6E6A7C",
+  green: "#3DF46E",
+  pink: "#FFBDBC",
+  lightgrey: "#E2E2E2",
+  lightblue: "#DEEFFF",
+  deepblue: "#4915FF",
+  mintgreen: "#D2FFDE",
+  indigo: "#6B41FF",
+  softindigo: "#6C63FF",
+  royalblue: "#1979FF",
+  midblue: "#4575EB",
+  maroon: "#A32022",
+  blue: "#3072FF",
+  warmgreylight: "#E4DCDC",
+};

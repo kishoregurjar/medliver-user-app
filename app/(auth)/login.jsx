@@ -13,7 +13,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Checkbox from "expo-checkbox";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ROUTE_PATH from "@/libs/route-path";
 import { useRouter } from "expo-router";
 import GradientBackground from "@/components/common/GradientEllipse";
 import STATIC, { socialButtons } from "@/utils/constants";
@@ -24,6 +23,7 @@ import FORM_VALIDATIONS from "@/libs/form-validations";
 import FormError from "@/components/inputs/FormError";
 import FormStyledInput from "@/components/inputs/FormStyledInput";
 import FormLabel from "@/components/inputs/FormLabel";
+import ROUTE_PATH from "@/routes/route.constants";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -48,7 +48,7 @@ export default function LoginScreen() {
     mode: "onChange",
   });
 
-  const onSubmit = async (payload: any) => {
+  const onSubmit = async (payload) => {
     console.log("Login data:", payload);
 
     const { data, error } = await loginUser({
@@ -60,7 +60,7 @@ export default function LoginScreen() {
     console.log("Signin response:", data, error);
 
     if (!error) {
-      data.status === 200 ? router.push(ROUTE_PATH.AUTH.LOGIN) : null;
+      data.status === 200 ? router.push(ROUTE_PATH.APP.HOME) : null;
     } else {
       console.log(error || "Something went wrong");
     }

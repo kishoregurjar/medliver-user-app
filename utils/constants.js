@@ -31,6 +31,7 @@ const IMAGES = {
     LETS_START: require("../assets/images/lets_start_screen.png"),
     LOGIN: require("../assets/images/signin_registration_screen.png"),
     FORGOT: require("../assets/images/forgot_screen.png"),
+    VERIFICATION: require("../assets/images/verify_otp_screen.png"),
   },
   COMPONENTS: {
     USER: require("../assets/images/user.png"),

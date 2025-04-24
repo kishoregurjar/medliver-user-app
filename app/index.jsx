@@ -13,10 +13,10 @@ import React, { useEffect, useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import ROUTE_PATH from "@/libs/route-path";
 import STATIC from "@/utils/constants";
 import AnimatedActionButton from "@/components/common/AnimatedActionButton";
 import { registerForPushNotificationsAsync } from "@/utils/notification";
+import ROUTE_PATH from "@/routes/route.constants";
 
 const LetsStartScreen = () => {
   const router = useRouter();
@@ -37,24 +37,18 @@ const LetsStartScreen = () => {
     }).start();
   };
 
-
-  // useEffect(() => {
-  //   registerForPushNotificationsAsync().then(token => {
-  //     if (token) {
-  //       // You can send this token to your backend
-  //       console.log("Push Notification Token:", token);
-  //     }
-  //   });
-  // }, []);
-
-
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => {
-      if (token) {
-        // You can send this token to your backend
-        console.log("Push Notification Token:", token);
+    const setupNotifications = async () => {
+      try {
+        const token = await registerForPushNotificationsAsync();
+        console.log("✅ Push Notification Token:", token);
+        // Send to backend here if needed
+      } catch (error) {
+        console.error("❌ Error setting up notifications:", error);
       }
-    });
+    };
+
+    setupNotifications();
   }, []);
 
   const dots = [
