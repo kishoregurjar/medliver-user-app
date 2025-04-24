@@ -25,6 +25,7 @@ const IMAGES = {
   APP: {
     LOGO: require("../assets/logos/logo.png"),
     LOGO_H: require("../assets/logos/logo_horizontal.png"),
+    BACKGROUND: require("../assets/images/app_background.png"),
   },
   PAGES: {
     LETS_START: require("../assets/images/lets_start_screen.png"),

@@ -1,12 +1,15 @@
 import React, { useEffect, useRef } from "react";
-import { LinearGradient } from "expo-linear-gradient";
 import {
   View,
   Dimensions,
   Animated,
   Easing,
   useColorScheme,
+  ImageBackground,
+  Platform,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import STATIC from "@/utils/constants";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -18,12 +21,10 @@ const GradientEllipse = ({
   animationSpeed,
 }) => {
   const animation = useRef(new Animated.Value(0)).current;
-
   const speed = animationSpeed ?? (animationType === "pulse" ? 2000 : 4000);
 
   useEffect(() => {
     if (!animate || animationType === "none") return;
-
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(animation, {
@@ -40,7 +41,6 @@ const GradientEllipse = ({
         }),
       ])
     );
-
     loop.start();
   }, [animate, animationType, animationSpeed]);
 
@@ -99,6 +99,23 @@ const GradientBackground = ({
 
   const getColors = (light, dark) => (isDark ? dark : light);
 
+  if (Platform.OS === "ios") {
+    // ✅ iOS — Show fallback image
+    return (
+      <ImageBackground
+        source={STATIC.IMAGES.APP.BACKGROUND}
+        resizeMode="cover"
+        style={{
+          flex: 1,
+          backgroundColor: isDark ? "#1C1C1E" : "#F2F2F2",
+        }}
+      >
+        {children}
+      </ImageBackground>
+    );
+  }
+
+  // ✅ Android — Show animated gradient ellipses
   return (
     <View style={{ flex: 1, backgroundColor: isDark ? "#1C1C1E" : "#F2F2F2" }}>
       <GradientEllipse
@@ -176,7 +193,6 @@ const GradientBackground = ({
         animationType={animationType}
         animationSpeed={animationSpeed}
       />
-
       {children}
     </View>
   );
