@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/logos/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.medliveruserapp"
+      "package": "com.anonymous.medliveruserapp",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -45,6 +46,17 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "notifications":{
+       "vapidPublicKey": "BMlqa2AGc04Gwa8NCeTw9nsY9x0ZGTEPBGtCxpHTihLfxfyiqwqM3YDVAZRQ5WovUKGzM1kumMcS0v3KL2PR-Ks"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "e64116bb-dd2b-4ff6-a1cf-6bcf20041257"
+      }
     }
   }
 }

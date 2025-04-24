@@ -9,13 +9,14 @@ import {
   Platform,
   StatusBar,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/libs/route-path";
 import STATIC from "@/utils/constants";
 import AnimatedActionButton from "@/components/common/AnimatedActionButton";
+import { registerForPushNotificationsAsync } from "@/utils/notification";
 
 const LetsStartScreen = () => {
   const router = useRouter();
@@ -35,6 +36,26 @@ const LetsStartScreen = () => {
       useNativeDriver: true,
     }).start();
   };
+
+
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync().then(token => {
+  //     if (token) {
+  //       // You can send this token to your backend
+  //       console.log("Push Notification Token:", token);
+  //     }
+  //   });
+  // }, []);
+
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => {
+      if (token) {
+        // You can send this token to your backend
+        console.log("Push Notification Token:", token);
+      }
+    });
+  }, []);
 
   const dots = [
     { top: "10%", left: "15%", size: 8, color: "bg-yellow-400", opacity: 70 },
