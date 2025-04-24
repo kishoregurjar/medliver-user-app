@@ -3,7 +3,6 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import FormLabel from "./FormLabel";
 import FormError from "./FormError";
-import { FormBaseProps } from "@/types/formTypes";
 
 const FormPasswordInput = ({
   label,
@@ -12,7 +11,7 @@ const FormPasswordInput = ({
   placeholder,
   error,
   className = "",
-}: FormBaseProps) => {
+}) => {
   const [isSecureEntry, setIsSecureEntry] = useState(true);
 
   return (

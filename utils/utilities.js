@@ -3,7 +3,7 @@ import _ from "lodash";
 
 import getAxiosConfig from "@/services/apiConfig";
 
-const baseURL = `${process.env.REACT_APP_API_BASE_URL}`;
+const baseURL = `${process.env.EXPO_PUBLIC_API_URL}`;
 
 /**
  * Uploads a file using FormData.

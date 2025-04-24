@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import FormLabel from "./FormLabel";
 import FormError from "./FormError";
-import { FormBaseProps, Option } from "@/types/formTypes";
 
 const FormRadioInput = ({
   label,
@@ -11,7 +10,7 @@ const FormRadioInput = ({
   options,
   error,
   className = "",
-}: FormBaseProps & { options: Option[] }) => (
+}) => (
   <View className={className}>
     <FormLabel label={label} />
     <View className="flex-row flex-wrap">

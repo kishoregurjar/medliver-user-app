@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import FormLabel from "./FormLabel";
 import FormError from "./FormError";
-import { FormBaseProps, Option } from "@/types/formTypes";
 
 const FormMultiSelectInput = ({
   label,
@@ -11,8 +10,8 @@ const FormMultiSelectInput = ({
   options,
   error,
   className = "",
-}: FormBaseProps & { value: string[]; options: Option[] }) => {
-  const toggleOption = (val: string) => {
+}) => {
+  const toggleOption = (val) => {
     const updated = value.includes(val)
       ? value.filter((v) => v !== val)
       : [...value, val];

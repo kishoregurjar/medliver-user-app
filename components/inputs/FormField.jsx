@@ -4,36 +4,7 @@ import { Controller } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import { AntDesign } from "@expo/vector-icons";
 
-interface Option {
-  label: string;
-  value: string;
-}
-
-interface FormFieldProps {
-  control: any;
-  name: string;
-  label: string;
-  type:
-    | "text"
-    | "email"
-    | "password"
-    | "textarea"
-    | "select"
-    | "multiselect"
-    | "radio"
-    | "checkbox"
-    | "switch";
-  options?: Option[];
-  placeholder?: string;
-  rules?: object;
-  defaultValue?: any;
-  className?: string;
-  labelClassName?: string;
-  inputClassName?: string;
-  [key: string]: any; // rest props
-}
-
-const FormField: React.FC<FormFieldProps> = ({
+const FormField = ({
   control,
   name,
   label,
@@ -49,7 +20,7 @@ const FormField: React.FC<FormFieldProps> = ({
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const renderInput = (field: any) => {
+  const renderInput = (field) => {
     switch (type) {
       case "text":
       case "email":
@@ -182,7 +153,7 @@ const FormField: React.FC<FormFieldProps> = ({
                   key={opt.value}
                   onPress={() => {
                     const updated = isSelected
-                      ? field.value.filter((val: string) => val !== opt.value)
+                      ? field.value.filter((val) => val !== opt.value)
                       : [...(field.value || []), opt.value];
                     field.onChange(updated);
                   }}

@@ -3,7 +3,6 @@ import { Picker } from "@react-native-picker/picker";
 import React from "react";
 import FormLabel from "./FormLabel";
 import FormError from "./FormError";
-import { FormBaseProps, Option } from "@/types/formTypes";
 
 const FormSelectInput = ({
   label,
@@ -12,7 +11,7 @@ const FormSelectInput = ({
   options,
   error,
   className = "",
-}: FormBaseProps & { options: Option[] }) => (
+}) => (
   <View className={className}>
     <FormLabel label={label} />
     <Picker

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const httpInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4002/api/v1",
+  baseURL: process.env.EXPO_PUBLIC_API_URL || "http://localhost:4002/api/v1",
 });
 
 /**
