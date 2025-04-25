@@ -23,6 +23,7 @@ import FormStyledInput from "@/components/inputs/FormStyledInput";
 import FormLabel from "@/components/inputs/FormLabel";
 import ROUTE_PATH from "@/routes/route.constants";
 import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
+import { useAppToast } from "@/hooks/useAppToast";
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -32,6 +33,8 @@ export default function ForgotPasswordScreen() {
     loading: isLoading,
     error: hasError,
   } = useAxios();
+
+  const { showToast } = useAppToast();
 
   const {
     control,
@@ -56,16 +59,19 @@ export default function ForgotPasswordScreen() {
     console.log("Forgot password response:", data, error);
 
     if (!error) {
-      data.status === 200
-        ? router.push(
-            generateDynamicRoute(
-              ROUTE_PATH.AUTH.OTP_VERIFICATION,
-              { type: "forgot", email: payload.email },
-              "queryParams"
-            )
+      if (data.status === 200) {
+        showToast("success", data.message || "Password reset link sent.");
+
+        router.push(
+          generateDynamicRoute(
+            ROUTE_PATH.AUTH.OTP_VERIFICATION,
+            { type: "forgot", email: payload.email },
+            "queryParams"
           )
-        : null;
+        );
+      }
     } else {
+      showToast("error", error || "Something went wrong");
       console.log(error || "Something went wrong");
     }
   };

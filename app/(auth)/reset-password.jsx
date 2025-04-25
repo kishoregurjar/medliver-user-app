@@ -20,6 +20,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import FORM_VALIDATIONS from "@/libs/form-validations";
 import { MaterialIcons } from "@expo/vector-icons";
 import ROUTE_PATH from "@/routes/route.constants";
+import { useAppToast } from "../../hooks/useAppToast";
 
 const ResetPasswordScreen = () => {
   const { width } = useWindowDimensions();
@@ -30,6 +31,8 @@ const ResetPasswordScreen = () => {
     loading: isLoading,
     error: hasError,
   } = useAxios();
+
+  const { showToast } = useAppToast();
 
   const {
     control,
@@ -99,8 +102,10 @@ const ResetPasswordScreen = () => {
     });
 
     if (!error && data?.status === 200) {
+      showToast("success", data.message || "Password reset successfully.");
       router.replace(ROUTE_PATH.AUTH.LOGIN);
     } else {
+      showToast("error", error || "Something went wrong");
       console.error("Reset Password Error:", error);
     }
   };

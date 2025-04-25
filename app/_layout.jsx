@@ -27,6 +27,7 @@ import {
 } from "@expo-google-fonts/lexend-deca";
 import { View } from "react-native";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ToastProvider } from "@gluestack-ui/toast";
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -54,25 +55,27 @@ export default function RootLayout() {
   return (
     <GluestackUIProvider mode="light">
       <AuthProvider>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <SafeAreaProvider>
-            <StatusBar style={"dark"} />
-            <View className="flex-1 font-lexend">
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="index" />
-                <Stack.Screen name="home" />
-                <Stack.Screen name="(auth)/login" />
-                <Stack.Screen name="(auth)/signup" />
-                <Stack.Screen name="(auth)/forgot" />
-                <Stack.Screen name="(auth)/otp-verification.jsx" />
-                <Stack.Screen name="(auth)/reset-password" />
-                <Stack.Screen name="(home)" />
-              </Stack>
-            </View>
-          </SafeAreaProvider>
-        </ThemeProvider>
+        <ToastProvider av>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <SafeAreaProvider>
+              <StatusBar style={"dark"} />
+              <View className="flex-1 font-lexend">
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="index" />
+                  <Stack.Screen name="home" />
+                  <Stack.Screen name="(auth)/login" />
+                  <Stack.Screen name="(auth)/signup" />
+                  <Stack.Screen name="(auth)/forgot" />
+                  <Stack.Screen name="(auth)/otp-verification.jsx" />
+                  <Stack.Screen name="(auth)/reset-password" />
+                  <Stack.Screen name="(home)" />
+                </Stack>
+              </View>
+            </SafeAreaProvider>
+          </ThemeProvider>
+        </ToastProvider>
       </AuthProvider>
     </GluestackUIProvider>
   );

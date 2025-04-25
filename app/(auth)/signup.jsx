@@ -26,6 +26,7 @@ import FormLabel from "@/components/inputs/FormLabel";
 import FormStyledInput from "@/components/inputs/FormStyledInput";
 import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
 import ROUTE_PATH from "@/routes/route.constants";
+import { useAppToast } from "../../hooks/useAppToast";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function SignupScreen() {
     error: hasError,
   } = useAxios();
 
-  console.log("authUser", authUser);
+  const { showToast } = useAppToast();
 
   const [location, setLocation] = useState(null);
 
@@ -75,6 +76,7 @@ export default function SignupScreen() {
     console.log("Signup response:", data, error);
 
     if (!error) {
+      showToast("success", data.message || "User registered successfully.");
       data.status === 200
         ? router.push(
             generateDynamicRoute(
@@ -99,6 +101,7 @@ export default function SignupScreen() {
           )
         : null;
     } else {
+      showToast("error", error || "Something went wrong");
       console.log(error || "Something went wrong");
     }
   };

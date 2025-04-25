@@ -24,6 +24,7 @@ import FormError from "@/components/inputs/FormError";
 import FormStyledInput from "@/components/inputs/FormStyledInput";
 import FormLabel from "@/components/inputs/FormLabel";
 import ROUTE_PATH from "@/routes/route.constants";
+import { useAppToast } from "../../hooks/useAppToast";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -33,6 +34,8 @@ export default function LoginScreen() {
     loading: isLoading,
     error: hasError,
   } = useAxios();
+
+  const { showToast } = useAppToast();
 
   const {
     control,
@@ -60,8 +63,10 @@ export default function LoginScreen() {
     console.log("Signin response:", data, error);
 
     if (!error) {
+      showToast("success", data.message || "User logged in successfully.");
       data.status === 200 ? router.push(ROUTE_PATH.APP.HOME) : null;
     } else {
+      showToast("error", error || "Something went wrong");
       console.log(error || "Something went wrong");
     }
   };

@@ -19,6 +19,7 @@ import customTheme from "@/themes/customTheme";
 import useAxios from "@/hooks/useAxios";
 import ROUTE_PATH from "@/routes/route.constants";
 import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
+import { useAppToast } from "../../hooks/useAppToast";
 
 export default function OtpVerificationScreen() {
   const router = useRouter();
@@ -29,6 +30,8 @@ export default function OtpVerificationScreen() {
     loading: isLoading,
     error: hasError,
   } = useAxios();
+
+  const { showToast } = useAppToast();
 
   const {
     control,
@@ -62,6 +65,7 @@ export default function OtpVerificationScreen() {
     });
 
     if (!error && data?.status === 200) {
+      showToast("success", data.message || "OTP verified successfully.");
       type === "signup" && router.replace(ROUTE_PATH.APP.HOME);
       type === "forgot" &&
         router.replace(
@@ -72,7 +76,8 @@ export default function OtpVerificationScreen() {
           )
         );
     } else {
-      alert(error);
+      showToast("error", error || "Something went wrong");
+      console.error(error);
     }
   };
 
