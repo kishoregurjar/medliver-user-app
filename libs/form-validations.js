@@ -22,6 +22,14 @@ const FORM_VALIDATIONS = {
   FORGOT_PASSWORD: Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
   }),
+  RESET_PASSWORD: Yup.object().shape({
+    newPassword: Yup.string()
+      .min(6, "Minimum 6 characters")
+      .required("New password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("newPassword")], "Passwords must match")
+      .required("Please confirm your password"),
+  }),
 };
 
 export default FORM_VALIDATIONS;

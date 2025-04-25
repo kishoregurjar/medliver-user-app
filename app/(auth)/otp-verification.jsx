@@ -9,19 +9,20 @@ import {
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { OtpInput } from "react-native-otp-entry";
+
 import GradientBackground from "@/components/common/GradientEllipse";
 import STATIC from "@/utils/constants";
-import { useRouter, useLocalSearchParams } from "expo-router";
 import { generateRoute } from "@/routes/route.utils";
-import { OtpInput } from "react-native-otp-entry";
 import customTheme from "@/themes/customTheme";
 import useAxios from "@/hooks/useAxios";
-import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
 import ROUTE_PATH from "@/routes/route.constants";
+import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
 
 export default function OtpVerificationScreen() {
   const router = useRouter();
-  const { email } = useLocalSearchParams();
+  const { type, email } = useLocalSearchParams();
 
   const {
     request: verifyOtp,
@@ -42,28 +43,36 @@ export default function OtpVerificationScreen() {
   });
 
   const onSubmit = async (payload) => {
-    if (!payload.otp || payload.otp.length < 4) {
-      console.log("Invalid OTP");
-      return;
-    }
+    if (!payload.otp || payload.otp.length < 4) return;
 
     const payloadToSend = {
       email,
       otp: payload.otp,
     };
 
-    console.log("Submitting payload:", payloadToSend);
-
     const { data, error } = await verifyOtp({
-      url: "/user/verify-otp",
+      url:
+        type === "signup"
+          ? "/user/verify-otp"
+          : type === "forgot"
+          ? "/user/verify-forget-password-otp"
+          : "/user/verify-otp",
       method: "POST",
       payload: payloadToSend,
     });
 
     if (!error && data?.status === 200) {
-      router.replace(ROUTE_PATH.AUTH.LOGIN);
+      type === "signup" && router.replace(ROUTE_PATH.APP.HOME);
+      type === "forgot" &&
+        router.replace(
+          generateDynamicRoute(
+            ROUTE_PATH.AUTH.RESET_PASSWORD,
+            { email },
+            "queryParams"
+          )
+        );
     } else {
-      console.log("Verification failed:", error || data);
+      alert(error);
     }
   };
 
@@ -109,8 +118,8 @@ export default function OtpVerificationScreen() {
                   numberOfDigits={4}
                   focusColor="#22c55e"
                   autoFocus={false}
-                  hideStick={true}
-                  blurOnFilled={true}
+                  hideStick
+                  blurOnFilled
                   disabled={false}
                   type="numeric"
                   secureTextEntry={false}
@@ -120,10 +129,9 @@ export default function OtpVerificationScreen() {
                   onTextChange={(text) =>
                     setValue("otp", text, { shouldValidate: true })
                   }
-                  onFilled={(text) => {
-                    setValue("otp", text, { shouldValidate: true });
-                    console.log("OTP Filled:", text);
-                  }}
+                  onFilled={(text) =>
+                    setValue("otp", text, { shouldValidate: true })
+                  }
                   textInputProps={{
                     accessibilityLabel: "One-Time Password",
                   }}

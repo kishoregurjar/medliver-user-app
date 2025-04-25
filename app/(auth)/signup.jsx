@@ -80,6 +80,7 @@ export default function SignupScreen() {
             generateDynamicRoute(
               ROUTE_PATH.AUTH.OTP_VERIFICATION,
               {
+                type: "signup",
                 email: payload.email,
               },
               "queryParams"
@@ -90,6 +91,7 @@ export default function SignupScreen() {
             generateDynamicRoute(
               ROUTE_PATH.AUTH.OTP_VERIFICATION,
               {
+                type: "signup",
                 email: payload.email,
               },
               "queryParams"

@@ -3,9 +3,9 @@ export const AuthRouteEnum = {
   LOGIN: "/login",
   SIGNUP: "/signup",
   LOGOUT: "/logout",
-  VERIFICATION: "/verification",
   OTP_VERIFICATION: "/otp-verification",
   FORGOT_PASSWORD: "/forgot",
+  RESET_PASSWORD: "/reset-password",
 };
 
 export const AppRouteEnum = {

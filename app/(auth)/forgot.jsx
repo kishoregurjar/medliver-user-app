@@ -22,8 +22,9 @@ import FormError from "@/components/inputs/FormError";
 import FormStyledInput from "@/components/inputs/FormStyledInput";
 import FormLabel from "@/components/inputs/FormLabel";
 import ROUTE_PATH from "@/routes/route.constants";
+import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
 
-export default function ForgotScreen() {
+export default function ForgotPasswordScreen() {
   const router = useRouter();
 
   const {
@@ -52,10 +53,18 @@ export default function ForgotScreen() {
       payload: payload,
     });
 
-    console.log("Signin response:", data, error);
+    console.log("Forgot password response:", data, error);
 
     if (!error) {
-      data.status === 200 ? router.push(ROUTE_PATH.AUTH.LOGIN) : null;
+      data.status === 200
+        ? router.push(
+            generateDynamicRoute(
+              ROUTE_PATH.AUTH.OTP_VERIFICATION,
+              { type: "forgot", email: payload.email },
+              "queryParams"
+            )
+          )
+        : null;
     } else {
       console.log(error || "Something went wrong");
     }

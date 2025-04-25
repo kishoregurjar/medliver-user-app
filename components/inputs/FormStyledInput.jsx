@@ -1,16 +1,21 @@
-import { TextInput } from "react-native";
+import { TextInput, View, TextInputProps } from "react-native";
+import React from "react";
 
 const FormStyledInput = ({
-  className = "border border-app-color-warmgreylight font-lexend rounded-md px-4 py-3 text-base", // remove bold here
-  placeholderTextColor = "#6E6A7C", // softer gray
+  className = "border border-app-color-warmgreylight font-lexend rounded-md px-2 py-1 text-base",
+  placeholderTextColor = "#6E6A7C",
+  rightIcon,
   ...rest
 }) => {
   return (
-    <TextInput
-      className={className}
-      placeholderTextColor={placeholderTextColor}
-      {...rest}
-    />
+    <View className={`bg-white flex-row items-center ${className}`}>
+      <TextInput
+        className="flex-1 text-black"
+        placeholderTextColor={placeholderTextColor}
+        {...rest}
+      />
+      {rightIcon && <View className="ml-2">{rightIcon}</View>}
+    </View>
   );
 };
 
