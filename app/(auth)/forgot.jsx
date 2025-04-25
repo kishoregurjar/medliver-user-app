@@ -93,28 +93,33 @@ export default function ForgotPasswordScreen() {
               Forgot Password
             </Text>
 
-            <FormLabel label="Your Email" />
-            <Controller
-              control={control}
-              name="email"
-              render={({ field: { value, onChange } }) => (
-                <FormStyledInput
-                  placeholder="Enter Your Email"
-                  value={value}
-                  onChangeText={onChange}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-              )}
-            />
-            <FormError error={errors.email?.message} className="mt-2" />
+            <View className="mb-4">
+              <FormLabel label="Your Email" />
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { value, onChange } }) => (
+                  <FormStyledInput
+                    placeholder="Enter Your Email"
+                    value={value}
+                    onChangeText={onChange}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                )}
+              />
+              <FormError error={errors.email?.message} className="mt-2" />
+            </View>
 
             <TouchableOpacity
               onPress={handleSubmit(onSubmit)}
-              className="bg-app-color-red rounded-xl py-3 my-4"
+              className={`bg-app-color-red rounded-xl py-4 mb-4 ${
+                isLoading ? "opacity-50" : ""
+              }`}
+              disabled={isLoading}
             >
               <Text className="text-white text-center font-semibold text-base">
-                Send Email
+                {isLoading ? "Sending..." : "Send OTP"}
               </Text>
             </TouchableOpacity>
 

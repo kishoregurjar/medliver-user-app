@@ -145,10 +145,13 @@ export default function LoginScreen() {
             {/* Sign In Button */}
             <TouchableOpacity
               onPress={handleSubmit(onSubmit)}
-              className="bg-app-color-red rounded-xl py-4 mb-4"
+              className={`bg-app-color-red rounded-xl py-4 mb-4 ${
+                isLoading ? "opacity-50" : ""
+              }`}
+              disabled={isLoading}
             >
               <Text className="text-white text-center font-semibold text-base">
-                Login
+                {isLoading ? "Signing In..." : "Sign In"}
               </Text>
             </TouchableOpacity>
 
