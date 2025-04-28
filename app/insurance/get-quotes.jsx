@@ -10,10 +10,10 @@ const GetQuotesScreen = () => {
     <View className="flex-1 bg-white">
       {/* Top Red Section (40%) */}
       <View className="flex-[0.4] bg-app-color-red items-center justify-center px-6">
-        <Text className="text-white text-2xl font-bold text-center mb-2">
+        <Text className="text-white text-3xl font-bold text-center mb-2">
           Compare & Buy Insurance Instantly
         </Text>
-        <Text className="text-white text-base text-center opacity-80">
+        <Text className="text-white text-xl text-center opacity-90">
           Health, Life, Car & More. Get the best quotes in minutes!
         </Text>
       </View>

@@ -20,7 +20,7 @@ const schema = yup.object().shape({
   message: yup.string().required("Message is required"),
 });
 
-const SubmitEnquiry = () => {
+const SubmitEnquiryScreen = () => {
   // 2. Initialize React Hook Form
   const {
     control,
@@ -132,4 +132,4 @@ const SubmitEnquiry = () => {
   );
 };
 
-export default SubmitEnquiry;
+export default SubmitEnquiryScreen;

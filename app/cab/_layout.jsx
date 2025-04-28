@@ -37,7 +37,7 @@ export default function InsuranceLayout() {
               <View style={{ flex: 1 }}>
                 <Stack>
                   <Stack.Screen
-                    name="/insurance/get-quotes"
+                    name="/cab/book-cab"
                     options={{
                       headerShown: true,
                       headerTitle: "",
