@@ -21,7 +21,7 @@ const AppBackgroundWrapper = ({ children, style }) => {
       )}
 
       {/* Floating Dots */}
-      <View className="absolute w-full h-full">
+      {/* <View className="absolute w-full h-full">
         {FLOATING_DOTS.map((dot, index) => (
           <View
             key={index}
@@ -34,7 +34,7 @@ const AppBackgroundWrapper = ({ children, style }) => {
             }}
           />
         ))}
-      </View>
+      </View> */}
 
       {/* Main content */}
       <SafeAreaView className="flex-1 px-" style={style}>

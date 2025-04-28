@@ -11,6 +11,8 @@ import { Ionicons, Feather } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import STATIC from "@/utils/constants";
 import GradientBackground from "@/components/common/GradientEllipse";
+import Header from "@/components/common/Header";
+import NavigationTiles from "@/components/common/NavigationTiles";
 
 export default function HomeScreen() {
   return (
@@ -24,57 +26,22 @@ export default function HomeScreen() {
         <StatusBar style="dark" />
         <ScrollView showsVerticalScrollIndicator={false} className="px-4 pt-2">
           {/* Header */}
-          <View className="flex-row justify-between items-center mb-4">
-            <View className="flex-row items-center">
-              <Image
-                source={STATIC.IMAGES.APP.LOGO}
-                className="w-10 h-10 mr-2"
-              />
-              <Text className="text-xl font-bold text-[#D4A850]">
-                MEDILIVER
-              </Text>
-            </View>
-            <View className="flex-row gap-4">
-              <Feather name="shopping-cart" size={22} color="#333" />
-              <Feather name="bell" size={22} color="#333" />
-            </View>
-          </View>
+          <Header />
 
-          {/* Greeting */}
-          <View className="flex-row items-center mb-4">
-            <Image
-              source={STATIC.IMAGES.COMPONENTS.USER}
-              className="w-10 h-10 rounded-full mr-3"
-            />
-            <View>
-              <Text className="text-xl font-lexendBold">Hi Alex!</Text>
-              <Text className="text-gray-500">How can I help You Today?</Text>
-            </View>
-          </View>
-
-          {/* Search */}
-          <View className="flex-row items-center bg-gray-100 rounded-xl px-4 py-2 mb-4">
-            <Ionicons name="search" size={20} color="#6E6A7C" />
-            <TextInput
-              placeholder="Search Medicine"
-              className="flex-1 ml-2 text-[14px] text-gray-700"
-            />
-            <TouchableOpacity>
-              <Feather name="sliders" size={20} color="#6E6A7C" />
-            </TouchableOpacity>
-          </View>
+          {/* Navigation Tiles */}
+          <NavigationTiles />
 
           {/* Promo Banner */}
-          <View className="bg-[#EF4C47] p-4 rounded-2xl mb-6">
+          {/* <View className="bg-[#EF4C47] p-4 rounded-2xl mb-6">
             <Text className="text-white font-bold text-xl mb-1">15% Off</Text>
             <Text className="text-white mb-3">Medicine at your doorstep</Text>
             <TouchableOpacity className="bg-[#FFE5D0] rounded-full px-4 py-2 self-start">
               <Text className="text-[#EF4C47] font-semibold">Shop Now</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           {/* Categories */}
-          <View className="mb-6">
+          {/* <View className="mb-6">
             <Text className="text-lg font-bold mb-3">Categories</Text>
             <View className="flex-row gap-3">
               {["Medicine", "Pathology", "Diagnostics"].map((cat, i) => (
@@ -86,10 +53,10 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               ))}
             </View>
-          </View>
+          </View> */}
 
           {/* Best Seller */}
-          <View className="mb-6">
+          {/* <View className="mb-6">
             <View className="flex-row justify-between items-center mb-3">
               <Text className="text-lg font-bold">Best Seller Products</Text>
               <TouchableOpacity>
@@ -123,10 +90,10 @@ export default function HomeScreen() {
                 </View>
               ))}
             </ScrollView>
-          </View>
+          </View> */}
 
           {/* Special Offer */}
-          <View className="bg-[#EF4C47] p-4 rounded-2xl mb-6 flex-row items-center justify-between">
+          {/* <View className="bg-[#EF4C47] p-4 rounded-2xl mb-6 flex-row items-center justify-between">
             <View>
               <Text className="text-white font-bold text-lg">Baby Organix</Text>
               <Text className="line-through text-white/60">$20</Text>
@@ -141,10 +108,10 @@ export default function HomeScreen() {
               className="w-24 h-24"
               resizeMode="contain"
             />
-          </View>
+          </View> */}
 
           {/* Top Picks */}
-          <View className="mb-10">
+          {/* <View className="mb-10">
             <Text className="text-lg font-bold mb-3">Top Picks for You</Text>
             {[1, 2].map((row) => (
               <View key={row} className="flex-row justify-between mb-4">
@@ -177,7 +144,7 @@ export default function HomeScreen() {
                 ))}
               </View>
             ))}
-          </View>
+          </View> */}
         </ScrollView>
       </SafeAreaView>
     </GradientBackground>

@@ -129,7 +129,7 @@ const LetsStartScreen = () => {
         <AnimatedActionButton
           text="Let’s Start"
           icon={<AntDesign name="arrowright" size={24} color="white" />}
-          onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}
+          onPress={() => router.replace(ROUTE_PATH.APP.HOME)}
           textClassName="font-lexend-bold text-white mr-2"
         />
       </SafeAreaView>
