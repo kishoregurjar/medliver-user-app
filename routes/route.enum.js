@@ -12,3 +12,13 @@ export const AppRouteEnum = {
   HOME: "/home",
   SETTINGS: "/settings",
 };
+
+export const InsuranceRouteEnum = {
+  GET_QUOTES: "/insurance/get-quotes",
+  SUBMIT_ENQUIRY: "/insurance/submit-enquiry",
+};
+
+export const StaticRouteEnum = {
+  PRIVACY_POLICY: "/privacy-policy",
+  TERMS_AND_CONDITIONS: "/terms-and-conditions",
+};
