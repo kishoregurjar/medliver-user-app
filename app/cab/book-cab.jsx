@@ -280,7 +280,7 @@ const BookAmbulanceScreen = () => {
               }`}
             >
               <Text className="text-white text-center text-base font-semibold">
-                Submit Request
+                Book Now
               </Text>
             </TouchableOpacity>
           </View>
