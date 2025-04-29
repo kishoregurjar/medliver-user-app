@@ -14,6 +14,14 @@ export default function InsuranceLayout() {
             headerTintColor: "#E55150",
           }}
         />
+        <Stack.Screen
+          name="/insurance/submit-enquiry"
+          options={{
+            headerShown: true,
+            headerTitle: "",
+            headerTintColor: "#E55150",
+          }}
+        />
       </Stack>
     </LayoutWrapper>
   );

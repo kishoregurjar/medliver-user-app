@@ -18,6 +18,10 @@ export const InsuranceRouteEnum = {
   SUBMIT_ENQUIRY: "/insurance/submit-enquiry",
 };
 
+export const CabRouteEnum = {
+  BOOK_CAB: "/cab/book-cab",
+};
+
 export const StaticRouteEnum = {
   PRIVACY_POLICY: "/privacy-policy",
   TERMS_AND_CONDITIONS: "/terms-and-conditions",
