@@ -34,6 +34,10 @@ const IMAGES = {
     VERIFICATION: require("../assets/images/verify_otp_screen.png"),
   },
   COMPONENTS: {
+    HOME_NAV_TILE_1: require("../assets/images/buy_medicine.png"),
+    HOME_NAV_TILE_2: require("../assets/images/book_test.png"),
+    HOME_NAV_TILE_3: require("../assets/images/buy_insurance.png"),
+    HOME_NAV_TILE_4: require("../assets/images/book_cab.png"),
     USER: require("../assets/images/user.png"),
     MEDICINE_1: require("../assets/images/medicine_1.png"),
     MEDICINE_2: require("../assets/images/medicine_2.png"),
