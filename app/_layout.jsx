@@ -3,16 +3,20 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import "react-native-reanimated";
+import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { View } from "react-native";
+import { Stack } from "expo-router";
+
 import "@/app/global.css";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import { ToastProvider } from "@gluestack-ui/toast";
+import { AuthProvider } from "@/contexts/AuthContext";
+
 import {
   LexendDeca_100Thin,
   LexendDeca_200ExtraLight,
@@ -24,9 +28,6 @@ import {
   LexendDeca_800ExtraBold,
   LexendDeca_900Black,
 } from "@expo-google-fonts/lexend-deca";
-import { View, Platform } from "react-native";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ToastProvider } from "@gluestack-ui/toast";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -52,31 +53,17 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <GluestackUIProvider mode="light">
+    <GluestackUIProvider>
       <AuthProvider>
         <ToastProvider>
           <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           >
             <SafeAreaProvider>
-              <SafeAreaView
-                className="flex-1 bg-white dark:bg-black"
-                edges={["top", "left", "right"]}
-              >
-                <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-                <View className="flex-1 min-h-full font-lexend bg-white dark:bg-black">
-                  <Stack screenOptions={{ headerShown: false }}>
-                    <Stack.Screen name="index" />
-                    <Stack.Screen name="home" />
-                    <Stack.Screen name="(auth)/login" />
-                    <Stack.Screen name="(auth)/signup" />
-                    <Stack.Screen name="(auth)/forgot" />
-                    <Stack.Screen name="(auth)/otp-verification.jsx" />
-                    <Stack.Screen name="(auth)/reset-password" />
-                    <Stack.Screen name="(home)" />
-                  </Stack>
-                </View>
-              </SafeAreaView>
+              <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+              <View className="flex-1 bg-white dark:bg-black">
+                <Stack screenOptions={{ headerShown: false }} />
+              </View>
             </SafeAreaProvider>
           </ThemeProvider>
         </ToastProvider>
