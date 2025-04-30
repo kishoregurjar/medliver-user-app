@@ -1,5 +1,3 @@
-// components/form/FormFieldRenderer.tsx
-
 import React, { useState } from "react";
 import { View, TextInput, Switch, TouchableOpacity, Text } from "react-native";
 import { Controller } from "react-hook-form";
@@ -29,30 +27,31 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
 
                   {/* Password */}
                   {field.type === "password" ? (
-                    <View className="relative">
-                      <TextInput
-                        className="border border-gray-300 rounded-lg p-3 pr-10"
-                        placeholder={field.placeholder}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        value={value}
-                        secureTextEntry={isSecure}
-                        keyboardType={field.keyboardType || "default"}
-                      />
-                      <TouchableOpacity
-                        className="absolute right-3 top-3"
-                        onPress={() => setShowPassword((prev) => !prev)}
-                      >
-                        <Ionicons
-                          name={showPassword ? "eye-off" : "eye"}
-                          size={20}
-                          color="gray"
+                    <View>
+                      <View className="flex-row items-center border border-app-color-warmgreylight rounded-lg px-3">
+                        <TextInput
+                          className="flex-1 p-3 text-base"
+                          placeholder={field.placeholder}
+                          onChangeText={onChange}
+                          onBlur={onBlur}
+                          value={value}
+                          secureTextEntry={isSecure}
+                          keyboardType={field.keyboardType || "default"}
                         />
-                      </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => setShowPassword((prev) => !prev)}
+                        >
+                          <Ionicons
+                            name={showPassword ? "eye-off" : "eye"}
+                            size={20}
+                            color="gray"
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   ) : field.type === "select" ||
                     field.type === "multiselect" ? (
-                    <View className="border border-gray-300 rounded-lg">
+                    <View className="border border-app-color-warmgreylight rounded-lg">
                       <Picker
                         selectedValue={value}
                         onValueChange={(val) => {
@@ -80,7 +79,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                       </Picker>
                     </View>
                   ) : field.type === "switch" ? (
-                    <View className="flex-row items-center justify-between p-2 border rounded-lg border-gray-300">
+                    <View className="flex-row items-center justify-between p-2 border rounded-lg border-app-color-warmgreylight">
                       <Text className="text-base">{field.label}</Text>
                       <Switch value={value} onValueChange={onChange} />
                     </View>
@@ -93,7 +92,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                         className={`w-5 h-5 border rounded ${
                           value
                             ? "bg-blue-500 border-blue-500"
-                            : "border-gray-400"
+                            : "border-app-color-warmgreylight"
                         }`}
                       />
                       <Text>{field.label}</Text>
@@ -110,7 +109,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                             className={`w-4 h-4 rounded-full border ${
                               value === opt.value
                                 ? "bg-blue-500 border-blue-500"
-                                : "border-gray-400"
+                                : "border-app-color-warmgreylight"
                             }`}
                           />
                           <Text>{opt.label}</Text>
