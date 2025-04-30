@@ -98,15 +98,15 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                       <Text>{field.label}</Text>
                     </TouchableOpacity>
                   ) : field.type === "radio" ? (
-                    <View className="gap-2">
+                    <View className="flex-row flex-wrap gap-x-6 gap-y-3">
                       {field.options?.map((opt) => (
                         <TouchableOpacity
                           key={opt.value}
-                          className="flex-row items-center gap-2"
+                          className="flex-row items-center mr-4"
                           onPress={() => onChange(opt.value)}
                         >
                           <View
-                            className={`w-4 h-4 rounded-full border ${
+                            className={`w-4 h-4 rounded-full border mr-2 ${
                               value === opt.value
                                 ? "bg-app-color-red border-app-color-red"
                                 : "border-app-color-warmgreylight"
