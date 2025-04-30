@@ -78,8 +78,8 @@ const BookAmbulanceScreen = () => {
     const payload = {
       ...data,
       location: {
-        lat: 26.2183,
-        lng: 78.1828,
+        lat: 0,
+        lng: 0,
       },
     };
     console.log("Ambulance Request:", payload);
