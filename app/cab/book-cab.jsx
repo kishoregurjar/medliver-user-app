@@ -59,12 +59,15 @@ const BookAmbulanceScreen = () => {
       }
 
       const location = await Location.getCurrentPositionAsync({});
+      console.log("Current Location:", location.coords);
       const addressList = await Location.reverseGeocodeAsync(location.coords);
       if (addressList.length > 0) {
         const { name, street, city, region } = addressList[0];
         const formatted = `${name || ""} ${street || ""}, ${city || ""}, ${
           region || ""
         }`;
+        console.log("Current Location:", formatted);
+
         setValue(fieldName, formatted.trim());
       }
     } catch {
@@ -83,8 +86,6 @@ const BookAmbulanceScreen = () => {
       },
     };
     console.log("Ambulance Request:", payload);
-    reset();
-    setConfirmationChecked(false);
   };
 
   const renderInput = ({
