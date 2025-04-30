@@ -91,7 +91,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                       <View
                         className={`w-5 h-5 border rounded ${
                           value
-                            ? "bg-blue-500 border-blue-500"
+                            ? "bg-app-color-red border-app-color-red"
                             : "border-app-color-warmgreylight"
                         }`}
                       />
@@ -108,7 +108,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                           <View
                             className={`w-4 h-4 rounded-full border ${
                               value === opt.value
-                                ? "bg-blue-500 border-blue-500"
+                                ? "bg-app-color-red border-app-color-red"
                                 : "border-app-color-warmgreylight"
                             }`}
                           />
