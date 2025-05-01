@@ -96,12 +96,12 @@ const Header = () => {
       </View>
 
       {/* Search Bar */}
-      <View className="flex-row items-center bg-gray-100 rounded-xl px-4 py-3 mb-4">
+      <View className="flex-row items-center bg-white border border-app-color-warmgreylight rounded-xl px-4 py-3 mb-4">
         <Ionicons name="search" size={20} color="#6E6A7C" />
         <TextInput
           placeholder="Search Medicine"
           placeholderTextColor="#6E6A7C"
-          className="flex-1 ml-2 text-[14px] text-gray-700"
+          className="flex-1 ml-2 font-lexend text-[14px] text-gray-700"
         />
         <IconButton
           icon={<Feather name="sliders" size={20} color="#6E6A7C" />}

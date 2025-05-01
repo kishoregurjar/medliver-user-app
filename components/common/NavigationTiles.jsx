@@ -34,7 +34,7 @@ export default function NavigationTiles() {
   ];
 
   return (
-    <View className="px-4 py-2">
+    <View>
       {tiles.map((tile, index) => (
         <TouchableOpacity
           key={index}
