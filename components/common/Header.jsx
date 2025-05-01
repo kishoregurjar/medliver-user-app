@@ -60,10 +60,16 @@ const Header = () => {
         <TouchableOpacity activeOpacity={0.7} className="flex-row items-center">
           <Ionicons name="location" size={20} color="#6E6A7C" />
           <View className="flex-row items-center ml-2 max-w-[70%]">
-            <Text className="text-sm text-gray-500" numberOfLines={1}>
+            <Text
+              className="text-sm font-lexend text-gray-500"
+              numberOfLines={1}
+            >
               Deliver to
             </Text>
-            <Text className="text-sm text-gray-500 mx-2" numberOfLines={1}>
+            <Text
+              className="text-sm font-lexend text-gray-500 mx-2"
+              numberOfLines={1}
+            >
               Indore, Madhya Pradesh, India
             </Text>
             <Ionicons name="chevron-down" size={20} color="#6E6A7C" />
@@ -76,7 +82,7 @@ const Header = () => {
           onPress={() => router.push("/login")}
         >
           <Ionicons name="person" size={15} color="white" />
-          <Text className="text-xs text-white ml-2">Login</Text>
+          <Text className="text-xs font-lexend text-white ml-2">Login</Text>
         </TouchableOpacity>
       </View>
 
@@ -89,7 +95,7 @@ const Header = () => {
         />
         <View>
           <Text className="text-xl font-lexendBold text-black">Hi Alex!</Text>
-          <Text className="text-sm text-gray-500">
+          <Text className="text-sm font-lexend text-gray-500">
             How can I help You Today?
           </Text>
         </View>

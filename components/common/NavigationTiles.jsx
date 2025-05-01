@@ -1,7 +1,15 @@
-import { View, Text, TouchableOpacity, Image, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import STATIC from "@/utils/constants";
+import {
+  Dimensions,
+  Platform,
+  TouchableOpacity,
+  View,
+  Text,
+  Image,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+const { width, height } = Dimensions.get("window");
 
 export default function NavigationTiles() {
   const router = useRouter();
@@ -34,29 +42,31 @@ export default function NavigationTiles() {
   ];
 
   return (
-    <View>
+    <View className="mb-6">
       {tiles.map((tile, index) => (
         <TouchableOpacity
           key={index}
-          activeOpacity={0.9}
           onPress={() => router.push(tile.path)}
-          className="flex-row bg-white rounded-2xl mb-4 overflow-hidden h-32 p-5"
+          activeOpacity={0.9}
+          className="bg-white rounded-xl p-5 flex-row mb-4 overflow-hidden shadow-md self-center"
           style={{
+            width: width * 0.9, // 90% of screen width
+            height: width * 0.48, // Responsive height (~167 if width is ~342)
             elevation: Platform.OS === "android" ? 3 : 0,
-            shadowColor: "#000",
-            shadowOpacity: 0.08,
-            shadowRadius: 6,
-            shadowOffset: { width: 0, height: 3 },
+            shadowColor: "rgba(162,160,160,0.25)",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 1,
+            shadowRadius: 5,
           }}
         >
           {/* Left Half */}
           <View className="w-1/2 px-4 justify-center">
-            <Text className="text-base font-semibold text-app-color-red mb-2">
+            <Text className="text-base font-lexend-semibold text-app-color-red mb-2">
               {tile.label}
             </Text>
 
-            <View className="flex-row items-center gap-2 space-x-2">
-              <Text className="text-sm font-medium text-app-color-red">
+            <View className="flex-row items-center">
+              <Text className="text-sm font-lexend-medium text-app-color-red mr-2">
                 {tile.cta}
               </Text>
 
