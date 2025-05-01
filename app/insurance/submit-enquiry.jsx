@@ -16,47 +16,8 @@ import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import useAxios from "@/hooks/useAxios";
 import { useAppToast } from "@/hooks/useAppToast";
 import Checkbox from "expo-checkbox";
-
-const schema = yup.object().shape({
-  full_name: yup.string().required("Full name is required"),
-  phone_number: yup
-    .string()
-    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
-    .required("Phone number is required"),
-  email: yup.string().email("Invalid email").required("Email is required"),
-  lead_type: yup.string().required("Lead type is required"),
-  age: yup
-    .number()
-    .typeError("Age must be a number")
-    .required("Age is required")
-    .positive("Age must be positive")
-    .integer("Age must be an integer"),
-  gender: yup.string().required("Gender is required"),
-  coverage_for: yup.string().required("Coverage selection is required"),
-  family_member_count: yup
-    .number()
-    .transform((value, originalValue) =>
-      String(originalValue).trim() === "" ? undefined : value
-    )
-    .nullable()
-    .when("coverage_for", {
-      is: "family",
-      then: (schema) =>
-        schema
-          .typeError("Family member count must be a number")
-          .required("Family member count is required")
-          .min(1, "At least one family member required"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
-
-  income: yup
-    .number()
-    .typeError("Income must be a number")
-    .required("Income is required"),
-  nominee_name: yup.string().required("Nominee name is required"),
-  nominee_relation: yup.string().required("Nominee relation is required"),
-  lead_source: yup.string().required("Lead source is required"),
-});
+import FORM_FIELD_TYPES from "@/libs/form-field-types";
+import FORM_VALIDATIONS from "@/libs/form-validations";
 
 const InsuranceEnquiryScreen = () => {
   const {
@@ -73,7 +34,7 @@ const InsuranceEnquiryScreen = () => {
     formState: { errors },
   } = useForm({
     mode: "onChange",
-    resolver: yupResolver(schema),
+    resolver: yupResolver(FORM_VALIDATIONS.INSURANCE_SUBMIT_ENQUIRY),
     defaultValues: {
       full_name: "",
       phone_number: "",
@@ -90,103 +51,13 @@ const InsuranceEnquiryScreen = () => {
     },
   });
 
-  const coverageFor = useWatch({ control, name: "coverage_for" });
-
-  const fields = [
-    {
-      name: "full_name",
-      label: "Full Name",
-      placeholder: "Enter your full name",
-      type: "text",
-    },
-    {
-      name: "phone_number",
-      label: "Phone Number",
-      placeholder: "Enter 10-digit number",
-      type: "number",
-      keyboardType: "numeric",
-    },
-    {
-      name: "email",
-      label: "Email",
-      placeholder: "Enter your email",
-      type: "email",
-      keyboardType: "email-address",
-    },
-    {
-      name: "lead_type",
-      label: "Lead Type",
-      type: "select",
-      options: [
-        { label: "Health", value: "health" },
-        { label: "Life", value: "life" },
-        { label: "Vehicle", value: "vehicle" },
-        { label: "Property", value: "property" },
-      ],
-    },
-    {
-      name: "age",
-      label: "Age",
-      type: "number",
-      keyboardType: "numeric",
-      placeholder: "Enter your age",
-    },
-    {
-      name: "gender",
-      label: "Gender",
-      type: "radio",
-      options: [
-        { label: "Male", value: "male" },
-        { label: "Female", value: "female" },
-        { label: "Other", value: "other" },
-      ],
-    },
-    {
-      name: "coverage_for",
-      label: "Coverage For",
-      type: "radio",
-      options: [
-        { label: "Self", value: "self" },
-        { label: "Family", value: "family" },
-      ],
-    },
-    {
-      name: "family_member_count",
-      label: "Family Member Count",
-      placeholder: "Enter number of family members",
-      type: "number",
-      keyboardType: "numeric",
-      visible: coverageFor === "family",
-    },
-    {
-      name: "income",
-      label: "Monthly Income",
-      placeholder: "Enter your income",
-      type: "number",
-      keyboardType: "numeric",
-    },
-    {
-      name: "nominee_name",
-      label: "Nominee Name",
-      placeholder: "Enter nominee name",
-    },
-    {
-      name: "nominee_relation",
-      label: "Nominee Relation",
-      placeholder: "Enter nominee relation",
-    },
-    {
-      name: "lead_source",
-      label: "Lead Source",
-      type: "select",
-      options: [
-        { label: "Website", value: "website" },
-        { label: "Referral", value: "referral" },
-        { label: "Advertisement", value: "advertisement" },
-        { label: "Other", value: "other" },
-      ],
-    },
-  ];
+  const fields = FORM_FIELD_TYPES.INSURANCE_ENQUIRY.map((field) => ({
+    ...field,
+    visible:
+      typeof field.visibleIf === "function"
+        ? field.visibleIf((name) => useWatch({ control, name }))
+        : field.visible !== false,
+  }));
 
   const onSubmit = async (payload) => {
     console.log("Insurance Enquiry Submitted:", payload);
@@ -198,7 +69,7 @@ const InsuranceEnquiryScreen = () => {
     });
 
     if (!error) {
-      if (data.status === 200) {
+      if (data.status === 201) {
         showToast("success", data.message || "Enquiry submitted successfully.");
       }
     } else {

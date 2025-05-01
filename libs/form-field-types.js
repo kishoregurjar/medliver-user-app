@@ -79,6 +79,99 @@ const FORM_FIELD_TYPES = {
       placeholder: "Confirm Your Password",
     },
   ],
+  INSURANCE_ENQUIRY: [
+    {
+      name: "full_name",
+      label: "Full Name",
+      placeholder: "Enter your full name",
+      type: "text",
+    },
+    {
+      name: "phone_number",
+      label: "Phone Number",
+      placeholder: "Enter 10-digit number",
+      type: "number",
+      keyboardType: "numeric",
+    },
+    {
+      name: "email",
+      label: "Email",
+      placeholder: "Enter your email",
+      type: "email",
+      keyboardType: "email-address",
+    },
+    {
+      name: "lead_type",
+      label: "Lead Type",
+      type: "select",
+      options: [
+        { label: "Health", value: "health" },
+        { label: "Life", value: "life" },
+      ],
+    },
+    {
+      name: "age",
+      label: "Age",
+      type: "number",
+      keyboardType: "numeric",
+      placeholder: "Enter your age",
+    },
+    {
+      name: "gender",
+      label: "Gender",
+      type: "radio",
+      options: [
+        { label: "Male", value: "male" },
+        { label: "Female", value: "female" },
+        { label: "Other", value: "other" },
+      ],
+    },
+    {
+      name: "coverage_for",
+      label: "Coverage For",
+      type: "radio",
+      options: [
+        { label: "Self", value: "self" },
+        { label: "Family", value: "family" },
+      ],
+    },
+    {
+      name: "family_member_count",
+      label: "Family Member Count",
+      placeholder: "Enter number of family members",
+      type: "number",
+      keyboardType: "numeric",
+      visibleIf: (watch) => watch("coverage_for") === "family",
+    },
+    {
+      name: "income",
+      label: "Monthly Income",
+      placeholder: "Enter your income",
+      type: "number",
+      keyboardType: "numeric",
+    },
+    {
+      name: "nominee_name",
+      label: "Nominee Name",
+      placeholder: "Enter nominee name",
+    },
+    {
+      name: "nominee_relation",
+      label: "Nominee Relation",
+      placeholder: "Enter nominee relation",
+    },
+    {
+      name: "lead_source",
+      label: "Lead Source",
+      type: "select",
+      options: [
+        { label: "Website", value: "website" },
+        { label: "Referral", value: "referral" },
+        { label: "Advertisement", value: "advertisement" },
+        { label: "Other", value: "other" },
+      ],
+    },
+  ],
 };
 
 export default FORM_FIELD_TYPES;
