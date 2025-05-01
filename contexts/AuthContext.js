@@ -5,6 +5,7 @@ import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/routes/route.constants";
+import { AppSpinner } from "@/components/common/AppSpinner";
 
 const AuthContext = createContext();
 
@@ -69,7 +70,7 @@ export const AuthProvider = ({ children }) => {
         <Text className="text-xl font-semibold text-gray-600 mb-5">
           Please Wait...
         </Text>
-        <ActivityIndicator size="large" color="#4B5563" />
+        <AppSpinner size="large" color="red" />
       </View>
     );
   }
