@@ -19,7 +19,7 @@ export default function NavigationTiles() {
       label: "Buy Medicine",
       icon: STATIC.IMAGES.COMPONENTS.HOME_NAV_TILE_1,
       cta: "Buy Now",
-      path: "/medicine",
+      path: "/pharmacy",
     },
     {
       label: "Pathology & Diagnosis",
