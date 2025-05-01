@@ -7,17 +7,16 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useState } from "react";
-import { useForm, Controller, useWatch } from "react-hook-form";
+import React from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Picker } from "@react-native-picker/picker";
 
-import FormLabel from "@/components/inputs/FormLabel";
-import FormStyledInput from "@/components/inputs/FormStyledInput";
-import FormError from "@/components/inputs/FormError";
+import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
+import useAxios from "@/hooks/useAxios";
+import { useAppToast } from "@/hooks/useAppToast";
+import Checkbox from "expo-checkbox";
 
-// Validation Schema
 const schema = yup.object().shape({
   full_name: yup.string().required("Full name is required"),
   phone_number: yup
@@ -34,15 +33,22 @@ const schema = yup.object().shape({
     .integer("Age must be an integer"),
   gender: yup.string().required("Gender is required"),
   coverage_for: yup.string().required("Coverage selection is required"),
-  family_member_count: yup.number().when("coverage_for", {
-    is: "family",
-    then: (schema) =>
-      schema
-        .typeError("Family member count must be a number")
-        .required("Family member count is required")
-        .min(1, "At least one family member required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+  family_member_count: yup
+    .number()
+    .transform((value, originalValue) =>
+      String(originalValue).trim() === "" ? undefined : value
+    )
+    .nullable()
+    .when("coverage_for", {
+      is: "family",
+      then: (schema) =>
+        schema
+          .typeError("Family member count must be a number")
+          .required("Family member count is required")
+          .min(1, "At least one family member required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+
   income: yup
     .number()
     .typeError("Income must be a number")
@@ -54,10 +60,19 @@ const schema = yup.object().shape({
 
 const InsuranceEnquiryScreen = () => {
   const {
+    request: submitEnquiry,
+    loading: isLoading,
+    error: hasError,
+  } = useAxios();
+
+  const { showToast } = useAppToast();
+
+  const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
+    mode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: {
       full_name: "",
@@ -77,64 +92,123 @@ const InsuranceEnquiryScreen = () => {
 
   const coverageFor = useWatch({ control, name: "coverage_for" });
 
-  const onSubmit = (data) => {
-    console.log("Insurance Enquiry Submitted:", data);
+  const fields = [
+    {
+      name: "full_name",
+      label: "Full Name",
+      placeholder: "Enter your full name",
+      type: "text",
+    },
+    {
+      name: "phone_number",
+      label: "Phone Number",
+      placeholder: "Enter 10-digit number",
+      type: "number",
+      keyboardType: "numeric",
+    },
+    {
+      name: "email",
+      label: "Email",
+      placeholder: "Enter your email",
+      type: "email",
+      keyboardType: "email-address",
+    },
+    {
+      name: "lead_type",
+      label: "Lead Type",
+      type: "select",
+      options: [
+        { label: "Health", value: "health" },
+        { label: "Life", value: "life" },
+        { label: "Vehicle", value: "vehicle" },
+        { label: "Property", value: "property" },
+      ],
+    },
+    {
+      name: "age",
+      label: "Age",
+      type: "number",
+      keyboardType: "numeric",
+      placeholder: "Enter your age",
+    },
+    {
+      name: "gender",
+      label: "Gender",
+      type: "radio",
+      options: [
+        { label: "Male", value: "male" },
+        { label: "Female", value: "female" },
+        { label: "Other", value: "other" },
+      ],
+    },
+    {
+      name: "coverage_for",
+      label: "Coverage For",
+      type: "radio",
+      options: [
+        { label: "Self", value: "self" },
+        { label: "Family", value: "family" },
+      ],
+    },
+    {
+      name: "family_member_count",
+      label: "Family Member Count",
+      placeholder: "Enter number of family members",
+      type: "number",
+      keyboardType: "numeric",
+      visible: coverageFor === "family",
+    },
+    {
+      name: "income",
+      label: "Monthly Income",
+      placeholder: "Enter your income",
+      type: "number",
+      keyboardType: "numeric",
+    },
+    {
+      name: "nominee_name",
+      label: "Nominee Name",
+      placeholder: "Enter nominee name",
+    },
+    {
+      name: "nominee_relation",
+      label: "Nominee Relation",
+      placeholder: "Enter nominee relation",
+    },
+    {
+      name: "lead_source",
+      label: "Lead Source",
+      type: "select",
+      options: [
+        { label: "Website", value: "website" },
+        { label: "Referral", value: "referral" },
+        { label: "Advertisement", value: "advertisement" },
+        { label: "Other", value: "other" },
+      ],
+    },
+  ];
+
+  const onSubmit = async (payload) => {
+    console.log("Insurance Enquiry Submitted:", payload);
+
+    const { data, error } = await submitEnquiry({
+      url: "/user/apply-for-insurance",
+      method: "POST",
+      payload: payload,
+    });
+
+    if (!error) {
+      if (data.status === 200) {
+        showToast("success", data.message || "Enquiry submitted successfully.");
+      }
+    } else {
+      showToast("error", error || "Something went wrong");
+      console.log(error || "Something went wrong");
+    }
   };
 
-  const renderInput = ({
-    name,
-    label,
-    placeholder,
-    multiline = false,
-    keyboardType = "default",
-  }) => (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field: { onChange, onBlur, value } }) => (
-        <View className="mb-5">
-          <FormLabel label={label} />
-          <FormStyledInput
-            placeholder={placeholder}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            multiline={multiline}
-            keyboardType={keyboardType}
-          />
-          <FormError error={errors[name]?.message} />
-        </View>
-      )}
-    />
-  );
-
-  const renderPicker = ({ name, label, options }) => (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field: { onChange, value } }) => (
-        <View className="mb-5">
-          <FormLabel label={label} />
-          <View className="border border-gray-300 rounded-lg">
-            <Picker selectedValue={value} onValueChange={onChange}>
-              <Picker.Item label={`Select ${label}`} value="" />
-              {options.map((option) => (
-                <Picker.Item
-                  key={option.value}
-                  label={option.label}
-                  value={option.value}
-                />
-              ))}
-            </Picker>
-          </View>
-          <FormError error={errors[name]?.message} />
-        </View>
-      )}
-    />
-  );
-
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white dark:bg-black">
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -143,109 +217,69 @@ const InsuranceEnquiryScreen = () => {
         <ScrollView
           contentContainerStyle={{
             paddingHorizontal: 20,
-            paddingBottom: 30,
+            paddingTop: 32,
+            paddingBottom: 40,
           }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View className="py-8">
-            <Text className="text-2xl font-lexend-bold text-app-color-black mb-2">
+          <View className="gap-y-2">
+            <Text className="text-2xl font-lexend-bold text-app-color-black dark:text-white mb-1">
               Insurance Enquiry
             </Text>
-            <Text className="text-base text-app-color-grey mb-6 leading-relaxed">
+            <Text className="text-base text-app-color-grey dark:text-neutral-300 mb-5 leading-relaxed">
               Submit your insurance-related questions and we’ll get back to you.
             </Text>
 
-            {renderInput({
-              name: "full_name",
-              label: "Full Name",
-              placeholder: "Enter your full name",
-            })}
-            {renderInput({
-              name: "phone_number",
-              label: "Phone Number",
-              placeholder: "Enter 10-digit number",
-              keyboardType: "numeric",
-            })}
-            {renderInput({
-              name: "email",
-              label: "Email",
-              placeholder: "Enter your email",
-              keyboardType: "email-address",
-            })}
-            {renderPicker({
-              name: "lead_type",
-              label: "Lead Type",
-              options: [
-                { label: "Health", value: "health" },
-                { label: "Life", value: "life" },
-                { label: "Vehicle", value: "vehicle" },
-                { label: "Property", value: "property" },
-              ],
-            })}
-            {renderInput({
-              name: "age",
-              label: "Age",
-              placeholder: "Enter your age",
-              keyboardType: "numeric",
-            })}
-            {renderPicker({
-              name: "gender",
-              label: "Gender",
-              options: [
-                { label: "Male", value: "male" },
-                { label: "Female", value: "female" },
-                { label: "Other", value: "other" },
-              ],
-            })}
-            {renderPicker({
-              name: "coverage_for",
-              label: "Coverage For",
-              options: [
-                { label: "Self", value: "self" },
-                { label: "Family", value: "family" },
-              ],
-            })}
+            <FormFieldRenderer
+              control={control}
+              errors={errors}
+              fields={fields.filter((f) => f.visible !== false)}
+            />
 
-            {coverageFor === "family" &&
-              renderInput({
-                name: "family_member_count",
-                label: "Family Member Count",
-                placeholder: "Enter number of family members",
-                keyboardType: "numeric",
-              })}
-
-            {renderInput({
-              name: "income",
-              label: "Monthly Income",
-              placeholder: "Enter your income",
-              keyboardType: "numeric",
-            })}
-
-            {renderInput({
-              name: "nominee_name",
-              label: "Nominee Name",
-              placeholder: "Enter nominee name",
-            })}
-            {renderInput({
-              name: "nominee_relation",
-              label: "Nominee Relation",
-              placeholder: "Enter nominee relation",
-            })}
-            {renderPicker({
-              name: "lead_source",
-              label: "Lead Source",
-              options: [
-                { label: "Website", value: "website" },
-                { label: "Referral", value: "referral" },
-                { label: "Advertisement", value: "advertisement" },
-                { label: "Other", value: "other" },
-              ],
-            })}
+            <View className="flex-row items-center mt-6">
+              <Controller
+                control={control}
+                name="termsAccepted"
+                defaultValue={false}
+                rules={{ required: "You must accept the terms and conditions" }}
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <View className="flex-1">
+                    <TouchableOpacity
+                      onPress={() => onChange(!value)}
+                      activeOpacity={0.8}
+                      className="flex-row items-center"
+                    >
+                      <Checkbox
+                        value={value}
+                        onValueChange={onChange}
+                        colorScheme="#ffffff"
+                      />
+                      <Text className="text-app-color-black dark:text-white ml-2">
+                        I agree to the{" "}
+                        <Text className="text-app-color-red">
+                          Terms & Conditions
+                        </Text>
+                      </Text>
+                    </TouchableOpacity>
+                    {error && (
+                      <Text className="text-app-color-red mt-1 text-xs">
+                        {error.message}
+                      </Text>
+                    )}
+                  </View>
+                )}
+              />
+            </View>
 
             <TouchableOpacity
-              onPress={handleSubmit(onSubmit)}
-              className="py-4 rounded-xl bg-app-color-blue"
+              onPress={handleSubmit(onSubmit, (formErrors) =>
+                console.log("Form Validation Errors:", formErrors)
+              )}
+              className="mt-6 py-4 rounded-xl bg-app-color-red shadow-md active:opacity-80"
             >
               <Text className="text-white text-center text-base font-semibold">
                 Submit Enquiry
