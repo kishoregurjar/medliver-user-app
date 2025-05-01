@@ -28,11 +28,15 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                   {/* Password */}
                   {field.type === "password" ? (
                     <View>
-                      <View className="flex-row items-center border border-app-color-warmgreylight rounded-lg px-3">
+                      <View className="bg-white flex-row items-center border border-app-color-warmgreylight font-lexend rounded-md px-2 py-1 text-base">
                         <TextInput
-                          className="flex-1 p-3 text-base"
+                          className="flex-1 text-black"
                           placeholder={field.placeholder}
-                          onChangeText={onChange}
+                          placeholderTextColor="#6E6A7C"
+                          onChangeText={(val) => {
+                            onChange(val);
+                            field.onChangeCustom?.(val);
+                          }}
                           onBlur={onBlur}
                           value={value}
                           secureTextEntry={isSecure}
@@ -40,6 +44,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                         />
                         <TouchableOpacity
                           onPress={() => setShowPassword((prev) => !prev)}
+                          className="ml-2"
                         >
                           <Ionicons
                             name={showPassword ? "eye-off" : "eye"}
@@ -61,12 +66,13 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                             if (index > -1) arr.splice(index, 1);
                             else arr.push(val);
                             onChange(arr);
+                            field.onChangeCustom?.(arr);
                           } else {
                             onChange(val);
+                            field.onChangeCustom?.(val);
                           }
                         }}
                         mode="dropdown"
-                        multiple={field.type === "multiselect"}
                       >
                         <Picker.Item label={`Select ${field.label}`} value="" />
                         {field.options?.map((opt) => (
@@ -81,12 +87,21 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                   ) : field.type === "switch" ? (
                     <View className="flex-row items-center justify-between p-2 border rounded-lg border-app-color-warmgreylight">
                       <Text className="text-base">{field.label}</Text>
-                      <Switch value={value} onValueChange={onChange} />
+                      <Switch
+                        value={value}
+                        onValueChange={(val) => {
+                          onChange(val);
+                          field.onChangeCustom?.(val);
+                        }}
+                      />
                     </View>
                   ) : field.type === "checkbox" ? (
                     <TouchableOpacity
                       className="flex-row items-center gap-2"
-                      onPress={() => onChange(!value)}
+                      onPress={() => {
+                        onChange(!value);
+                        field.onChangeCustom?.(!value);
+                      }}
                     >
                       <View
                         className={`w-5 h-5 border rounded ${
@@ -103,7 +118,10 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                         <TouchableOpacity
                           key={opt.value}
                           className="flex-row items-center mr-4"
-                          onPress={() => onChange(opt.value)}
+                          onPress={() => {
+                            onChange(opt.value);
+                            field.onChangeCustom?.(opt.value);
+                          }}
                         >
                           <View
                             className={`w-4 h-4 rounded-full border mr-2 ${
@@ -117,11 +135,13 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                       ))}
                     </View>
                   ) : (
-                    // Default: Text / Email / Number / Textarea
                     <FormStyledInput
                       placeholder={field.placeholder}
                       onBlur={onBlur}
-                      onChangeText={onChange}
+                      onChangeText={(val) => {
+                        onChange(val);
+                        field.onChangeCustom?.(val);
+                      }}
                       value={value}
                       multiline={field.type === "textarea"}
                       keyboardType={field.keyboardType || "default"}

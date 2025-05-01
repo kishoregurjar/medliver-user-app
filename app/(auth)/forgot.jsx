@@ -1,5 +1,3 @@
-// app/(auth)/forgot.tsx
-
 import {
   View,
   Text,
@@ -11,30 +9,28 @@ import {
 } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import GradientBackground from "@/components/common/GradientEllipse";
 import STATIC from "@/utils/constants";
 import { useRouter } from "expo-router";
 import useAxios from "@/hooks/useAxios";
 import FORM_VALIDATIONS from "@/libs/form-validations";
-import FormError from "@/components/inputs/FormError";
-import FormStyledInput from "@/components/inputs/FormStyledInput";
-import FormLabel from "@/components/inputs/FormLabel";
 import ROUTE_PATH from "@/routes/route.constants";
 import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
 import { useAppToast } from "@/hooks/useAppToast";
+import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
+import FORM_FIELD_TYPES from "@/libs/form-field-types";
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
+  const { showToast } = useAppToast();
 
   const {
     request: forgotPasswordUser,
     loading: isLoading,
     error: hasError,
   } = useAxios();
-
-  const { showToast } = useAppToast();
 
   const {
     control,
@@ -49,30 +45,23 @@ export default function ForgotPasswordScreen() {
   });
 
   const onSubmit = async (payload) => {
-    console.log("Forgot password data:", payload);
     const { data, error } = await forgotPasswordUser({
       url: "/user/forget-password",
       method: "POST",
-      payload: payload,
+      payload,
     });
 
-    console.log("Forgot password response:", data, error);
-
-    if (!error) {
-      if (data.status === 200) {
-        showToast("success", data.message || "Password reset link sent.");
-
-        router.push(
-          generateDynamicRoute(
-            ROUTE_PATH.AUTH.OTP_VERIFICATION,
-            { type: "forgot", email: payload.email },
-            "queryParams"
-          )
-        );
-      }
+    if (!error && data.status === 200) {
+      showToast("success", data.message || "Password reset link sent.");
+      router.push(
+        generateDynamicRoute(
+          ROUTE_PATH.AUTH.OTP_VERIFICATION,
+          { type: "forgot", email: payload.email },
+          "queryParams"
+        )
+      );
     } else {
       showToast("error", error || "Something went wrong");
-      console.log(error || "Something went wrong");
     }
   };
 
@@ -90,7 +79,7 @@ export default function ForgotPasswordScreen() {
             {/* Illustration */}
             <View className="items-center my-4">
               <Image
-                source={STATIC.IMAGES.PAGES.FORGOT} // Add image in your STATIC
+                source={STATIC.IMAGES.PAGES.FORGOT}
                 style={{ width: 200, height: 200, resizeMode: "contain" }}
               />
             </View>
@@ -99,23 +88,11 @@ export default function ForgotPasswordScreen() {
               Forgot Password
             </Text>
 
-            <View className="mb-4">
-              <FormLabel label="Your Email" />
-              <Controller
-                control={control}
-                name="email"
-                render={({ field: { value, onChange } }) => (
-                  <FormStyledInput
-                    placeholder="Enter Your Email"
-                    value={value}
-                    onChangeText={onChange}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                  />
-                )}
-              />
-              <FormError error={errors.email?.message} className="mt-2" />
-            </View>
+            <FormFieldRenderer
+              control={control}
+              errors={errors}
+              fields={FORM_FIELD_TYPES.FORGOT_PASSWORD}
+            />
 
             <TouchableOpacity
               onPress={handleSubmit(onSubmit)}

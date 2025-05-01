@@ -9,29 +9,22 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import GradientBackground from "@/components/common/GradientEllipse";
-import FormLabel from "@/components/inputs/FormLabel";
-import FormStyledInput from "@/components/inputs/FormStyledInput";
-import FormError from "@/components/inputs/FormError";
 import useAxios from "@/hooks/useAxios";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import FORM_VALIDATIONS from "@/libs/form-validations";
 import { MaterialIcons } from "@expo/vector-icons";
 import ROUTE_PATH from "@/routes/route.constants";
 import { useAppToast } from "../../hooks/useAppToast";
+import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 
 const ResetPasswordScreen = () => {
   const { width } = useWindowDimensions();
   const router = useRouter();
   const { email } = useLocalSearchParams();
-  const {
-    request: resetPassword,
-    loading: isLoading,
-    error: hasError,
-  } = useAxios();
-
+  const { request: resetPassword, loading: isLoading } = useAxios();
   const { showToast } = useAppToast();
 
   const {
@@ -53,12 +46,9 @@ const ResetPasswordScreen = () => {
       letter: /[A-Za-z]/.test(password),
       number: /[0-9]/.test(password),
     };
-
     const passed = Object.values(checks).filter(Boolean).length;
-
     let strengthText = "Too weak";
     let strengthColor = "text-red-500";
-
     if (passed === 2) {
       strengthText = "Good";
       strengthColor = "text-yellow-500";
@@ -66,30 +56,13 @@ const ResetPasswordScreen = () => {
       strengthText = "Strong";
       strengthColor = "text-green-600";
     }
-
-    return {
-      ...checks,
-      strengthText,
-      strengthColor,
-    };
+    return { ...checks, strengthText, strengthColor };
   };
 
-  // Toggle password visibility states
-  const [secureFields, setSecureFields] = useState({
-    newPassword: true,
-    confirmPassword: true,
-  });
   const [passwordValue, setPasswordValue] = useState("");
   const [passwordStrength, setPasswordStrength] = useState(
     getPasswordStrength("")
   );
-
-  const toggleSecure = (field) => {
-    setSecureFields((prev) => ({
-      ...prev,
-      [field]: !prev[field],
-    }));
-  };
 
   const onSubmit = async ({ newPassword }) => {
     const { data, error } = await resetPassword({
@@ -142,57 +115,28 @@ const ResetPasswordScreen = () => {
                 Reset Password
               </Text>
 
-              {[
-                {
-                  name: "newPassword",
-                  label: "New Password",
-                },
-                {
-                  name: "confirmPassword",
-                  label: "Confirm Password",
-                },
-              ].map((field) => (
-                <View key={field.name} className="mb-4">
-                  <FormLabel label={field.label} />
-                  <Controller
-                    control={control}
-                    name={field.name}
-                    render={({ field: { value, onChange } }) => (
-                      <FormStyledInput
-                        placeholder={`Enter ${field.label}`}
-                        value={value}
-                        onChangeText={(text) => {
-                          onChange(text);
-                          if (field.name === "newPassword") {
-                            setPasswordValue(text);
-                            setPasswordStrength(getPasswordStrength(text));
-                          }
-                        }}
-                        secureTextEntry={secureFields[field.name]}
-                        rightIcon={
-                          <TouchableOpacity
-                            onPress={() => toggleSecure(field.name)}
-                          >
-                            <MaterialIcons
-                              name={
-                                secureFields[field.name]
-                                  ? "visibility-off"
-                                  : "visibility"
-                              }
-                              size={20}
-                              color="#888"
-                            />
-                          </TouchableOpacity>
-                        }
-                      />
-                    )}
-                  />
-                  <FormError
-                    error={errors?.[field.name]?.message}
-                    className="mt-2"
-                  />
-                </View>
-              ))}
+              <FormFieldRenderer
+                control={control}
+                errors={errors}
+                fields={[
+                  {
+                    name: "newPassword",
+                    label: "New Password",
+                    type: "password",
+                    placeholder: "Enter Your New Password",
+                    onChangeCustom: (val) => {
+                      setPasswordValue(val);
+                      setPasswordStrength(getPasswordStrength(val));
+                    },
+                  },
+                  {
+                    name: "confirmPassword",
+                    label: "Confirm Password",
+                    type: "password",
+                    placeholder: "Confirm Your Password",
+                  },
+                ]}
+              />
 
               {passwordValue?.length > 0 && (
                 <View className="my-3 p-3 rounded-md bg-gray-200">
@@ -208,65 +152,35 @@ const ResetPasswordScreen = () => {
                   </View>
 
                   <View className="gap-1">
-                    {/* Length Check */}
-                    <View className="flex-row items-center gap-2">
-                      <MaterialIcons
-                        name={
-                          passwordStrength.length ? "check-circle" : "cancel"
-                        }
-                        size={16}
-                        color={passwordStrength.length ? "#16A34A" : "#DC2626"}
-                      />
-                      <Text
-                        className={`text-sm ${
-                          passwordStrength.length
-                            ? "text-green-600"
-                            : "text-gray-500"
-                        }`}
-                      >
-                        At least 8 characters
-                      </Text>
-                    </View>
-
-                    {/* Letter Check */}
-                    <View className="flex-row items-center gap-2">
-                      <MaterialIcons
-                        name={
-                          passwordStrength.letter ? "check-circle" : "cancel"
-                        }
-                        size={16}
-                        color={passwordStrength.letter ? "#16A34A" : "#DC2626"}
-                      />
-                      <Text
-                        className={`text-sm ${
-                          passwordStrength.letter
-                            ? "text-green-600"
-                            : "text-gray-500"
-                        }`}
-                      >
-                        At least 1 letter
-                      </Text>
-                    </View>
-
-                    {/* Number Check */}
-                    <View className="flex-row items-center gap-2">
-                      <MaterialIcons
-                        name={
-                          passwordStrength.number ? "check-circle" : "cancel"
-                        }
-                        size={16}
-                        color={passwordStrength.number ? "#16A34A" : "#DC2626"}
-                      />
-                      <Text
-                        className={`text-sm ${
-                          passwordStrength.number
-                            ? "text-green-600"
-                            : "text-gray-500"
-                        }`}
-                      >
-                        At least 1 number
-                      </Text>
-                    </View>
+                    {[
+                      {
+                        label: "At least 8 characters",
+                        check: passwordStrength.length,
+                      },
+                      {
+                        label: "At least 1 letter",
+                        check: passwordStrength.letter,
+                      },
+                      {
+                        label: "At least 1 number",
+                        check: passwordStrength.number,
+                      },
+                    ].map((item, idx) => (
+                      <View key={idx} className="flex-row items-center gap-2">
+                        <MaterialIcons
+                          name={item.check ? "check-circle" : "cancel"}
+                          size={16}
+                          color={item.check ? "#16A34A" : "#DC2626"}
+                        />
+                        <Text
+                          className={`text-sm ${
+                            item.check ? "text-green-600" : "text-gray-500"
+                          }`}
+                        >
+                          {item.label}
+                        </Text>
+                      </View>
+                    ))}
                   </View>
                 </View>
               )}

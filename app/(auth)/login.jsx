@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  TextInput,
   Pressable,
   KeyboardAvoidingView,
   Platform,
@@ -20,11 +19,10 @@ import { Button, ButtonText } from "@/components/ui/button";
 import useAxios from "@/hooks/useAxios";
 import { TouchableOpacity } from "react-native";
 import FORM_VALIDATIONS from "@/libs/form-validations";
-import FormError from "@/components/inputs/FormError";
-import FormStyledInput from "@/components/inputs/FormStyledInput";
-import FormLabel from "@/components/inputs/FormLabel";
 import ROUTE_PATH from "@/routes/route.constants";
 import { useAppToast } from "../../hooks/useAppToast";
+import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
+import FORM_FIELD_TYPES from "@/libs/form-field-types";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -92,38 +90,11 @@ export default function LoginScreen() {
 
             <Text className="text-3xl font-bold mb-6 text-black">Sign in</Text>
 
-            {/* Email Input */}
-            <FormLabel label="Your Email" />
-            <Controller
+            <FormFieldRenderer
               control={control}
-              name="email"
-              render={({ field: { value, onChange } }) => (
-                <FormStyledInput
-                  placeholder="Enter Your Email"
-                  value={value}
-                  onChangeText={onChange}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-              )}
+              errors={errors}
+              fields={FORM_FIELD_TYPES.SIGN_IN}
             />
-            <FormError error={errors.email?.message} className="mt-2" />
-
-            {/* Password Input */}
-            <FormLabel label="Password" className="mt-2" />
-            <Controller
-              control={control}
-              name="password"
-              render={({ field: { value, onChange } }) => (
-                <FormStyledInput
-                  placeholder="Enter Your Password"
-                  value={value}
-                  onChangeText={onChange}
-                  secureTextEntry
-                />
-              )}
-            />
-            <FormError error={errors.password?.message} className="mt-2" />
 
             {/* Remember + Forgot */}
             <View className="flex-row items-center justify-between mt-2 mb-4">

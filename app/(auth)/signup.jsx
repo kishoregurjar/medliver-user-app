@@ -22,11 +22,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TouchableOpacity } from "react-native";
 import FORM_VALIDATIONS from "@/libs/form-validations";
 import FormError from "@/components/inputs/FormError";
-import FormLabel from "@/components/inputs/FormLabel";
-import FormStyledInput from "@/components/inputs/FormStyledInput";
 import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
 import ROUTE_PATH from "@/routes/route.constants";
 import { useAppToast } from "../../hooks/useAppToast";
+import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
+import FORM_FIELD_TYPES from "@/libs/form-field-types";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -150,50 +150,11 @@ export default function SignupScreen() {
                 Create Account
               </Text>
 
-              {[
-                {
-                  name: "fullName",
-                  label: "Full Name",
-                  keyboardType: "default",
-                },
-                {
-                  name: "email",
-                  label: "Your Email",
-                  keyboardType: "email-address",
-                },
-                {
-                  name: "phoneNumber",
-                  label: "Phone Number",
-                  keyboardType: "phone-pad",
-                },
-                { name: "password", label: "Password", secureTextEntry: true },
-                {
-                  name: "confirmPassword",
-                  label: "Confirm Password",
-                  secureTextEntry: true,
-                },
-              ].map((field) => (
-                <View key={field.name} className="mb-4">
-                  <FormLabel label={field.label} />
-                  <Controller
-                    control={control}
-                    name={field.name}
-                    render={({ field: { value, onChange } }) => (
-                      <FormStyledInput
-                        placeholder={`Enter ${field.label}`}
-                        value={value}
-                        onChangeText={onChange}
-                        keyboardType={field.keyboardType}
-                        secureTextEntry={field.secureTextEntry}
-                      />
-                    )}
-                  />
-                  <FormError
-                    error={errors?.[field.name]?.message}
-                    className="mt-2"
-                  />
-                </View>
-              ))}
+              <FormFieldRenderer
+                control={control}
+                errors={errors}
+                fields={FORM_FIELD_TYPES.SIGN_UP}
+              />
 
               <View className="flex-row items-center mb-4">
                 <Controller
