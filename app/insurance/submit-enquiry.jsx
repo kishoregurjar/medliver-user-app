@@ -98,7 +98,7 @@ const InsuranceEnquiryScreen = () => {
             <Text className="text-2xl font-lexend-bold text-app-color-black dark:text-white mb-1">
               Insurance Enquiry
             </Text>
-            <Text className="text-base text-app-color-grey dark:text-neutral-300 mb-5 leading-relaxed">
+            <Text className="text-base font-lexend text-app-color-grey dark:text-neutral-300 mb-5 leading-relaxed">
               Submit your insurance-related questions and we’ll get back to you.
             </Text>
 
@@ -129,9 +129,9 @@ const InsuranceEnquiryScreen = () => {
                         onValueChange={onChange}
                         colorScheme="#ffffff"
                       />
-                      <Text className="text-app-color-black dark:text-white ml-2">
+                      <Text className="text-app-color-black font-lexend dark:text-white ml-2">
                         I agree to the{" "}
-                        <Text className="text-app-color-red">
+                        <Text className="text-app-color-red font-lexend">
                           Terms & Conditions
                         </Text>
                       </Text>
@@ -152,7 +152,7 @@ const InsuranceEnquiryScreen = () => {
               )}
               className="mt-6 py-4 rounded-xl bg-app-color-red shadow-md active:opacity-80"
             >
-              <Text className="text-white text-center text-base font-semibold">
+              <Text className="text-white text-center text-base font-lexend-bold">
                 Submit Enquiry
               </Text>
             </TouchableOpacity>

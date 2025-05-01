@@ -147,7 +147,7 @@ const BookAmbulanceScreen = () => {
             <Text className="text-2xl font-lexend-bold text-app-color-black mb-2">
               Book a Cab for Emergency Travel
             </Text>
-            <Text className="text-base text-app-color-grey mb-6 leading-relaxed">
+            <Text className="text-base font-lexend text-app-color-grey mb-6 leading-relaxed">
               Fast, Comfortable & Care-Oriented Rides for Patients
             </Text>
 
@@ -187,7 +187,7 @@ const BookAmbulanceScreen = () => {
               className="mb-4"
               onPress={() => getCurrentLocation("address", setLoadingPickup)}
             >
-              <Text className="text-app-color-red underline">
+              <Text className="text-app-color-red underline font-lexend">
                 📍 Use Current Location as Pickup
               </Text>
             </TouchableOpacity>
@@ -197,7 +197,7 @@ const BookAmbulanceScreen = () => {
               className="bg-app-color-red py-4 rounded-xl mt-2"
               onPress={handleSubmit(onSubmit)}
             >
-              <Text className="text-white font-semibold text-center text-base">
+              <Text className="text-white font-lexend-bold text-center text-base">
                 Book Now
               </Text>
             </TouchableOpacity>
