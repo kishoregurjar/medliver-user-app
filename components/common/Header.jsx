@@ -6,14 +6,14 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
-  Modal,
-  FlatList,
   Platform,
   Dimensions,
 } from "react-native";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import STATIC from "@/utils/constants";
+import SearchMedicineModal from "../modals/SearchMedicineModal";
+import SelectAddressModal from "../modals/SelectAddressModal";
 
 const { width } = Dimensions.get("window");
 
@@ -23,65 +23,25 @@ const IconButton = ({ icon, onPress }) => (
   </TouchableOpacity>
 );
 
-const AddressSelector = ({ visible, onClose, onSelect, addresses }) => {
-  const [search, setSearch] = useState("");
+const medicineSuggestions = [
+  "Paracetamol",
+  "Aspirin",
+  "Ibuprofen",
+  "Amoxicillin",
+  "Cough Syrup",
+  "Vitamin C",
+];
 
-  const filtered = addresses.filter((addr) =>
-    addr.toLowerCase().includes(search.toLowerCase())
-  );
-
-  return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-      className="p-4 py-10"
-    >
-      <View className="flex-1 bg-white pt-12 px-4">
-        {/* Header */}
-        <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-lg font-lexendBold">
-            Select Delivery Address
-          </Text>
-          <TouchableOpacity onPress={onClose}>
-            <Ionicons name="close" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Search */}
-        <View className="flex-row items-center bg-gray-100 rounded-lg px-3 py-2 mb-4">
-          <Ionicons name="search" size={20} color="#6E6A7C" />
-          <TextInput
-            placeholder="Search address"
-            placeholderTextColor="#6E6A7C"
-            className="flex-1 ml-2 font-lexend text-sm"
-            value={search}
-            onChangeText={setSearch}
-          />
-        </View>
-
-        {/* Address List */}
-        <FlatList
-          data={filtered}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              className="py-3 border-b border-gray-200"
-              onPress={() => {
-                onSelect(item);
-                onClose();
-              }}
-            >
-              <Text className="text-base text-gray-800 font-lexend">
-                {item}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
-    </Modal>
-  );
-};
+const addresses = [
+  "Indore, Madhya Pradesh",
+  "Bhopal, Madhya Pradesh",
+  "Mumbai, Maharashtra",
+  "Delhi, India",
+  "Bangalore, Karnataka",
+  "Chennai, Tamil Nadu",
+  "Hyderabad, Telangana",
+  "Pune, Maharashtra",
+];
 
 const Header = () => {
   const router = useRouter();
@@ -89,17 +49,7 @@ const Header = () => {
     "Indore, Madhya Pradesh"
   );
   const [modalVisible, setModalVisible] = useState(false);
-
-  const addresses = [
-    "Indore, Madhya Pradesh",
-    "Bhopal, Madhya Pradesh",
-    "Mumbai, Maharashtra",
-    "Delhi, India",
-    "Bangalore, Karnataka",
-    "Chennai, Tamil Nadu",
-    "Hyderabad, Telangana",
-    "Pune, Maharashtra",
-  ];
+  const [searchModalVisible, setSearchModalVisible] = useState(false);
 
   return (
     <SafeAreaView className={`${Platform.OS === "android" ? "pt-4" : ""}`}>
@@ -192,6 +142,7 @@ const Header = () => {
             placeholder="Search Medicine"
             placeholderTextColor="#6E6A7C"
             className="flex-1 ml-2 font-lexend text-sm text-gray-700"
+            onFocus={() => setSearchModalVisible(true)} // Trigger the modal on focus
           />
           <IconButton
             icon={<Feather name="sliders" size={20} color="#6E6A7C" />}
@@ -200,11 +151,21 @@ const Header = () => {
       </View>
 
       {/* Address Selection Modal */}
-      <AddressSelector
+      <SelectAddressModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onSelect={setSelectedAddress}
         addresses={addresses}
+      />
+      {/* Search Modal with Medicine Suggestions */}
+      <SearchMedicineModal
+        visible={searchModalVisible}
+        onClose={() => setSearchModalVisible(false)}
+        onSelect={(medicine) => {
+          console.log("Selected medicine: ", medicine);
+          setSearchModalVisible(false);
+        }}
+        suggestions={medicineSuggestions}
       />
     </SafeAreaView>
   );
