@@ -6,12 +6,32 @@ import STATIC from "@/utils/constants";
 import GradientBackground from "@/components/common/GradientEllipse";
 import Header from "@/components/common/Header";
 import useAxios from "@/hooks/useAxios";
+import { Ionicons } from "@expo/vector-icons";
+import Carousel from "react-native-reanimated-carousel";
+import { Dimensions } from "react-native";
+
+const { width } = Dimensions.get("window");
+
+const promoBanners = [
+  {
+    title: "15% Off",
+    subtitle: "Medicine at your doorstep",
+    buttonText: "Shop Now",
+    bgColor: "#EF4C47",
+  },
+  {
+    title: "25% Off",
+    subtitle: "On First Order",
+    buttonText: "Explore",
+    bgColor: "#007AFF",
+  },
+];
 
 const PharmacyHome = () => {
   const categories = [
-    { label: "Medicine", icon: STATIC.IMAGES.APP.LOGO },
-    { label: "Hospital", icon: STATIC.IMAGES.APP.LOGO },
-    { label: "Pathology", icon: STATIC.IMAGES.APP.LOGO },
+    { label: "Medicine", icon: "medkit-outline" },
+    { label: "Hospital", icon: "business-outline" },
+    { label: "Pathology", icon: "flask-outline" },
   ];
 
   const topPicks = [
@@ -81,13 +101,30 @@ const PharmacyHome = () => {
           <Header />
 
           {/* Promo Banner */}
-          <View className="bg-[#EF4C47] p-4 rounded-2xl mb-6">
-            <Text className="text-white font-bold text-xl mb-1">15% Off</Text>
-            <Text className="text-white mb-3">Medicine at your doorstep</Text>
-            <TouchableOpacity className="bg-[#FFE5D0] rounded-full px-4 py-2 self-start">
-              <Text className="text-[#EF4C47] font-semibold">Shop Now</Text>
-            </TouchableOpacity>
-          </View>
+          <Carousel
+            loop
+            width={width - 32}
+            height={120}
+            autoPlay
+            data={promoBanners}
+            scrollAnimationDuration={1000}
+            renderItem={({ item }) => (
+              <View
+                className="p-4 rounded-2xl mb-6"
+                style={{ backgroundColor: item.bgColor }}
+              >
+                <Text className="text-white font-bold text-xl mb-1">
+                  {item.title}
+                </Text>
+                <Text className="text-white mb-3">{item.subtitle}</Text>
+                <TouchableOpacity className="bg-[#FFE5D0] rounded-full px-4 py-2 self-start">
+                  <Text className="text-[#EF4C47] font-semibold">
+                    {item.buttonText}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
 
           {/* Categories */}
           <View className="flex-row flex-wrap gap-3">
@@ -96,10 +133,11 @@ const PharmacyHome = () => {
                 key={i}
                 className="flex-row items-center bg-white rounded-full px-4 py-2 shadow-sm"
               >
-                <Image
-                  source={cat.icon}
-                  className="w-5 h-5 mr-2"
-                  resizeMode="contain"
+                <Ionicons
+                  name={cat.icon}
+                  size={18}
+                  color="#6E6A7C"
+                  style={{ marginRight: 8 }}
                 />
                 <Text className="text-[#6E6A7C] text-sm font-medium">
                   {cat.label}
