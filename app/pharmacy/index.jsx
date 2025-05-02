@@ -5,12 +5,29 @@ import { StatusBar } from "expo-status-bar";
 import STATIC from "@/utils/constants";
 import GradientBackground from "@/components/common/GradientEllipse";
 import Header from "@/components/common/Header";
-import NavigationTiles from "@/components/common/NavigationTiles";
 
 const PharmacyHome = () => {
-  const categories = ["Medicine", "Pathology", "Diagnostics"];
+  const categories = [
+    { label: "Medicine", icon: STATIC.IMAGES.APP.LOGO },
+    { label: "Hospital", icon: STATIC.IMAGES.APP.LOGO },
+    { label: "Pathology", icon: STATIC.IMAGES.APP.LOGO },
+  ];
+
+  const topPicks = [
+    {
+      title: "Derma E",
+      subtitle: "Tea Tree & Vitamin E Antiseptic Cream",
+      price: "₹5.20",
+      image: STATIC.IMAGES.COMPONENTS.MEDICINE_1,
+    },
+    {
+      title: "Chest-eaze",
+      subtitle: "Bronchodilator & Expectorant 100ml Syrup",
+      price: "₹5.20",
+      image: STATIC.IMAGES.COMPONENTS.MEDICINE_2,
+    },
+  ];
   const bestSellers = [1, 2, 3];
-  const topPicks = [1, 2];
 
   return (
     <GradientBackground
@@ -35,18 +52,22 @@ const PharmacyHome = () => {
           </View>
 
           {/* Categories */}
-          <View className="mb-6">
-            <Text className="text-lg font-bold mb-3">Categories</Text>
-            <View className="flex-row gap-3">
-              {categories.map((cat, i) => (
-                <TouchableOpacity
-                  key={i}
-                  className="bg-white border border-gray-200 rounded-full px-4 py-2"
-                >
-                  <Text className="text-[#6E6A7C]">{cat}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+          <View className="flex-row gap-3 justify-between">
+            {categories.map((cat, i) => (
+              <TouchableOpacity
+                key={i}
+                className="flex-1 bg-white rounded-2xl items-center py-4 shadow-sm"
+              >
+                <Image
+                  source={cat.icon}
+                  className="w-10 h-10 mb-2"
+                  resizeMode="contain"
+                />
+                <Text className="text-[#6E6A7C] text-sm font-medium">
+                  {cat.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
 
           {/* Best Seller */}
@@ -98,7 +119,7 @@ const PharmacyHome = () => {
               </TouchableOpacity>
             </View>
             <Image
-              source={STATIC.IMAGES.LOGO}
+              source={STATIC.IMAGES.APP.LOGO}
               className="w-24 h-24"
               resizeMode="contain"
             />
@@ -106,38 +127,42 @@ const PharmacyHome = () => {
 
           {/* Top Picks */}
           <View className="mb-10">
-            <Text className="text-lg font-bold mb-3">Top Picks for You</Text>
-            {topPicks.map((row) => (
-              <View key={row} className="flex-row justify-between mb-4">
-                {[1, 2].map((item) => (
-                  <View
-                    key={item}
-                    className="w-[48%] bg-white rounded-xl shadow-sm p-3"
-                  >
-                    <Image
-                      source={STATIC.IMAGES.COMPONENTS.MEDICINE_1}
-                      className="w-full h-20 mb-2"
-                      resizeMode="contain"
-                    />
-                    <Text className="font-bold">Derma E</Text>
-                    <Text className="text-xs text-gray-600 mb-1">
-                      Antiseptic Cream
-                    </Text>
-                    <Text className="font-semibold mb-2">$5.20</Text>
-                    <View className="flex-row justify-between">
-                      <TouchableOpacity className="border border-[#EF4C47] rounded px-2 py-1">
-                        <Text className="text-xs text-[#EF4C47]">
-                          View Detail
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity className="bg-[#EF4C47] rounded px-2 py-1">
-                        <Text className="text-xs text-white">Add to Cart</Text>
-                      </TouchableOpacity>
-                    </View>
+            <View className="flex-row justify-between items-center mb-3">
+              <Text className="text-lg font-bold">Top Picks for You</Text>
+              <TouchableOpacity>
+                <Text className="text-blue-600">See All</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-row flex-wrap justify-between">
+              {topPicks.map((item, index) => (
+                <View
+                  key={index}
+                  className="w-[48%] bg-white rounded-xl shadow-sm p-3 mb-4"
+                >
+                  <Image
+                    source={item.image}
+                    className="w-full h-20 mb-2"
+                    resizeMode="contain"
+                  />
+                  <Text className="font-bold text-sm">{item.title}</Text>
+                  <Text className="text-xs text-gray-600 mb-1">
+                    {item.subtitle}
+                  </Text>
+                  <Text className="font-semibold mb-2">{item.price}</Text>
+                  <View className="flex-row justify-between">
+                    <TouchableOpacity className="border border-[#EF4C47] rounded px-2 py-1">
+                      <Text className="text-xs text-[#EF4C47]">
+                        View Detail
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity className="bg-[#EF4C47] rounded px-2 py-1">
+                      <Text className="text-xs text-white">Add to Cart</Text>
+                    </TouchableOpacity>
                   </View>
-                ))}
-              </View>
-            ))}
+                </View>
+              ))}
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
