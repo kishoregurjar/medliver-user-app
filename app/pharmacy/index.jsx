@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import STATIC from "@/utils/constants";
 import GradientBackground from "@/components/common/GradientEllipse";
 import Header from "@/components/common/Header";
+import useAxios from "@/hooks/useAxios";
 
 const PharmacyHome = () => {
   const categories = [
@@ -29,6 +30,43 @@ const PharmacyHome = () => {
   ];
   const bestSellers = [1, 2, 3];
 
+  const { request: getAllSpecialOffer } = useAxios();
+  const { request: getTopPicks } = useAxios();
+  const { request: getBestSellers } = useAxios();
+
+  useEffect(() => {
+    const getAllSpecialOfferData = async () => {
+      const { data, error } = await getAllSpecialOffer({
+        method: "GET",
+        url: "/user/get-all-special-offer?page=1",
+      });
+
+      console.log(data, error);
+    };
+
+    const getAllFeatureProductData = async () => {
+      const { data, error } = await getTopPicks({
+        method: "GET",
+        url: "/user/get-all-feature-product?page=1",
+      });
+
+      console.log(data, error);
+    };
+
+    const getBestSellersData = async () => {
+      const { data, error } = await getBestSellers({
+        method: "GET",
+        url: "/user/get-all-selling-product?limit=2&page=1&sortOrder=asc",
+      });
+
+      console.log(data, error);
+    };
+
+    getAllSpecialOfferData();
+    getBestSellersData();
+    getAllFeatureProductData();
+  }, []);
+
   return (
     <GradientBackground
       animateBlobs
@@ -52,15 +90,15 @@ const PharmacyHome = () => {
           </View>
 
           {/* Categories */}
-          <View className="flex-row gap-3 justify-between">
+          <View className="flex-row flex-wrap gap-3">
             {categories.map((cat, i) => (
               <TouchableOpacity
                 key={i}
-                className="flex-1 bg-white rounded-2xl items-center py-4 shadow-sm"
+                className="flex-row items-center bg-white rounded-full px-4 py-2 shadow-sm"
               >
                 <Image
                   source={cat.icon}
-                  className="w-10 h-10 mb-2"
+                  className="w-5 h-5 mr-2"
                   resizeMode="contain"
                 />
                 <Text className="text-[#6E6A7C] text-sm font-medium">
