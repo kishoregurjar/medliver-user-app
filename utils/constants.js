@@ -7,18 +7,18 @@ export const socialButtons = [
     color: "#000",
     text: "Continue with Google",
   },
-  {
-    icon: FontAwesome,
-    iconName: "facebook",
-    color: "#4267B2",
-    text: "Continue with Facebook",
-  },
-  {
-    icon: Ionicons,
-    iconName: "logo-apple",
-    color: "#000",
-    text: "Continue with Apple",
-  },
+  // {
+  //   icon: FontAwesome,
+  //   iconName: "facebook",
+  //   color: "#4267B2",
+  //   text: "Continue with Facebook",
+  // },
+  // {
+  //   icon: Ionicons,
+  //   iconName: "logo-apple",
+  //   color: "#000",
+  //   text: "Continue with Apple",
+  // },
 ];
 
 const IMAGES = {

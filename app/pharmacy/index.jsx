@@ -1,13 +1,6 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import React from "react";
+import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons, Feather } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import STATIC from "@/utils/constants";
 import GradientBackground from "@/components/common/GradientEllipse";
@@ -15,6 +8,10 @@ import Header from "@/components/common/Header";
 import NavigationTiles from "@/components/common/NavigationTiles";
 
 const PharmacyHome = () => {
+  const categories = ["Medicine", "Pathology", "Diagnostics"];
+  const bestSellers = [1, 2, 3];
+  const topPicks = [1, 2];
+
   return (
     <GradientBackground
       animateBlobs
@@ -41,7 +38,7 @@ const PharmacyHome = () => {
           <View className="mb-6">
             <Text className="text-lg font-bold mb-3">Categories</Text>
             <View className="flex-row gap-3">
-              {["Medicine", "Pathology", "Diagnostics"].map((cat, i) => (
+              {categories.map((cat, i) => (
                 <TouchableOpacity
                   key={i}
                   className="bg-white border border-gray-200 rounded-full px-4 py-2"
@@ -65,7 +62,7 @@ const PharmacyHome = () => {
               showsHorizontalScrollIndicator={false}
               className="gap-4"
             >
-              {[1, 2, 3].map((item) => (
+              {bestSellers.map((item) => (
                 <View
                   key={item}
                   className="w-40 bg-white rounded-xl shadow-sm p-3 mr-3"
@@ -110,7 +107,7 @@ const PharmacyHome = () => {
           {/* Top Picks */}
           <View className="mb-10">
             <Text className="text-lg font-bold mb-3">Top Picks for You</Text>
-            {[1, 2].map((row) => (
+            {topPicks.map((row) => (
               <View key={row} className="flex-row justify-between mb-4">
                 {[1, 2].map((item) => (
                   <View
