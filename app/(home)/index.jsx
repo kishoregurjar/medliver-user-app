@@ -1,14 +1,4 @@
-import {
-  View,
-  Text,
-  Image,
-  Pressable,
-  useWindowDimensions,
-  Animated,
-  SafeAreaView,
-  Platform,
-  StatusBar,
-} from "react-native";
+import { View, Text, Image, useWindowDimensions, Animated } from "react-native";
 import React, { useEffect, useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign } from "@expo/vector-icons";
@@ -20,32 +10,18 @@ import {
   registerForPushNotificationsAsync,
 } from "@/utils/notification";
 import ROUTE_PATH from "@/routes/route.constants";
+import { SafeAreaView } from "react-native-safe-area-context"; // ← More reliable SafeAreaView
 
 const LetsStartScreen = () => {
   const router = useRouter();
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const { width, height } = useWindowDimensions();
 
-  const handlePressIn = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 0.97,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 1,
-      useNativeDriver: true,
-    }).start();
-  };
-
   useEffect(() => {
     const setupNotifications = async () => {
       try {
         const token = await registerForPushNotificationsAsync();
         console.log("✅ Push Notification Token:", token);
-        // Send to backend here if needed
       } catch (error) {
         console.error("❌ Error setting up notifications:", error);
       }
@@ -66,14 +42,9 @@ const LetsStartScreen = () => {
   ];
 
   return (
-    <LinearGradient colors={["#e0f7fa", "#fce4ec"]} className="flex-1 relative">
-      {/* Status bar padding for Android */}
-      {Platform.OS === "android" && (
-        <View style={{ height: StatusBar.currentHeight }} />
-      )}
-
-      <SafeAreaView className="flex-1 items-center justify-center px-4">
-        {/* Floating Dots */}
+    <SafeAreaView className="flex-1">
+      <LinearGradient colors={["#e0f7fa", "#fce4ec"]} style={{ flex: 1 }}>
+        {/* Dots */}
         <View className="absolute w-full h-full">
           {dots.map((dot, index) => (
             <View
@@ -89,51 +60,49 @@ const LetsStartScreen = () => {
           ))}
         </View>
 
-        {/* Illustration */}
-        <Image
-          source={STATIC.IMAGES.PAGES.LETS_START}
-          resizeMode="contain"
-          style={{
-            width: width * 0.6,
-            height: height * 0.3,
-            marginBottom: height * 0.04,
-          }}
-        />
+        <View className="flex-1 items-center justify-center px-4">
+          <Image
+            source={STATIC.IMAGES.PAGES.LETS_START}
+            resizeMode="contain"
+            style={{
+              width: width * 0.6,
+              height: height * 0.3,
+              marginBottom: height * 0.04,
+            }}
+          />
 
-        {/* Headline */}
-        <Text
-          className="text-center text-gray-900 mb-2 font-lexend-bold"
-          style={{
-            fontSize: Math.min(width * 0.06, 26),
-            lineHeight: Math.min(width * 0.075, 32),
-          }}
-        >
-          Your Health, Delivered{"\n"}Fast & Safe
-        </Text>
+          <Text
+            className="text-center text-gray-900 mb-2 font-lexend-bold"
+            style={{
+              fontSize: Math.min(width * 0.06, 26),
+              lineHeight: Math.min(width * 0.075, 32),
+            }}
+          >
+            Your Health, Delivered{"\n"}Fast & Safe
+          </Text>
 
-        {/* Subtext */}
-        <Text
-          className="text-center text-gray-500 mb-8 font-lexend"
-          style={{
-            fontSize: Math.min(width * 0.04, 16),
-            paddingHorizontal: 4,
-            lineHeight: 20,
-          }}
-        >
-          We believe that getting the care you need shouldn’t be complicated or
-          time-consuming. Whether it’s ordering medicines or booking diagnostic
-          tests.
-        </Text>
+          <Text
+            className="text-center text-gray-500 mb-8 font-lexend"
+            style={{
+              fontSize: Math.min(width * 0.04, 16),
+              paddingHorizontal: 4,
+              lineHeight: 20,
+            }}
+          >
+            We believe that getting the care you need shouldn't be complicated
+            or time-consuming. Whether it's ordering medicines or booking
+            diagnostic tests.
+          </Text>
 
-        {/* CTA Button with Animated Press */}
-        <AnimatedActionButton
-          text="Let’s Start"
-          icon={<AntDesign name="arrowright" size={24} color="white" />}
-          onPress={() => router.replace(ROUTE_PATH.APP.HOME)}
-          textClassName="font-lexend-bold text-white mr-2"
-        />
-      </SafeAreaView>
-    </LinearGradient>
+          <AnimatedActionButton
+            text="Let's Start"
+            icon={<AntDesign name="arrowright" size={24} color="white" />}
+            onPress={() => router.replace(ROUTE_PATH.APP.HOME)}
+            textClassName="font-lexend-bold text-white mr-2"
+          />
+        </View>
+      </LinearGradient>
+    </SafeAreaView>
   );
 };
 
