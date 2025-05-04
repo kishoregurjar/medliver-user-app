@@ -103,15 +103,26 @@ const PharmacyHome = () => {
           {/* Promo Banner */}
           <Carousel
             loop
-            width={width - 32}
-            height={120}
+            width={width}
+            height={140}
             autoPlay
+            pagingEnabled={false}
+            snapEnabled
+            mode="parallax"
             data={promoBanners}
             scrollAnimationDuration={1000}
+            style={{ marginBottom: 24 }}
             renderItem={({ item }) => (
               <View
-                className="p-4 rounded-2xl mb-6"
-                style={{ backgroundColor: item.bgColor }}
+                className="w-[95%] mr-4 p-6 rounded-2xl"
+                style={{
+                  backgroundColor: item.bgColor,
+                  shadowColor: "#000",
+                  shadowOpacity: 0.1,
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowRadius: 10,
+                  elevation: 4,
+                }}
               >
                 <Text className="text-white font-bold text-xl mb-1">
                   {item.title}
