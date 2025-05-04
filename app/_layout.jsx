@@ -1,22 +1,19 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+// app/_layout.tsx
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { View } from "react-native";
 import { Stack } from "expo-router";
+import { useColorScheme } from "react-native"; // Use RN's native hook
 
-import "@/app/global.css";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { ToastProvider } from "@gluestack-ui/toast";
 import { AuthProvider } from "@/contexts/AuthContext";
+import './global.css'
 
+// Load fonts
 import {
   LexendDeca_100Thin,
   LexendDeca_200ExtraLight,
@@ -29,7 +26,7 @@ import {
   LexendDeca_900Black,
 } from "@expo-google-fonts/lexend-deca";
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync(); // Show splash screen until fonts load
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -47,7 +44,9 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (fontsLoaded) SplashScreen.hideAsync();
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
   }, [fontsLoaded]);
 
   if (!fontsLoaded) return null;
@@ -56,14 +55,11 @@ export default function RootLayout() {
     <GluestackUIProvider>
       <AuthProvider>
         <ToastProvider>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
+          <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
             <SafeAreaProvider>
               <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-              <View className="flex-1 bg-white dark:bg-black">
-                <Stack screenOptions={{ headerShown: false }} />
-              </View>
+              {/* No need for View wrapper — Stack will take up full screen */}
+              <Stack screenOptions={{ headerShown: false }} />
             </SafeAreaProvider>
           </ThemeProvider>
         </ToastProvider>
