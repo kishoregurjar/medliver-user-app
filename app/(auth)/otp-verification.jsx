@@ -10,7 +10,7 @@ import useAxios from "@/hooks/useAxios";
 import ROUTE_PATH from "@/routes/route.constants";
 import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
 import { useAppToast } from "../../hooks/useAppToast";
-import AppLayout from "@/components/layouts/AppLayout";
+import AuthLayout from "@/components/layouts/AuthLayout";
 
 export default function OtpVerificationScreen() {
   const router = useRouter();
@@ -73,7 +73,7 @@ export default function OtpVerificationScreen() {
   };
 
   return (
-    <AppLayout>
+    <AuthLayout>
       <View className="items-center mb-10">
         <Image
           source={STATIC.IMAGES.PAGES.VERIFICATION}
@@ -165,6 +165,6 @@ export default function OtpVerificationScreen() {
       >
         <Text className="text-gray-600 text-sm">Back to Login</Text>
       </TouchableOpacity>
-    </AppLayout>
+    </AuthLayout>
   );
 }

@@ -15,7 +15,7 @@ import GradientBackground from "../common/GradientEllipse";
 // Get the screen width and height
 const { width, height } = Dimensions.get("window");
 
-const AppLayout = ({ children }) => {
+const AuthLayout = ({ children }) => {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -80,4 +80,4 @@ const AppLayout = ({ children }) => {
   );
 };
 
-export default AppLayout;
+export default AuthLayout;

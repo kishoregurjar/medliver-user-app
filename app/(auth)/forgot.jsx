@@ -11,7 +11,7 @@ import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
 import { useAppToast } from "@/hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
-import AppLayout from "@/components/layouts/AppLayout";
+import AuthLayout from "@/components/layouts/AuthLayout";
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -57,7 +57,7 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <AppLayout>
+    <AuthLayout>
       {/* Illustration */}
       <View className="items-center my-4">
         <Image
@@ -97,6 +97,6 @@ export default function ForgotPasswordScreen() {
           Sign In
         </Text>
       </View>
-    </AppLayout>
+    </AuthLayout>
   );
 }

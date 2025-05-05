@@ -13,7 +13,7 @@ import ROUTE_PATH from "@/routes/route.constants";
 import { useAppToast } from "../../hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
-import AppLayout from "@/components/layouts/AppLayout";
+import AuthLayout from "@/components/layouts/AuthLayout";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -61,7 +61,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <AppLayout>
+    <AuthLayout>
       {/* Illustration */}
       <View className="items-center my-4">
         <Image
@@ -142,6 +142,6 @@ export default function LoginScreen() {
           </Text>
         </Pressable>
       </View>
-    </AppLayout>
+    </AuthLayout>
   );
 }

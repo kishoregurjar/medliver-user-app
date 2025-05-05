@@ -9,7 +9,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import ROUTE_PATH from "@/routes/route.constants";
 import { useAppToast } from "../../hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
-import AppLayout from "@/components/layouts/AppLayout";
+import AuthLayout from "@/components/layouts/AuthLayout";
 
 const ResetPasswordScreen = () => {
   const router = useRouter();
@@ -74,7 +74,7 @@ const ResetPasswordScreen = () => {
   };
 
   return (
-    <AppLayout>
+    <AuthLayout>
       <View className="items-center mb-10">
         <View className="items-center bg-white rounded-xl p-4">
           <MaterialIcons name="lock-reset" size={50} color="#E2AD5F" />
@@ -164,7 +164,7 @@ const ResetPasswordScreen = () => {
           </Text>
         </TouchableOpacity>
       </View>
-    </AppLayout>
+    </AuthLayout>
   );
 };
 

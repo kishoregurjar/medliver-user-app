@@ -18,7 +18,7 @@ import ROUTE_PATH from "@/routes/route.constants";
 import { useAppToast } from "../../hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
-import AppLayout from "@/components/layouts/AppLayout";
+import AuthLayout from "@/components/layouts/AuthLayout";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -117,7 +117,7 @@ export default function SignupScreen() {
   }, []);
 
   return (
-    <AppLayout>
+    <AuthLayout>
       <View className="w-full max-w-md self-center">
         <Text className="text-3xl mb-6 mt-6 font-lexend-bold text-black">
           Create Account
@@ -189,6 +189,6 @@ export default function SignupScreen() {
           </Pressable>
         </View>
       </View>
-    </AppLayout>
+    </AuthLayout>
   );
 }
