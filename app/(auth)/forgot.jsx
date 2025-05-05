@@ -1,17 +1,7 @@
-import {
-  View,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import GradientBackground from "@/components/common/GradientEllipse";
 import STATIC from "@/utils/constants";
 import { useRouter } from "expo-router";
 import useAxios from "@/hooks/useAxios";
@@ -21,6 +11,7 @@ import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
 import { useAppToast } from "@/hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
+import AppLayout from "@/components/layouts/AppLayout";
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -66,60 +57,46 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <GradientBackground darkMode={false}>
-      <SafeAreaView className="flex-1">
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          className="flex-1"
+    <AppLayout>
+      {/* Illustration */}
+      <View className="items-center my-4">
+        <Image
+          source={STATIC.IMAGES.PAGES.FORGOT}
+          style={{ width: 200, height: 200, resizeMode: "contain" }}
+        />
+      </View>
+
+      <Text className="text-3xl font-bold mb-6 text-black">
+        Forgot Password
+      </Text>
+
+      <FormFieldRenderer
+        control={control}
+        errors={errors}
+        fields={FORM_FIELD_TYPES.FORGOT_PASSWORD}
+      />
+
+      <TouchableOpacity
+        onPress={handleSubmit(onSubmit)}
+        className={`bg-app-color-red rounded-xl py-4 mb-4 ${
+          isLoading ? "opacity-50" : ""
+        }`}
+        disabled={isLoading}
+      >
+        <Text className="text-white text-center font-semibold text-base">
+          {isLoading ? "Sending..." : "Send OTP"}
+        </Text>
+      </TouchableOpacity>
+
+      <View className="flex-row justify-center mt-6">
+        <Text className="text-app-color-grey font-bold">Back to login?</Text>
+        <Text
+          onPress={() => router.back()}
+          className="text-app-color-softindigo font-bold ml-2"
         >
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ padding: 20 }}
-          >
-            {/* Illustration */}
-            <View className="items-center my-4">
-              <Image
-                source={STATIC.IMAGES.PAGES.FORGOT}
-                style={{ width: 200, height: 200, resizeMode: "contain" }}
-              />
-            </View>
-
-            <Text className="text-3xl font-bold mb-6 text-black">
-              Forgot Password
-            </Text>
-
-            <FormFieldRenderer
-              control={control}
-              errors={errors}
-              fields={FORM_FIELD_TYPES.FORGOT_PASSWORD}
-            />
-
-            <TouchableOpacity
-              onPress={handleSubmit(onSubmit)}
-              className={`bg-app-color-red rounded-xl py-4 mb-4 ${
-                isLoading ? "opacity-50" : ""
-              }`}
-              disabled={isLoading}
-            >
-              <Text className="text-white text-center font-semibold text-base">
-                {isLoading ? "Sending..." : "Send OTP"}
-              </Text>
-            </TouchableOpacity>
-
-            <View className="flex-row justify-center mt-6">
-              <Text className="text-app-color-grey font-bold">
-                Back to login?
-              </Text>
-              <Text
-                onPress={() => router.back()}
-                className="text-app-color-softindigo font-bold ml-2"
-              >
-                Sign In
-              </Text>
-            </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </GradientBackground>
+          Sign In
+        </Text>
+      </View>
+    </AppLayout>
   );
 }

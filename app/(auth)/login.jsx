@@ -1,19 +1,9 @@
-import {
-  View,
-  Text,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Checkbox from "expo-checkbox";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
-import GradientBackground from "@/components/common/GradientEllipse";
 import STATIC, { socialButtons } from "@/utils/constants";
 import { Button, ButtonText } from "@/components/ui/button";
 import useAxios from "@/hooks/useAxios";
@@ -23,6 +13,7 @@ import ROUTE_PATH from "@/routes/route.constants";
 import { useAppToast } from "../../hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
+import AppLayout from "@/components/layouts/AppLayout";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -70,105 +61,87 @@ export default function LoginScreen() {
   };
 
   return (
-    <GradientBackground darkMode={false}>
-      <SafeAreaView className="flex-1">
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          className="flex-1"
+    <AppLayout>
+      {/* Illustration */}
+      <View className="items-center my-4">
+        <Image
+          source={STATIC.IMAGES.PAGES.LOGIN}
+          style={{ width: 200, height: 200, resizeMode: "contain" }}
+        />
+      </View>
+
+      <Text className="text-3xl font-bold mb-6 text-black">Sign in</Text>
+
+      <FormFieldRenderer
+        control={control}
+        errors={errors}
+        fields={FORM_FIELD_TYPES.SIGN_IN}
+      />
+
+      {/* Remember + Forgot */}
+      <View className="flex-row items-center justify-between mt-2 mb-4">
+        <View className="flex-row items-center">
+          <Controller
+            control={control}
+            name="remember"
+            render={({ field: { value, onChange } }) => (
+              <Checkbox value={value} onValueChange={onChange} />
+            )}
+          />
+          <Text className="ml-2 text-sm text-gray-700">Remember me</Text>
+        </View>
+        <Text
+          className="text-sm text-app-color-softindigo font-bold"
+          onPress={() => {
+            router.push(ROUTE_PATH.AUTH.FORGOT_PASSWORD);
+          }}
         >
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ padding: 20 }}
+          Forgot Password?
+        </Text>
+      </View>
+
+      {/* Sign In Button */}
+      <TouchableOpacity
+        onPress={handleSubmit(onSubmit)}
+        className={`bg-app-color-red rounded-xl py-4 mb-4 ${
+          isLoading ? "opacity-50" : ""
+        }`}
+        disabled={isLoading}
+      >
+        <Text className="text-white text-center font-semibold text-base">
+          {isLoading ? "Signing In..." : "Sign In"}
+        </Text>
+      </TouchableOpacity>
+
+      {/* Divider */}
+      <Text className="text-center text-gray-500 mb-4">or Sign in with</Text>
+
+      {/* Social Buttons */}
+      <View>
+        {socialButtons.map(({ icon: Icon, iconName, color, text }, index) => (
+          <Button
+            key={index}
+            variant="outline"
+            size="xl"
+            className="my-1 mx-7 border border-app-color-warmgreylight rounded-lg flex-row items-center justify-center"
           >
-            {/* Illustration */}
-            <View className="items-center my-4">
-              <Image
-                source={STATIC.IMAGES.PAGES.LOGIN}
-                style={{ width: 200, height: 200, resizeMode: "contain" }}
-              />
+            <View className="mr-3 w-6 items-center">
+              <Icon name={iconName} size={20} color={color} />
             </View>
+            <ButtonText className="text-sm font-medium">{text}</ButtonText>
+          </Button>
+        ))}
+      </View>
 
-            <Text className="text-3xl font-bold mb-6 text-black">Sign in</Text>
-
-            <FormFieldRenderer
-              control={control}
-              errors={errors}
-              fields={FORM_FIELD_TYPES.SIGN_IN}
-            />
-
-            {/* Remember + Forgot */}
-            <View className="flex-row items-center justify-between mt-2 mb-4">
-              <View className="flex-row items-center">
-                <Controller
-                  control={control}
-                  name="remember"
-                  render={({ field: { value, onChange } }) => (
-                    <Checkbox value={value} onValueChange={onChange} />
-                  )}
-                />
-                <Text className="ml-2 text-sm text-gray-700">Remember me</Text>
-              </View>
-              <Text
-                className="text-sm text-app-color-softindigo font-bold"
-                onPress={() => {
-                  router.push(ROUTE_PATH.AUTH.FORGOT_PASSWORD);
-                }}
-              >
-                Forgot Password?
-              </Text>
-            </View>
-
-            {/* Sign In Button */}
-            <TouchableOpacity
-              onPress={handleSubmit(onSubmit)}
-              className={`bg-app-color-red rounded-xl py-4 mb-4 ${
-                isLoading ? "opacity-50" : ""
-              }`}
-              disabled={isLoading}
-            >
-              <Text className="text-white text-center font-semibold text-base">
-                {isLoading ? "Signing In..." : "Sign In"}
-              </Text>
-            </TouchableOpacity>
-
-            {/* Divider */}
-            <Text className="text-center text-gray-500 mb-4">
-              or Sign in with
-            </Text>
-
-            {/* Social Buttons */}
-            <View>
-              {socialButtons.map(
-                ({ icon: Icon, iconName, color, text }, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="xl"
-                    className="my-1 mx-7 border border-app-color-warmgreylight rounded-lg flex-row items-center justify-center"
-                  >
-                    <View className="mr-3 w-6 items-center">
-                      <Icon name={iconName} size={20} color={color} />
-                    </View>
-                    <ButtonText className="text-sm font-medium">
-                      {text}
-                    </ButtonText>
-                  </Button>
-                )
-              )}
-            </View>
-
-            {/* Signup Prompt */}
-            <View className="flex-row justify-center mt-6">
-              <Text className="text-app-color-grey font-bold">New User?</Text>
-              <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}>
-                <Text className="text-app-color-softindigo font-bold ml-2">
-                  Sign Up
-                </Text>
-              </Pressable>
-            </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </GradientBackground>
+      {/* Signup Prompt */}
+      <View className="flex-row justify-center mt-6">
+        <Text className="text-app-color-grey font-bold">New User?</Text>
+        <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}>
+          <Text className="text-app-color-softindigo font-bold ml-2">
+            Sign Up
+          </Text>
+        </Pressable>
+      </View>
+    </AppLayout>
   );
 }

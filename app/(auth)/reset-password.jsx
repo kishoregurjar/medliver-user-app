@@ -1,17 +1,7 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableOpacity,
-  useWindowDimensions,
-} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import GradientBackground from "@/components/common/GradientEllipse";
 import useAxios from "@/hooks/useAxios";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import FORM_VALIDATIONS from "@/libs/form-validations";
@@ -19,9 +9,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import ROUTE_PATH from "@/routes/route.constants";
 import { useAppToast } from "../../hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
+import AppLayout from "@/components/layouts/AppLayout";
 
 const ResetPasswordScreen = () => {
-  const { width } = useWindowDimensions();
   const router = useRouter();
   const { email } = useLocalSearchParams();
   const { request: resetPassword, loading: isLoading } = useAxios();
@@ -84,123 +74,97 @@ const ResetPasswordScreen = () => {
   };
 
   return (
-    <GradientBackground
-      animateBlobs
-      animationType="pulse"
-      animationSpeed={1000}
-    >
-      <SafeAreaView className="flex-1">
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-          className="flex-1"
-        >
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-              paddingHorizontal: width < 360 ? 16 : 24,
-              paddingBottom: 100,
-              flexGrow: 1,
-              justifyContent: "center",
-            }}
-          >
-            <View className="items-center mb-10">
-              <View className="items-center bg-white rounded-xl p-4">
-                <MaterialIcons name="lock-reset" size={50} color="#E2AD5F" />
-              </View>
-            </View>
+    <AppLayout>
+      <View className="items-center mb-10">
+        <View className="items-center bg-white rounded-xl p-4">
+          <MaterialIcons name="lock-reset" size={50} color="#E2AD5F" />
+        </View>
+      </View>
 
-            <View className="w-full max-w-md self-center">
-              <Text className="text-3xl font-lexend-bold text-black mb-6 text-center">
-                Reset Password
+      <View className="w-full max-w-md self-center">
+        <Text className="text-3xl font-lexend-bold text-black mb-6 text-center">
+          Reset Password
+        </Text>
+
+        <FormFieldRenderer
+          control={control}
+          errors={errors}
+          fields={[
+            {
+              name: "newPassword",
+              label: "New Password",
+              type: "password",
+              placeholder: "Enter Your New Password",
+              onChangeCustom: (val) => {
+                setPasswordValue(val);
+                setPasswordStrength(getPasswordStrength(val));
+              },
+            },
+            {
+              name: "confirmPassword",
+              label: "Confirm Password",
+              type: "password",
+              placeholder: "Confirm Your Password",
+            },
+          ]}
+        />
+
+        {passwordValue?.length > 0 && (
+          <View className="my-3 p-3 rounded-md bg-gray-200">
+            <View className="flex-row justify-between items-center mb-2">
+              <Text className="font-medium">Your Password Must Include:</Text>
+              <Text className={`font-medium ${passwordStrength.strengthColor}`}>
+                {passwordStrength.strengthText}
               </Text>
-
-              <FormFieldRenderer
-                control={control}
-                errors={errors}
-                fields={[
-                  {
-                    name: "newPassword",
-                    label: "New Password",
-                    type: "password",
-                    placeholder: "Enter Your New Password",
-                    onChangeCustom: (val) => {
-                      setPasswordValue(val);
-                      setPasswordStrength(getPasswordStrength(val));
-                    },
-                  },
-                  {
-                    name: "confirmPassword",
-                    label: "Confirm Password",
-                    type: "password",
-                    placeholder: "Confirm Your Password",
-                  },
-                ]}
-              />
-
-              {passwordValue?.length > 0 && (
-                <View className="my-3 p-3 rounded-md bg-gray-200">
-                  <View className="flex-row justify-between items-center mb-2">
-                    <Text className="font-medium">
-                      Your Password Must Include:
-                    </Text>
-                    <Text
-                      className={`font-medium ${passwordStrength.strengthColor}`}
-                    >
-                      {passwordStrength.strengthText}
-                    </Text>
-                  </View>
-
-                  <View className="gap-1">
-                    {[
-                      {
-                        label: "At least 8 characters",
-                        check: passwordStrength.length,
-                      },
-                      {
-                        label: "At least 1 letter",
-                        check: passwordStrength.letter,
-                      },
-                      {
-                        label: "At least 1 number",
-                        check: passwordStrength.number,
-                      },
-                    ].map((item, idx) => (
-                      <View key={idx} className="flex-row items-center gap-2">
-                        <MaterialIcons
-                          name={item.check ? "check-circle" : "cancel"}
-                          size={16}
-                          color={item.check ? "#16A34A" : "#DC2626"}
-                        />
-                        <Text
-                          className={`text-sm ${
-                            item.check ? "text-green-600" : "text-gray-500"
-                          }`}
-                        >
-                          {item.label}
-                        </Text>
-                      </View>
-                    ))}
-                  </View>
-                </View>
-              )}
-
-              <TouchableOpacity
-                onPress={handleSubmit(onSubmit)}
-                disabled={isLoading}
-                className={`bg-app-color-red rounded-xl py-4 mb-4 ${
-                  isLoading ? "opacity-50" : ""
-                }`}
-              >
-                <Text className="text-white text-center font-semibold text-base">
-                  {isLoading ? "Resetting..." : "Reset Password"}
-                </Text>
-              </TouchableOpacity>
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </GradientBackground>
+
+            <View className="gap-1">
+              {[
+                {
+                  label: "At least 8 characters",
+                  check: passwordStrength.length,
+                },
+                {
+                  label: "At least 1 letter",
+                  check: passwordStrength.letter,
+                },
+                {
+                  label: "At least 1 number",
+                  check: passwordStrength.number,
+                },
+              ].map((item, idx) => (
+                <View key={idx} className="flex-row items-center gap-2">
+                  <MaterialIcons
+                    name={item.check ? "check-circle" : "cancel"}
+                    size={16}
+                    color={item.check ? "#16A34A" : "#DC2626"}
+                  />
+                  <Text
+                    className={`text-sm ${
+                      item.check ? "text-green-600" : "text-gray-500"
+                    }`}
+                  >
+                    {item.label}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        <TouchableOpacity
+          onPress={handleSubmit(onSubmit)}
+          disabled={isLoading}
+          className={`bg-app-color-red rounded-xl py-4 mb-4 ${
+            isLoading ? "opacity-50" : ""
+          }`}
+        >
+          <Text className="text-white text-center font-semibold text-base">
+            {isLoading ? "Resetting..." : "Reset Password"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </AppLayout>
   );
 };
 

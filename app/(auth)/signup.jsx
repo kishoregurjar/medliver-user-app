@@ -1,19 +1,10 @@
-import {
-  View,
-  Text,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from "react-native";
+import { View, Text, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller } from "react-hook-form";
 import Checkbox from "expo-checkbox";
 import { useRouter } from "expo-router";
-import GradientBackground from "@/components/common/GradientEllipse";
 import { Button, ButtonText } from "@/components/ui/button";
 import { socialButtons } from "@/utils/constants";
 import { useAuthUser } from "@/contexts/AuthContext";
@@ -27,6 +18,7 @@ import ROUTE_PATH from "@/routes/route.constants";
 import { useAppToast } from "../../hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
+import AppLayout from "@/components/layouts/AppLayout";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -125,105 +117,78 @@ export default function SignupScreen() {
   }, []);
 
   return (
-    <GradientBackground
-      animateBlobs
-      darkMode={false}
-      animationType="pulse"
-      animationSpeed={1000}
-    >
-      <SafeAreaView className="flex-1">
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-          className="flex-1"
-        >
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-              paddingHorizontal: 20,
-              paddingBottom: 100,
-              flexGrow: 1,
-            }}
-          >
-            <View className="w-full max-w-md self-center">
-              <Text className="text-3xl mb-6 mt-6 font-lexend-bold text-black">
-                Create Account
-              </Text>
+    <AppLayout>
+      <View className="w-full max-w-md self-center">
+        <Text className="text-3xl mb-6 mt-6 font-lexend-bold text-black">
+          Create Account
+        </Text>
 
-              <FormFieldRenderer
-                control={control}
-                errors={errors}
-                fields={FORM_FIELD_TYPES.SIGN_UP}
+        <FormFieldRenderer
+          control={control}
+          errors={errors}
+          fields={FORM_FIELD_TYPES.SIGN_UP}
+        />
+
+        <View className="flex-row items-center mb-4">
+          <Controller
+            control={control}
+            name="agree"
+            render={({ field: { value, onChange } }) => (
+              <Checkbox
+                value={value}
+                onValueChange={onChange}
+                color={value ? "#E55150" : undefined}
+                className="mr-4"
               />
+            )}
+          />
+          <Text className="text-xs text-app-color-grey font-lexend-bold flex-1">
+            By continuing, you agree to our Terms of Services, Privacy Policy.
+          </Text>
+        </View>
+        <FormError error={errors.agree?.message} className="mt-2" />
 
-              <View className="flex-row items-center mb-4">
-                <Controller
-                  control={control}
-                  name="agree"
-                  render={({ field: { value, onChange } }) => (
-                    <Checkbox
-                      value={value}
-                      onValueChange={onChange}
-                      color={value ? "#E55150" : undefined}
-                      className="mr-4"
-                    />
-                  )}
-                />
-                <Text className="text-xs text-app-color-grey font-lexend-bold flex-1">
-                  By continuing, you agree to our Terms of Services, Privacy
-                  Policy.
-                </Text>
-              </View>
-              <FormError error={errors.agree?.message} className="mt-2" />
+        <TouchableOpacity
+          onPress={handleSubmit(onSubmit)}
+          className={`bg-app-color-red rounded-xl py-4 mb-4 ${
+            isLoading ? "opacity-50" : ""
+          }`}
+          disabled={isLoading}
+        >
+          <Text className="text-white text-center font-semibold text-base">
+            {isLoading ? "Signing up..." : "Sign up"}
+          </Text>
+        </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={handleSubmit(onSubmit)}
-                className={`bg-app-color-red rounded-xl py-4 mb-4 ${
-                  isLoading ? "opacity-50" : ""
-                }`}
-                disabled={isLoading}
-              >
-                <Text className="text-white text-center font-semibold text-base">
-                  {isLoading ? "Signing up..." : "Sign up"}
-                </Text>
-              </TouchableOpacity>
+        <Text className="text-center text-app-color-grey font-lexend mb-4">
+          or Sign up with
+        </Text>
 
-              <Text className="text-center text-app-color-grey font-lexend mb-4">
-                or Sign up with
-              </Text>
-
-              {socialButtons.map(
-                ({ icon: Icon, iconName, color, text }, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="xl"
-                    className="my-1 mx-4 border border-app-color-warmgreylight rounded-lg flex-row items-center justify-center"
-                  >
-                    <View className="mr-3 w-6 items-center">
-                      <Icon name={iconName} size={20} color={color} />
-                    </View>
-                    <ButtonText className="text-sm font-lexend">
-                      {text}
-                    </ButtonText>
-                  </Button>
-                )
-              )}
-
-              <View className="flex-row items-center justify-center mt-6">
-                <Text className="text-app-color-grey font-lexend-bold">
-                  Already have an account?
-                </Text>
-                <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
-                  <Text className="text-app-color-softindigo font-lexend-bold ml-2">
-                    Login
-                  </Text>
-                </Pressable>
-              </View>
+        {socialButtons.map(({ icon: Icon, iconName, color, text }, index) => (
+          <Button
+            key={index}
+            variant="outline"
+            size="xl"
+            className="my-1 mx-4 border border-app-color-warmgreylight rounded-lg flex-row items-center justify-center"
+          >
+            <View className="mr-3 w-6 items-center">
+              <Icon name={iconName} size={20} color={color} />
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </GradientBackground>
+            <ButtonText className="text-sm font-lexend">{text}</ButtonText>
+          </Button>
+        ))}
+
+        <View className="flex-row items-center justify-center mt-6">
+          <Text className="text-app-color-grey font-lexend-bold">
+            Already have an account?
+          </Text>
+          <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
+            <Text className="text-app-color-softindigo font-lexend-bold ml-2">
+              Login
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+    </AppLayout>
   );
 }
