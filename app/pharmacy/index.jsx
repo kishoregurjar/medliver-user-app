@@ -6,7 +6,7 @@ import useAxios from "@/hooks/useAxios";
 import { Ionicons } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
 import { Dimensions } from "react-native";
-import AppLayout from "@/components/layouts/AuthLayout";
+import AppLayout from "@/components/layouts/AppLayout";
 
 const { width } = Dimensions.get("window");
 
