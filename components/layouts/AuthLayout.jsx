@@ -1,4 +1,4 @@
-// components/layouts/AppLayout.tsx
+// components/layouts/AuthLayout.tsx
 import React from "react";
 import {
   KeyboardAvoidingView,
