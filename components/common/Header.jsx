@@ -5,8 +5,6 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  Platform,
   Dimensions,
 } from "react-native";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -52,7 +50,7 @@ const Header = () => {
   const [searchModalVisible, setSearchModalVisible] = useState(false);
 
   return (
-    <SafeAreaView className={`${Platform.OS === "android" ? "pt-4" : ""}`}>
+    <View>
       <View>
         {/* Logo & Icons */}
         <View className="flex-row justify-between items-center mb-5">
@@ -167,7 +165,7 @@ const Header = () => {
         }}
         suggestions={medicineSuggestions}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
