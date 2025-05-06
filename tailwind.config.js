@@ -170,43 +170,42 @@ module.exports = {
         },
         // Custom App colors - Color Palette
         // These colors are used in the app and should be consistent with the design
-        // system. You can adjust them as needed.
         brand: {
-          primary: "#E55150", // main red (formerly app-color-red)
-          secondary: "#E2AD5F", // main brown (formerly app-color-brown)
-          background: "#FCDEC7", // light brown (formerly app-color-lightbrown)
+          primary: "#E55150", // main red (formerly - red)
+          secondary: "#E2AD5F", // main brown (formerly - brown)
+          background: "#FCDEC7", // light brown (formerly - lightbrown)
         },
         text: {
-          primary: "#212121", // deep black (formerly app-color-black)
-          inverse: "#F2F2F2", // white text for dark backgrounds (formerly app-color-white)
-          muted: "#6E6A7C", // soft grey text (formerly app-color-grey)
+          primary: "#212121", // deep black (formerly - black)
+          inverse: "#F2F2F2", // white text for dark backgrounds (formerly - white)
+          muted: "#6E6A7C", // soft grey text (formerly - grey)
         },
         background: {
           default: "#F2F2F2", // light background (same as text.inverse)
-          surface: "#E2E2E2", // lightgrey (formerly app-color-lightgrey)
-          tint: "#DEEFFF", // very light blue background (formerly app-color-lightblue)
-          soft: "#E4DCDC", // warm grey light (formerly app-color-warmgreylight)
+          surface: "#E2E2E2", // lightgrey (formerly - lightgrey)
+          tint: "#DEEFFF", // very light blue background (formerly - lightblue)
+          soft: "#E4DCDC", // warm grey light (formerly - warmgreylight)
         },
         status: {
-          success: "#3DF46E", // green (formerly app-color-green)
+          success: "#3DF46E", // green (formerly - green)
           error: "#E55150", // same as brand.primary
           warning: "#FFA726", // (custom, you can adjust or ignore if not needed)
-          info: "#4575EB", // mid blue (formerly app-color-midblue)
+          info: "#4575EB", // mid blue (formerly - midblue)
         },
         accent: {
-          pink: "#FFBDBC", // (formerly app-color-pink)
-          mint: "#D2FFDE", // (formerly app-color-mintgreen)
-          indigo: "#6B41FF", // (formerly app-color-indigo)
-          softIndigo: "#6C63FF", // (formerly app-color-softindigo)
-          royalBlue: "#1979FF", // (formerly app-color-royalblue)
+          pink: "#FFBDBC", // (formerly - pink)
+          mint: "#D2FFDE", // (formerly - mintgreen)
+          indigo: "#6B41FF", // (formerly - indigo)
+          softIndigo: "#6C63FF", // (formerly - softindigo)
+          royalBlue: "#1979FF", // (formerly - royalblue)
           midBlue: "#4575EB", // (same as status.info)
-          maroon: "#A32022", // (formerly app-color-maroon)
-          blue: "#3072FF", // (formerly app-color-blue)
-          deepBlue: "#4915FF", // (formerly app-color-deepblue)
+          maroon: "#A32022", // (formerly - maroon)
+          blue: "#3072FF", // (formerly - blue)
+          deepBlue: "#4915FF", // (formerly - deepblue)
         },
       },
       backgroundImage: {
-        "app-color-gradient":
+        "- gradient":
           "linear-gradient(90deg, #E75A55 0%, #F0B646 100%)",
       },
       fontFamily: {
