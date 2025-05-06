@@ -39,6 +39,12 @@ export default function NavigationTiles() {
       cta: "Get Now",
       path: "/cab",
     },
+    {
+      label: "Book Doctor Appointment",
+      icon: STATIC.IMAGES.COMPONENTS.HOME_NAV_TILE_4,
+      cta: "Book Now",
+      path: "/appointment/book-an-appointment",
+    },
   ];
 
   return (

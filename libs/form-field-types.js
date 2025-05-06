@@ -172,6 +172,40 @@ const FORM_FIELD_TYPES = {
       ],
     },
   ],
+  BOOK_APPOINTMENT_DOCTOR: [
+    {
+      name: "name",
+      label: "Full Name",
+      placeholder: "Enter your full name",
+      type: "text",
+    },
+    {
+      name: "email",
+      label: "Email",
+      placeholder: "Enter your email address",
+      type: "text",
+      keyboardType: "email-address",
+    },
+    {
+      name: "address",
+      label: "Address",
+      placeholder: "Enter your address",
+      type: "text",
+    },
+    {
+      name: "phone",
+      label: "Phone Number",
+      placeholder: "Enter 10-digit phone number",
+      type: "text",
+      keyboardType: "numeric",
+    },
+    {
+      name: "disease",
+      label: "Disease / Problem",
+      placeholder: "Describe your health problem",
+      type: "text",
+    },
+  ]
 };
 
 export default FORM_FIELD_TYPES;

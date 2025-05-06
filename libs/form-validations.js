@@ -1,50 +1,50 @@
-import * as Yup from "yup";
+import * as yup from "yup";
 
 const FORM_VALIDATIONS = {
-  SIGN_UP: Yup.object().shape({
-    fullName: Yup.string().required("Full Name is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    phoneNumber: Yup.string()
+  SIGN_UP: yup.object().shape({
+    fullName: yup.string().required("Full Name is required"),
+    email: yup.string().email("Invalid email").required("Email is required"),
+    phoneNumber: yup.string()
       .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
       .required("Phone number is required"),
-    password: Yup.string()
+    password: yup.string()
       .min(6, "Min 6 characters")
       .required("Password is required"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password")], "Passwords must match")
+    confirmPassword: yup.string()
+      .oneOf([yup.ref("password")], "Passwords must match")
       .required("Confirm your password"),
-    agree: Yup.boolean().oneOf([true], "You must agree to the terms"),
+    agree: yup.boolean().oneOf([true], "You must agree to the terms"),
   }),
-  LOGIN: Yup.object().shape({
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    password: Yup.string().required("Password is required"),
+  LOGIN: yup.object().shape({
+    email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup.string().required("Password is required"),
   }),
-  FORGOT_PASSWORD: Yup.object().shape({
-    email: Yup.string().email("Invalid email").required("Email is required"),
+  FORGOT_PASSWORD: yup.object().shape({
+    email: yup.string().email("Invalid email").required("Email is required"),
   }),
-  RESET_PASSWORD: Yup.object().shape({
-    newPassword: Yup.string()
+  RESET_PASSWORD: yup.object().shape({
+    newPassword: yup.string()
       .min(6, "Minimum 6 characters")
       .required("New password is required"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("newPassword")], "Passwords must match")
+    confirmPassword: yup.string()
+      .oneOf([yup.ref("newPassword")], "Passwords must match")
       .required("Please confirm your password"),
   }),
-  INSURANCE_SUBMIT_ENQUIRY: Yup.object().shape({
-    full_name: Yup.string().required("Full name is required"),
-    phone_number: Yup.string()
+  INSURANCE_SUBMIT_ENQUIRY: yup.object().shape({
+    full_name: yup.string().required("Full name is required"),
+    phone_number: yup.string()
       .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
       .required("Phone number is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    lead_type: Yup.string().required("Lead type is required"),
-    age: Yup.number()
+    email: yup.string().email("Invalid email").required("Email is required"),
+    lead_type: yup.string().required("Lead type is required"),
+    age: yup.number()
       .typeError("Age must be a number")
       .required("Age is required")
       .positive("Age must be positive")
       .integer("Age must be an integer"),
-    gender: Yup.string().required("Gender is required"),
-    coverage_for: Yup.string().required("Coverage selection is required"),
-    family_member_count: Yup.number()
+    gender: yup.string().required("Gender is required"),
+    coverage_for: yup.string().required("Coverage selection is required"),
+    family_member_count: yup.number()
       .transform((value, originalValue) =>
         String(originalValue).trim() === "" ? undefined : value
       )
@@ -59,12 +59,23 @@ const FORM_VALIDATIONS = {
         otherwise: (schema) => schema.notRequired(),
       }),
 
-    income: Yup.number()
+    income: yup.number()
       .typeError("Income must be a number")
       .required("Income is required"),
-    nominee_name: Yup.string().required("Nominee name is required"),
-    nominee_relation: Yup.string().required("Nominee relation is required"),
-    lead_source: Yup.string().required("Lead source is required"),
+    nominee_name: yup.string().required("Nominee name is required"),
+    nominee_relation: yup.string().required("Nominee relation is required"),
+    lead_source: yup.string().required("Lead source is required"),
+  }),
+  BOOK_APPOINTMENT_DOCTOR: yup.object().shape({
+    name: yup.string().required("Name is required"),
+    email: yup.string().email("Invalid email").required("Email is required"),
+    address: yup.string().required("Address is required"),
+    phone: yup
+      .string()
+      .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+      .required("Phone number is required"),
+    disease: yup.string().required("Disease details are required"),
+    confirmation: yup.boolean().oneOf([true], "You must confirm the information"),
   }),
 };
 
