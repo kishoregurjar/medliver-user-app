@@ -144,10 +144,10 @@ const BookAmbulanceScreen = () => {
           showsVerticalScrollIndicator={false}
         >
           <View className="py-8">
-            <Text className="text-2xl font-lexend-bold text-app-color-black mb-2">
+            <Text className="text-2xl font-lexend-bold text-text-primary mb-2">
               Book a Cab for Emergency Travel
             </Text>
-            <Text className="text-base font-lexend text-app-color-grey mb-6 leading-relaxed">
+            <Text className="text-base font-lexend text-text-muted mb-6 leading-relaxed">
               Fast, Comfortable & Care-Oriented Rides for Patients
             </Text>
 
@@ -172,7 +172,7 @@ const BookAmbulanceScreen = () => {
                   />
                 )}
               />
-              <Text className="font-lexend text-app-color-black flex-1">
+              <Text className="font-lexend text-text-primary flex-1">
                 I confirm all information is correct
               </Text>
             </View>
@@ -187,14 +187,14 @@ const BookAmbulanceScreen = () => {
               className="mb-4"
               onPress={() => getCurrentLocation("address", setLoadingPickup)}
             >
-              <Text className="text-app-color-red underline font-lexend">
+              <Text className="text-brand-primary underline font-lexend">
                 📍 Use Current Location as Pickup
               </Text>
             </TouchableOpacity>
 
             {/* Submit button */}
             <TouchableOpacity
-              className="bg-app-color-red py-4 rounded-xl mt-2"
+              className="bg-brand-primary py-4 rounded-xl mt-2"
               onPress={handleSubmit(onSubmit)}
             >
               <Text className="text-white font-lexend-bold text-center text-base">

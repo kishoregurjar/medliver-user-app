@@ -91,7 +91,7 @@ export default function LoginScreen() {
           <Text className="ml-2 text-sm text-gray-700">Remember me</Text>
         </View>
         <Text
-          className="text-sm text-app-color-softindigo font-bold"
+          className="text-sm text-accent-softIndigo font-bold"
           onPress={() => {
             router.push(ROUTE_PATH.AUTH.FORGOT_PASSWORD);
           }}
@@ -103,7 +103,7 @@ export default function LoginScreen() {
       {/* Sign In Button */}
       <TouchableOpacity
         onPress={handleSubmit(onSubmit)}
-        className={`bg-app-color-red rounded-xl py-4 mb-4 ${
+        className={`bg-brand-primary rounded-xl py-4 mb-4 ${
           isLoading ? "opacity-50" : ""
         }`}
         disabled={isLoading}
@@ -123,7 +123,7 @@ export default function LoginScreen() {
             key={index}
             variant="outline"
             size="xl"
-            className="my-1 mx-7 border border-app-color-warmgreylight rounded-lg flex-row items-center justify-center"
+            className="my-1 mx-7 border border-background-soft rounded-lg flex-row items-center justify-center"
           >
             <View className="mr-3 w-6 items-center">
               <Icon name={iconName} size={20} color={color} />
@@ -135,9 +135,9 @@ export default function LoginScreen() {
 
       {/* Signup Prompt */}
       <View className="flex-row justify-center mt-6">
-        <Text className="text-app-color-grey font-bold">New User?</Text>
+        <Text className="text-text-muted font-bold">New User?</Text>
         <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}>
-          <Text className="text-app-color-softindigo font-bold ml-2">
+          <Text className="text-accent-softIndigo font-bold ml-2">
             Sign Up
           </Text>
         </Pressable>

@@ -150,7 +150,7 @@ export default function OtpVerificationScreen() {
       <TouchableOpacity
         disabled={isLoading}
         onPress={handleSubmit(onSubmit)}
-        className={`bg-app-color-red rounded-xl py-4 mb-4 ${
+        className={`bg-brand-primary rounded-xl py-4 mb-4 ${
           isLoading ? "opacity-50" : ""
         }`}
       >

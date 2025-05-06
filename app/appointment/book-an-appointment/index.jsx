@@ -52,10 +52,10 @@ const BookAnAppointmentScreen = () => {
   return (
     <AppLayout>
       <View className="py-8">
-        <Text className="text-2xl font-lexend-bold text-app-color-black mb-2">
+        <Text className="text-2xl font-lexend-bold text-text-primary mb-2">
           Book an Appointment
         </Text>
-        <Text className="text-base font-lexend text-app-color-grey mb-6 leading-relaxed">
+        <Text className="text-base font-lexend text-text-muted mb-6 leading-relaxed">
           Schedule a visit with a medical expert
         </Text>
 
@@ -80,12 +80,12 @@ const BookAnAppointmentScreen = () => {
               />
             )}
           />
-          <Text className="font-lexend text-app-color-black flex-1">
+          <Text className="font-lexend text-text-primary flex-1">
             I confirm all information is correct
           </Text>
         </View>
         {errors.confirmation && (
-          <Text className="text-xs text-red-500 mb-4">
+          <Text className="text-xs text-brand-primary mb-4">
             {errors.confirmation.message}
           </Text>
         )}
@@ -97,7 +97,7 @@ const BookAnAppointmentScreen = () => {
 
         {/* Submit button */}
         <TouchableOpacity
-          className="bg-app-color-red py-4 rounded-xl mt-2"
+          className="bg-brand-primary py-4 rounded-xl mt-2"
           onPress={handleSubmit(onSubmit)}
         >
           <Text className="text-white font-lexend-bold text-center text-base">

@@ -110,7 +110,7 @@ const Header = () => {
           {/* Login */}
           <TouchableOpacity
             activeOpacity={0.7}
-            className="flex-row items-center bg-app-color-red rounded-lg px-4 py-2 ml-2"
+            className="flex-row items-center bg-brand-primary rounded-lg px-4 py-2 ml-2"
             onPress={() => router.push("/login")}
           >
             <Ionicons name="person" size={15} color="#fff" />
@@ -134,7 +134,7 @@ const Header = () => {
         </View>
 
         {/* Search Bar */}
-        <View className="flex-row items-center bg-white border border-app-color-warmgreylight rounded-xl px-4 py-3 mb-4">
+        <View className="flex-row items-center bg-white border border-background-soft rounded-xl px-4 py-3 mb-4">
           <Ionicons name="search" size={20} color="#6E6A7C" />
           <TextInput
             placeholder="Search Medicine"

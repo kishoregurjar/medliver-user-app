@@ -95,10 +95,10 @@ const InsuranceEnquiryScreen = () => {
           showsVerticalScrollIndicator={false}
         >
           <View className="gap-y-2">
-            <Text className="text-2xl font-lexend-bold text-app-color-black dark:text-white mb-1">
+            <Text className="text-2xl font-lexend-bold text-text-black dark:text-white mb-1">
               Insurance Enquiry
             </Text>
-            <Text className="text-base font-lexend text-app-color-grey dark:text-neutral-300 mb-5 leading-relaxed">
+            <Text className="text-base font-lexend text-text-muted dark:text-neutral-300 mb-5 leading-relaxed">
               Submit your insurance-related questions and we’ll get back to you.
             </Text>
 
@@ -129,15 +129,15 @@ const InsuranceEnquiryScreen = () => {
                         onValueChange={onChange}
                         colorScheme="#ffffff"
                       />
-                      <Text className="text-app-color-black font-lexend dark:text-white ml-2">
+                      <Text className="text-text-primary font-lexend dark:text-white ml-2">
                         I agree to the{" "}
-                        <Text className="text-app-color-red font-lexend">
+                        <Text className="text-brand-primary font-lexend">
                           Terms & Conditions
                         </Text>
                       </Text>
                     </TouchableOpacity>
                     {error && (
-                      <Text className="text-app-color-red mt-1 text-xs">
+                      <Text className="text-red-500 mt-1 text-xs">
                         {error.message}
                       </Text>
                     )}
@@ -150,7 +150,7 @@ const InsuranceEnquiryScreen = () => {
               onPress={handleSubmit(onSubmit, (formErrors) =>
                 console.log("Form Validation Errors:", formErrors)
               )}
-              className="mt-6 py-4 rounded-xl bg-app-color-red shadow-md active:opacity-80"
+              className="mt-6 py-4 rounded-xl bg-brand-primary shadow-md active:opacity-80"
             >
               <Text className="text-white text-center text-base font-lexend-bold">
                 Submit Enquiry

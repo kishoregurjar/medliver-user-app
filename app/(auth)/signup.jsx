@@ -142,7 +142,7 @@ export default function SignupScreen() {
               />
             )}
           />
-          <Text className="text-xs text-app-color-grey font-lexend-bold flex-1">
+          <Text className="text-xs text-text-muted font-lexend-bold flex-1">
             By continuing, you agree to our Terms of Services, Privacy Policy.
           </Text>
         </View>
@@ -150,7 +150,7 @@ export default function SignupScreen() {
 
         <TouchableOpacity
           onPress={handleSubmit(onSubmit)}
-          className={`bg-app-color-red rounded-xl py-4 mb-4 ${
+          className={`bg-brand-primary rounded-xl py-4 mb-4 ${
             isLoading ? "opacity-50" : ""
           }`}
           disabled={isLoading}
@@ -160,7 +160,7 @@ export default function SignupScreen() {
           </Text>
         </TouchableOpacity>
 
-        <Text className="text-center text-app-color-grey font-lexend mb-4">
+        <Text className="text-center text-text-muted font-lexend mb-4">
           or Sign up with
         </Text>
 
@@ -169,7 +169,7 @@ export default function SignupScreen() {
             key={index}
             variant="outline"
             size="xl"
-            className="my-1 mx-4 border border-app-color-warmgreylight rounded-lg flex-row items-center justify-center"
+            className="my-1 mx-4 border border-background-soft rounded-lg flex-row items-center justify-center"
           >
             <View className="mr-3 w-6 items-center">
               <Icon name={iconName} size={20} color={color} />
@@ -179,11 +179,11 @@ export default function SignupScreen() {
         ))}
 
         <View className="flex-row items-center justify-center mt-6">
-          <Text className="text-app-color-grey font-lexend-bold">
+          <Text className="text-text-muted font-lexend-bold">
             Already have an account?
           </Text>
           <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
-            <Text className="text-app-color-softindigo font-lexend-bold ml-2">
+            <Text className="text-accent-softIndigo font-lexend-bold ml-2">
               Login
             </Text>
           </Pressable>

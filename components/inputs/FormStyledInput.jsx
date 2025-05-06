@@ -2,7 +2,7 @@ import { TextInput, View } from "react-native";
 import React from "react";
 
 const FormStyledInput = ({
-  className = "border border-app-color-warmgreylight font-lexend rounded-md px-2 py-1 text-base",
+  className = "border border-background-soft font-lexend rounded-md px-2 py-1 text-base",
   placeholderTextColor = "#6E6A7C",
   rightIcon,
   ...rest

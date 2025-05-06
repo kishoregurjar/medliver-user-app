@@ -28,7 +28,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                   {/* Password */}
                   {field.type === "password" ? (
                     <View>
-                      <View className="bg-white flex-row items-center border border-app-color-warmgreylight font-lexend rounded-md px-2 py-1 text-base">
+                      <View className="bg-white flex-row items-center border border-background-soft font-lexend rounded-md px-2 py-1 text-base">
                         <TextInput
                           className="flex-1 text-black"
                           placeholder={field.placeholder}
@@ -56,7 +56,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                     </View>
                   ) : field.type === "select" ||
                     field.type === "multiselect" ? (
-                    <View className="border border-app-color-warmgreylight rounded-lg">
+                    <View className="border border-background-soft rounded-lg">
                       <Picker
                         selectedValue={value}
                         onValueChange={(val) => {
@@ -85,7 +85,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                       </Picker>
                     </View>
                   ) : field.type === "switch" ? (
-                    <View className="flex-row items-center justify-between p-2 border rounded-lg border-app-color-warmgreylight">
+                    <View className="flex-row items-center justify-between p-2 border rounded-lg border-background-soft">
                       <Text className="text-base">{field.label}</Text>
                       <Switch
                         value={value}
@@ -106,8 +106,8 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                       <View
                         className={`w-5 h-5 border rounded ${
                           value
-                            ? "bg-app-color-red border-app-color-red"
-                            : "border-app-color-warmgreylight"
+                            ? "bg-brand-primary border-brand-primary"
+                            : "border-background-soft"
                         }`}
                       />
                       <Text>{field.label}</Text>
@@ -126,8 +126,8 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                           <View
                             className={`w-4 h-4 rounded-full border mr-2 ${
                               value === opt.value
-                                ? "bg-app-color-red border-app-color-red"
-                                : "border-app-color-warmgreylight"
+                                ? "bg-brand-primary border-brand-primary"
+                                : "border-background-soft"
                             }`}
                           />
                           <Text>{opt.label}</Text>

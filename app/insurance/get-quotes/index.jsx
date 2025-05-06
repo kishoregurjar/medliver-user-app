@@ -9,7 +9,7 @@ const GetQuotesScreen = () => {
   return (
     <View className="flex-1 bg-white">
       {/* Top Red Section (40%) */}
-      <View className="flex-[0.4] bg-app-color-red items-center justify-center px-6">
+      <View className="flex-[0.4] bg-brand-primary items-center justify-center px-6">
         <Text className="text-white text-3xl font-lexend-bold text-center mb-2">
           Compare & Buy Insurance Instantly
         </Text>
@@ -22,7 +22,7 @@ const GetQuotesScreen = () => {
       <View className="flex-[0.6] bg-white items-center justify-center px-6">
         <TouchableOpacity
           activeOpacity={0.8}
-          className="bg-app-color-red w-full py-4 rounded-lg items-center"
+          className="bg-brand-primary w-full py-4 rounded-lg items-center"
           style={{
             elevation: Platform.OS === "android" ? 4 : 0,
             shadowColor: "#000",

@@ -18,7 +18,7 @@ const AnimatedActionButton = ({
   text,
   onPress,
   icon,
-  className = "flex-row items-center justify-center bg-app-color-red px-6 py-3 rounded-2xl",
+  className = "flex-row items-center justify-center bg-brand-primary px-6 py-3 rounded-2xl",
   textClassName = "text-white font-semibold mr-2",
   style = {},
   disabled = false,

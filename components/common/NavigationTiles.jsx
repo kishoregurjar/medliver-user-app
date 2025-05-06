@@ -67,12 +67,12 @@ export default function NavigationTiles() {
         >
           {/* Left Half */}
           <View className="w-1/2 px-4 justify-center">
-            <Text className="text-base font-lexend-semibold text-app-color-red mb-2">
+            <Text className="text-base font-lexend-semibold text-brand-primary mb-2">
               {tile.label}
             </Text>
 
             <View className="flex-row items-center">
-              <Text className="text-sm font-lexend-medium text-app-color-red mr-2">
+              <Text className="text-sm font-lexend-medium text-brand-primary mr-2">
                 {tile.cta}
               </Text>
 

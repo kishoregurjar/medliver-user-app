@@ -78,7 +78,7 @@ export default function ForgotPasswordScreen() {
 
       <TouchableOpacity
         onPress={handleSubmit(onSubmit)}
-        className={`bg-app-color-red rounded-xl py-4 mb-4 ${
+        className={`bg-brand-primary rounded-xl py-4 mb-4 ${
           isLoading ? "opacity-50" : ""
         }`}
         disabled={isLoading}
@@ -89,10 +89,10 @@ export default function ForgotPasswordScreen() {
       </TouchableOpacity>
 
       <View className="flex-row justify-center mt-6">
-        <Text className="text-app-color-grey font-bold">Back to login?</Text>
+        <Text className="text-text-muted font-bold">Back to login?</Text>
         <Text
           onPress={() => router.back()}
-          className="text-app-color-softindigo font-bold ml-2"
+          className="text-accent-softIndigo font-bold ml-2"
         >
           Sign In
         </Text>
