@@ -39,6 +39,7 @@ const IMAGES = {
     HOME_NAV_TILE_3: require("../assets/images/buy_insurance.png"),
     HOME_NAV_TILE_4: require("../assets/images/book_cab.png"),
     USER: require("../assets/images/user.png"),
+    PROMO: require("../assets/images/promo.png"),
     MEDICINE_1: require("../assets/images/medicine_1.png"),
     MEDICINE_2: require("../assets/images/medicine_2.png"),
     MEDICINE_3: require("../assets/images/medicine_3.png"),

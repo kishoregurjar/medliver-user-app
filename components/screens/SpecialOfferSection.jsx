@@ -1,0 +1,123 @@
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  Platform,
+} from "react-native";
+import Carousel from "react-native-reanimated-carousel";
+import STATIC from "@/utils/constants";
+
+const { width } = Dimensions.get("window");
+const SPACING = 12;
+const CARD_WIDTH = width * 0.85; // Smaller than screen to show next card
+
+const specialOffers = [
+  {
+    title: "Baby Organix",
+    originalPrice: "$20",
+    offerPrice: "$10",
+    discount: "15% Off",
+    buttonText: "Buy Now",
+    bgColor: "#EF4C47",
+    image: STATIC.IMAGES.APP.LOGO,
+  },
+  {
+    title: "Natural Care Kit",
+    originalPrice: "$35",
+    offerPrice: "$28",
+    discount: "20% Off",
+    buttonText: "Buy Now",
+    bgColor: "#5AA9E6",
+    image: STATIC.IMAGES.APP.LOGO,
+  },
+  {
+    title: "Skin Essentials",
+    originalPrice: "$50",
+    offerPrice: "$39",
+    discount: "22% Off",
+    buttonText: "Shop Now",
+    bgColor: "#7ACB6D",
+    image: STATIC.IMAGES.APP.LOGO,
+  },
+];
+
+const SpecialOfferSection = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  return (
+    <View className="mb-6">
+      <Carousel
+        loop
+        autoPlay
+        width={width}
+        height={160}
+        data={specialOffers}
+        scrollAnimationDuration={800}
+        autoPlayInterval={4000}
+        snapEnabled
+        pagingEnabled
+        onSnapToItem={setActiveIndex}
+        mode="parallax"
+        modeConfig={{
+          parallaxScrollingScale: 0.92,
+          parallaxScrollingOffset: 60,
+          parallaxAdjacentItemScale: 0.85,
+        }}
+        panGestureHandlerProps={{
+          activeOffsetX: [-10, 10],
+        }}
+        style={{ alignSelf: "center" }}
+        renderItem={({ item }) => (
+          <View
+            className="p-4 rounded-2xl flex-row justify-between items-center"
+            style={{
+              backgroundColor: item.bgColor,
+              width: CARD_WIDTH,
+            }}
+          >
+            <View>
+              <Text className="text-white font-bold text-lg mb-1">
+                {item.title}
+              </Text>
+              <Text className="text-white/70 line-through text-sm">
+                {item.originalPrice}
+              </Text>
+              <Text className="text-white font-bold text-xl">
+                {item.offerPrice}
+              </Text>
+              <Text className="text-white text-xs">{item.discount}</Text>
+              <TouchableOpacity className="bg-[#FFE5D0] rounded-full px-3 py-1 mt-2 self-start">
+                <Text className="text-[#EF4C47] font-medium text-sm">
+                  {item.buttonText}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <Image
+              source={item.image}
+              className="w-24 h-24"
+              resizeMode="contain"
+            />
+          </View>
+        )}
+      />
+
+      {/* Dot Indicators */}
+      <View className="flex-row justify-center mt-3">
+        {specialOffers.map((_, i) => (
+          <View
+            key={i}
+            className={`h-2 rounded-full mx-1 ${
+              i === activeIndex ? "w-5 bg-white/90" : "w-2 bg-white/40"
+            }`}
+          />
+        ))}
+      </View>
+    </View>
+  );
+};
+
+export default SpecialOfferSection;
