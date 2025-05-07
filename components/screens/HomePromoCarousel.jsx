@@ -38,7 +38,7 @@ const promoBanners = [
     buttonText: "Explore",
     bgColor: "#E2AD5F",
     image: STATIC.IMAGES.COMPONENTS.PROMO,
-    className:"p-5 bg-brand-background rounded-2xl w-full flex-row justify-between items-center"
+    className:"p-5 bg-accent-indigo rounded-2xl w-full flex-row justify-between items-center"
   },
 ];
 
@@ -93,7 +93,7 @@ const HomePromoCarousel = () => {
             {/* Image */}
             <Image
               source={item.image}
-              className="w-20 h-20"
+              className="w-40 h-40"
               resizeMode="contain"
             />
           </View>
@@ -101,7 +101,7 @@ const HomePromoCarousel = () => {
       />
 
       {/* Dot Indicators */}
-      <View className="flex-row justify-center mt-3">
+      <View className="flex-row justify-center mt-1">
         {promoBanners.map((_, i) => (
           <View
             key={i}

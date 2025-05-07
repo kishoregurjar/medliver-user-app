@@ -38,7 +38,7 @@ const CategoriesSection = () => {
               color="#6E6A7C"
               style={{ marginRight: 8 }}
             />
-            <Text className="text-[#6E6A7C] text-sm font-medium">
+            <Text className="text-[#6E6A7C] text-sm font-lexend-medium">
               {cat.label}
             </Text>
           </TouchableOpacity>

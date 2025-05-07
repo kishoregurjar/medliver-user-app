@@ -5,14 +5,13 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  Platform,
 } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import STATIC from "@/utils/constants";
 
 const { width } = Dimensions.get("window");
 const SPACING = 12;
-const CARD_WIDTH = width * 0.85; // Smaller than screen to show next card
+const CARD_WIDTH = width * 0.95;
 
 const specialOffers = [
   {
@@ -21,8 +20,9 @@ const specialOffers = [
     offerPrice: "$10",
     discount: "15% Off",
     buttonText: "Buy Now",
-    bgColor: "#EF4C47",
     image: STATIC.IMAGES.APP.LOGO,
+    className:
+      "p-5 bg-brand-primary rounded-2xl flex-row justify-between items-center",
   },
   {
     title: "Natural Care Kit",
@@ -30,8 +30,9 @@ const specialOffers = [
     offerPrice: "$28",
     discount: "20% Off",
     buttonText: "Buy Now",
-    bgColor: "#5AA9E6",
     image: STATIC.IMAGES.APP.LOGO,
+    className:
+      "p-5 bg-brand-secondary rounded-2xl flex-row justify-between items-center",
   },
   {
     title: "Skin Essentials",
@@ -39,8 +40,9 @@ const specialOffers = [
     offerPrice: "$39",
     discount: "22% Off",
     buttonText: "Shop Now",
-    bgColor: "#7ACB6D",
     image: STATIC.IMAGES.APP.LOGO,
+    className:
+      "p-5 bg-accent-softIndigo rounded-2xl flex-row justify-between items-center",
   },
 ];
 
@@ -72,9 +74,8 @@ const SpecialOfferSection = () => {
         style={{ alignSelf: "center" }}
         renderItem={({ item }) => (
           <View
-            className="p-4 rounded-2xl flex-row justify-between items-center"
+            className={item.className}
             style={{
-              backgroundColor: item.bgColor,
               width: CARD_WIDTH,
             }}
           >
