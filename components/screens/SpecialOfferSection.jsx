@@ -1,17 +1,11 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import STATIC from "@/utils/constants";
 
 const { width } = Dimensions.get("window");
 const SPACING = 12;
-const CARD_WIDTH = width * 0.95;
+const CARD_WIDTH = width * 0.99 - SPACING * 2;
 
 const specialOffers = [
   {
@@ -51,6 +45,12 @@ const SpecialOfferSection = () => {
 
   return (
     <View className="mb-6">
+      {/* Heading */}
+      <Text className="text-lg font-lexend-bold text-text-primary mb-4">
+        Special Offers
+      </Text>
+
+      {/* Carousel */}
       <Carousel
         loop
         autoPlay
