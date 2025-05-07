@@ -59,25 +59,25 @@ const BestSellerSection = () => {
               />
 
               {/* Rating */}
-              <View className="flex-row items-center mb-1 border border-gray-200 rounded-full px-2 py-0.5 w-fit self-start">
+              <View className="flex-row items-center mb-1 border border-background-soft rounded-full px-2 py-0.5 w-fit self-start">
                 <Ionicons name="star" size={14} color="#FFD700" />
-                <Text className="text-xs text-[#6E6A7C] ml-1">{item.rating}</Text>
+                <Text className="text-xs text-text-muted ml-1">{item.rating}</Text>
               </View>
 
               {/* Title */}
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                className="font-semibold text-sm text-[#222] leading-tight mb-1"
+                className="font-semibold text-sm text-text-primary leading-tight mb-1"
               >
                 {item.title}
               </Text>
 
               {/* Price */}
-              <Text className="text-[#1E1E1E] text-sm font-bold">
+              <Text className="text-text-primary text-sm font-bold">
                 ₹{item.price.toFixed(2)}
               </Text>
-              <Text className="text-xs text-gray-400 line-through">
+              <Text className="text-xs text-text-muted line-through">
                 MRP ₹{item.mrp.toFixed(2)}
               </Text>
               <Text className="text-[10px] text-green-600 mb-1">
@@ -88,7 +88,7 @@ const BestSellerSection = () => {
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                className="text-[10px] text-gray-400 leading-tight mb-2"
+                className="text-[10px] text-text-muted leading-tight mb-2"
               >
                 By {item.manufacturer}
               </Text>

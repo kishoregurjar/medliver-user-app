@@ -58,8 +58,8 @@ const TopPicksSection = () => {
             />
 
             <View className="flex-row justify-between items-center mb-1">
-              <Text className="text-sm font-bold text-black">{item.title}</Text>
-              <Text className="text-sm font-bold text-black">{item.price}</Text>
+              <Text className="text-sm font-lexend-bold text-black">{item.title}</Text>
+              <Text className="text-sm font-lexend-bold text-black">{item.price}</Text>
             </View>
 
             <Text className="text-xs text-gray-500 mb-3 leading-tight">
@@ -68,7 +68,7 @@ const TopPicksSection = () => {
 
             <TouchableOpacity className="bg-brand-background flex-row items-center justify-center rounded-lg py-1">
               <Ionicons name="add" size={16} color="#E55150" />
-              <Text className="text-brand-primary text-sm font-semibold ml-1">
+              <Text className="text-brand-primary text-sm font-lexend-semibold ml-1">
                 Add to Cart
               </Text>
             </TouchableOpacity>

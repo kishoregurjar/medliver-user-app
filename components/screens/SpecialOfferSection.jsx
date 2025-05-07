@@ -79,18 +79,18 @@ const SpecialOfferSection = () => {
             }}
           >
             <View>
-              <Text className="text-white font-bold text-lg mb-1">
+              <Text className="text-white font-lexend-bold text-lg mb-1">
                 {item.title}
               </Text>
               <Text className="text-white/70 line-through text-sm">
                 {item.originalPrice}
               </Text>
-              <Text className="text-white font-bold text-xl">
+              <Text className="text-white font-lexend-bold text-xl">
                 {item.offerPrice}
               </Text>
               <Text className="text-white text-xs">{item.discount}</Text>
-              <TouchableOpacity className="bg-[#FFE5D0] rounded-full px-3 py-1 mt-2 self-start">
-                <Text className="text-[#EF4C47] font-medium text-sm">
+              <TouchableOpacity className="bg-brand-background rounded-full px-3 py-1 mt-2 self-start">
+                <Text className="text-brand-primary font-lexend-medium text-sm">
                   {item.buttonText}
                 </Text>
               </TouchableOpacity>
@@ -111,7 +111,7 @@ const SpecialOfferSection = () => {
           <View
             key={i}
             className={`h-2 rounded-full mx-1 ${
-              i === activeIndex ? "w-5 bg-white/90" : "w-2 bg-white/40"
+              i === activeIndex ? "w-5 bg-brand-primary" : "w-2 bg-gray-400"
             }`}
           />
         ))}
