@@ -30,7 +30,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                     <View>
                       <View className="bg-white flex-row items-center border border-background-soft font-lexend rounded-md px-2 py-1 text-base">
                         <TextInput
-                          className="flex-1 text-black"
+                          className="flex-1 p-2 text-black"
                           placeholder={field.placeholder}
                           placeholderTextColor="#6E6A7C"
                           onChangeText={(val) => {
@@ -145,6 +145,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                       value={value}
                       multiline={field.type === "textarea"}
                       keyboardType={field.keyboardType || "default"}
+                      className="border border-background-soft font-lexend rounded-md px-2 py-1 text-base"
                     />
                   )}
 

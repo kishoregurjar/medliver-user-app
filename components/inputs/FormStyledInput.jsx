@@ -10,7 +10,7 @@ const FormStyledInput = ({
   return (
     <View className={`bg-white flex-row items-center ${className}`}>
       <TextInput
-        className="flex-1 text-black"
+        className="flex-1 p-2 text-black"
         placeholderTextColor={placeholderTextColor}
         {...rest}
       />
