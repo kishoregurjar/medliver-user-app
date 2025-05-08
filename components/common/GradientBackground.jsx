@@ -107,7 +107,13 @@ const GradientBackground = ({
     <View className={`${isDark ? "bg-[#1C1C1E]" : "bg-[#F2F2F2]"} flex-1`}>
       {Platform.OS === "ios" ? (
         <>
-          <ImageBackground source={STATIC.IMAGES.APP.BACKGROUND} />
+          <ImageBackground
+            source={STATIC.IMAGES.APP.BACKGROUND}
+            resizeMode="cover"
+            className="flex-1"
+          >
+            {children}
+          </ImageBackground>
         </>
       ) : (
         <>

@@ -2,10 +2,14 @@ import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import STATIC from "@/utils/constants";
+import { useRouter } from "expo-router";
 
 const BestSellerPharmacy = () => {
+  const router = useRouter();
+
   const bestSellers = [
     {
+      id: 1,
       title: "Vitamin D -3 250gm",
       image: STATIC.IMAGES.COMPONENTS.MEDICINE_2,
       rating: 5,
@@ -15,6 +19,7 @@ const BestSellerPharmacy = () => {
       manufacturer: "Loren Ipsum Pharmaceutical Industries LTD",
     },
     {
+      id: 2,
       title: "Omega 3 Softgels",
       image: STATIC.IMAGES.COMPONENTS.MEDICINE_1,
       rating: 4.5,
@@ -24,6 +29,7 @@ const BestSellerPharmacy = () => {
       manufacturer: "HeartHealth Pharma Limited",
     },
     {
+      id: 3,
       title: "Zincovit Tablets for Strong Immunity & Wellness",
       image: STATIC.IMAGES.COMPONENTS.MEDICINE_3,
       rating: 4.8,
@@ -34,6 +40,13 @@ const BestSellerPharmacy = () => {
     },
   ];
 
+  const handlePress = (id) => {
+    router.push({
+      pathname: "/pharmacy/product/[productId]",
+      params: { productId: id },
+    });
+  };
+
   return (
     <View className="mb-6">
       <View className="flex-row justify-between items-center mb-3 px-1">
@@ -41,16 +54,26 @@ const BestSellerPharmacy = () => {
           Best Seller Products
         </Text>
         <TouchableOpacity>
-          <Text className="text-blue-600 text-sm font-lexend-bold">See All</Text>
+          <Text className="text-blue-600 text-sm font-lexend-bold">
+            See All
+          </Text>
         </TouchableOpacity>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} className="pl-1">
-        {bestSellers.map((item, index) => {
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className="pl-1"
+      >
+        {bestSellers.map((item) => {
           const discount = item.mrp - item.price;
 
           return (
-            <View key={index} className="bg-white rounded-2xl p-3 w-52 mr-4">
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => handlePress(item.id)}
+              className="bg-white rounded-2xl p-3 w-52 mr-4"
+            >
               {/* Image */}
               <Image
                 source={item.image}
@@ -61,7 +84,9 @@ const BestSellerPharmacy = () => {
               {/* Rating */}
               <View className="flex-row items-center mb-1 border border-background-soft rounded-full px-2 py-0.5 w-fit self-start">
                 <Ionicons name="star" size={14} color="#FFD700" />
-                <Text className="text-xs text-text-muted ml-1">{item.rating}</Text>
+                <Text className="text-xs text-text-muted ml-1">
+                  {item.rating}
+                </Text>
               </View>
 
               {/* Title */}
@@ -100,7 +125,7 @@ const BestSellerPharmacy = () => {
                   Add to Cart
                 </Text>
               </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </ScrollView>
