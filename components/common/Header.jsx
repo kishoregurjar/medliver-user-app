@@ -8,10 +8,9 @@ import {
   Dimensions,
 } from "react-native";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import STATIC from "@/utils/constants";
-import SearchMedicineModal from "../modals/SearchMedicineModal";
-import SelectAddressModal from "../modals/SelectAddressModal";
+import { useLocalSearchParams, useRouter, usePathname } from "expo-router";
+import { useEffect } from "react";
 
 const { width } = Dimensions.get("window");
 
@@ -46,9 +45,19 @@ const Header = () => {
   const [selectedAddress, setSelectedAddress] = useState(
     "Indore, Madhya Pradesh"
   );
-  const [modalVisible, setModalVisible] = useState(false);
-  const [searchModalVisible, setSearchModalVisible] = useState(false);
+  const { selectedAddress: returnedAddress, searchQuery } = useLocalSearchParams();
 
+  useEffect(() => {
+    if (returnedAddress) {
+      setSelectedAddress(returnedAddress);
+    }
+  
+    if (searchQuery) {
+      console.log("Searched for:", searchQuery);
+      // Optionally set local state or search directly
+    }
+  }, [returnedAddress, searchQuery]);
+  
   return (
     <View>
       <View>
@@ -87,7 +96,12 @@ const Header = () => {
           <TouchableOpacity
             activeOpacity={0.7}
             className="flex-row items-center flex-1 pr-2"
-            onPress={() => setModalVisible(true)}
+            onPress={() =>
+              router.push({
+                pathname: "/select-address",
+                params: { current: selectedAddress },
+              })
+            }
           >
             <Ionicons name="location" size={20} color="#6E6A7C" />
             <View className="flex-row items-center ml-2 flex-shrink">
@@ -140,31 +154,13 @@ const Header = () => {
             placeholder="Search Medicine"
             placeholderTextColor="#6E6A7C"
             className="flex-1 ml-2 font-lexend text-sm text-gray-700"
-            onFocus={() => setSearchModalVisible(true)} // Trigger the modal on focus
+            onFocus={() => router.push("/search")}
           />
           <IconButton
             icon={<Feather name="sliders" size={20} color="#6E6A7C" />}
           />
         </View>
       </View>
-
-      {/* Address Selection Modal */}
-      <SelectAddressModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSelect={setSelectedAddress}
-        addresses={addresses}
-      />
-      {/* Search Modal with Medicine Suggestions */}
-      <SearchMedicineModal
-        visible={searchModalVisible}
-        onClose={() => setSearchModalVisible(false)}
-        onSelect={(medicine) => {
-          console.log("Selected medicine: ", medicine);
-          setSearchModalVisible(false);
-        }}
-        suggestions={medicineSuggestions}
-      />
     </View>
   );
 };
