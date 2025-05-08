@@ -96,6 +96,8 @@ const GradientBackground = ({
   animationType = "float",
   animationSpeed,
   darkMode,
+  scrollEnabled = true,
+  contentStyle = {},
 }) => {
   const systemColorScheme = useColorScheme();
   const isDark =
@@ -105,10 +107,9 @@ const GradientBackground = ({
 
   return (
     <View className={`${isDark ? "bg-[#1C1C1E]" : "bg-[#F2F2F2]"} flex-1`}>
+      {/* Background Blobs / Images */}
       {Platform.OS === "ios" ? (
-        <>
-          <ImageBackground source={STATIC.IMAGES.APP.BACKGROUND} />
-        </>
+        <ImageBackground source={STATIC.IMAGES.APP.BACKGROUND} />
       ) : (
         <>
           <GradientEllipse
@@ -189,8 +190,16 @@ const GradientBackground = ({
         </>
       )}
 
-      {/* Screen Content */}
-      {children}
+      {/* Main Screen Content */}
+      <View
+        style={[
+          { flex: 1, zIndex: 1 },
+          !scrollEnabled && { paddingHorizontal: 20, paddingVertical: 16 },
+          contentStyle,
+        ]}
+      >
+        {children}
+      </View>
     </View>
   );
 };
