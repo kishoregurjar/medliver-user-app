@@ -172,6 +172,54 @@ const FORM_FIELD_TYPES = {
       ],
     },
   ],
+  BOOK_CAB: [
+    {
+      name: "patient_name",
+      label: "Patient Name",
+      placeholder: "Enter patient name",
+      type: "text",
+    },
+    {
+      name: "patient_phone",
+      label: "Phone Number",
+      placeholder: "Enter 10-digit number",
+      type: "text",
+      keyboardType: "numeric",
+    },
+    {
+      name: "emergency_type",
+      label: "Emergency Type",
+      type: "select",
+      options: [
+        { label: "Medical", value: "medical" },
+        { label: "Accident", value: "accident" },
+        { label: "Maternity", value: "maternity" },
+        { label: "Other", value: "other" },
+      ],
+    },
+    {
+      name: "address",
+      label: "Pickup Address",
+      placeholder: "Tap to fetch location or enter manually",
+      type: "text",
+    },
+    {
+      name: "destination_hospital",
+      label: "Destination Hospital",
+      placeholder: "Enter destination hospital",
+      type: "text",
+    },
+    {
+      name: "vehicle_type",
+      label: "Vehicle Type",
+      type: "select",
+      options: [
+        { label: "Ambulance", value: "ambulance" },
+        { label: "Wheelchair Van", value: "wheelchair_van" },
+        { label: "Non-emergency", value: "non_emergency" },
+      ],
+    },
+  ],
   BOOK_APPOINTMENT_DOCTOR: [
     {
       name: "name",

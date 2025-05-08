@@ -66,6 +66,18 @@ const FORM_VALIDATIONS = {
     nominee_relation: yup.string().required("Nominee relation is required"),
     lead_source: yup.string().required("Lead source is required"),
   }),
+  BOOK_CAB:yup.object().shape({
+    patient_name: yup.string().required("Patient name is required"),
+    patient_phone: yup
+      .string()
+      .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+      .required("Phone number is required"),
+    emergency_type: yup.string().required("Emergency type is required"),
+    address: yup.string().required("Pickup address is required"),
+    destination_hospital: yup.string().required("Destination is required"),
+    vehicle_type: yup.string().required("Vehicle type is required"),
+    confirmation: yup.boolean().oneOf([true], "You must confirm the information"),
+  }),
   BOOK_APPOINTMENT_DOCTOR: yup.object().shape({
     name: yup.string().required("Name is required"),
     email: yup.string().email("Invalid email").required("Email is required"),
