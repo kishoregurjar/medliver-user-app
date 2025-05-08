@@ -1,10 +1,10 @@
 import Header from "@/components/common/Header";
 import AppLayout from "@/components/layouts/AppLayout";
-import HomePromoCarousel from "@/components/screens/HomePromoCarousel";
-import CategoriesSection from "@/components/screens/CategoriesSection";
-import BestSellerSection from "@/components/screens/BestSellerSection";
-import SpecialOfferSection from "@/components/screens/SpecialOfferSection";
-import TopPicksSection from "@/components/screens/TopPicksSection";
+import BestSellerSection from "@/components/screens/pharmacy/BestSellerSection";
+import CategoriesSection from "@/components/screens/pharmacy/CategoriesSection";
+import HomePromoCarousel from "@/components/screens/pharmacy/HomePromoCarousel";
+import SpecialOfferSection from "@/components/screens/pharmacy/SpecialOfferSection";
+import TopPicksSection from "@/components/screens/pharmacy/TopPicksSection";
 
 const PharmacyHome = () => {
 

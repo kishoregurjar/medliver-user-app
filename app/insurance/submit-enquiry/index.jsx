@@ -10,7 +10,6 @@ import {
 import React from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import useAxios from "@/hooks/useAxios";
