@@ -33,12 +33,12 @@ export default function NavigationTiles() {
       cta: "Get Now",
       path: "/insurance",
     },
-    {
-      label: "Emergency Cab Booking",
-      icon: STATIC.IMAGES.COMPONENTS.HOME_NAV_TILE_4,
-      cta: "Get Now",
-      path: "/cab",
-    },
+    // {
+    //   label: "Emergency Cab Booking",
+    //   icon: STATIC.IMAGES.COMPONENTS.HOME_NAV_TILE_4,
+    //   cta: "Get Now",
+    //   path: "/cab",
+    // },
     {
       label: "Book Doctor Appointment",
       icon: STATIC.IMAGES.COMPONENTS.HOME_NAV_TILE_4,

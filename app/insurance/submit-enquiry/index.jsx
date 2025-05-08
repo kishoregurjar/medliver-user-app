@@ -1,12 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,6 +9,7 @@ import { useAppToast } from "@/hooks/useAppToast";
 import Checkbox from "expo-checkbox";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
 import FORM_VALIDATIONS from "@/libs/form-validations";
+import AppLayout from "@/components/layouts/AppLayout";
 
 const InsuranceEnquiryScreen = () => {
   const {
@@ -78,87 +71,68 @@ const InsuranceEnquiryScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-black">
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-      >
-        <ScrollView
-          contentContainerStyle={{
-            paddingHorizontal: 20,
-            paddingTop: 32,
-            paddingBottom: 40,
-          }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <View className="gap-y-2">
-            <Text className="text-2xl font-lexend-bold text-text-black dark:text-white mb-1">
-              Insurance Enquiry
-            </Text>
-            <Text className="text-base font-lexend text-text-muted dark:text-neutral-300 mb-5 leading-relaxed">
-              Submit your insurance-related questions and we’ll get back to you.
-            </Text>
+    <AppLayout>
+      <View className="gap-y-2">
+        <Text className="text-2xl font-lexend-bold text-text-black dark:text-white mb-1">
+          Insurance Enquiry
+        </Text>
+        <Text className="text-base font-lexend text-text-muted dark:text-neutral-300 mb-5 leading-relaxed">
+          Submit your insurance-related questions and we’ll get back to you.
+        </Text>
 
-            <FormFieldRenderer
-              control={control}
-              errors={errors}
-              fields={fields.filter((f) => f.visible !== false)}
-            />
+        <FormFieldRenderer
+          control={control}
+          errors={errors}
+          fields={fields.filter((f) => f.visible !== false)}
+        />
 
-            <View className="flex-row items-center mt-6">
-              <Controller
-                control={control}
-                name="termsAccepted"
-                defaultValue={false}
-                rules={{ required: "You must accept the terms and conditions" }}
-                render={({
-                  field: { value, onChange },
-                  fieldState: { error },
-                }) => (
-                  <View className="flex-1">
-                    <TouchableOpacity
-                      onPress={() => onChange(!value)}
-                      activeOpacity={0.8}
-                      className="flex-row items-center"
-                    >
-                      <Checkbox
-                        value={value}
-                        onValueChange={onChange}
-                        colorScheme="#ffffff"
-                      />
-                      <Text className="text-text-primary font-lexend dark:text-white ml-2">
-                        I agree to the{" "}
-                        <Text className="text-brand-primary font-lexend">
-                          Terms & Conditions
-                        </Text>
-                      </Text>
-                    </TouchableOpacity>
-                    {error && (
-                      <Text className="text-red-500 mt-1 text-xs">
-                        {error.message}
-                      </Text>
-                    )}
-                  </View>
+        <View className="flex-row items-center mt-6">
+          <Controller
+            control={control}
+            name="termsAccepted"
+            defaultValue={false}
+            rules={{ required: "You must accept the terms and conditions" }}
+            render={({ field: { value, onChange }, fieldState: { error } }) => (
+              <View className="flex-1">
+                <TouchableOpacity
+                  onPress={() => onChange(!value)}
+                  activeOpacity={0.8}
+                  className="flex-row items-center"
+                >
+                  <Checkbox
+                    value={value}
+                    onValueChange={onChange}
+                    colorScheme="#ffffff"
+                  />
+                  <Text className="text-text-primary font-lexend dark:text-white ml-2">
+                    I agree to the{" "}
+                    <Text className="text-brand-primary font-lexend">
+                      Terms & Conditions
+                    </Text>
+                  </Text>
+                </TouchableOpacity>
+                {error && (
+                  <Text className="text-red-500 mt-1 text-xs">
+                    {error.message}
+                  </Text>
                 )}
-              />
-            </View>
+              </View>
+            )}
+          />
+        </View>
 
-            <TouchableOpacity
-              onPress={handleSubmit(onSubmit, (formErrors) =>
-                console.log("Form Validation Errors:", formErrors)
-              )}
-              className="mt-6 py-4 rounded-xl bg-brand-primary shadow-md active:opacity-80"
-            >
-              <Text className="text-white text-center text-base font-lexend-bold">
-                Submit Enquiry
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        <TouchableOpacity
+          onPress={handleSubmit(onSubmit, (formErrors) =>
+            console.log("Form Validation Errors:", formErrors)
+          )}
+          className="mt-6 py-4 rounded-xl bg-brand-primary shadow-md active:opacity-80"
+        >
+          <Text className="text-white text-center text-base font-lexend-bold">
+            Submit Enquiry
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </AppLayout>
   );
 };
 
