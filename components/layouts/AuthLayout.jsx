@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
-import GradientBackground from "../common/GradientEllipse";
+import GradientBackground from "../common/GradientBackground";
 
 // Get the screen width and height
 const { width, height } = Dimensions.get("window");
