@@ -54,23 +54,19 @@ export default function PharmacyProductDetails() {
     switch (activeTab) {
       case 0:
         return (
-          <Text className="text-sm text-text-secondary">
-            {product.description}
-          </Text>
+          <Text className="text-sm text-gray-600">{product.description}</Text>
         );
       case 1:
         return product.benefits.map((item, i) => (
-          <Text key={i} className="text-sm text-text-secondary mb-1">
+          <Text key={i} className="text-sm text-gray-600 mb-1">
             • {item}
           </Text>
         ));
       case 2:
-        return (
-          <Text className="text-sm text-text-secondary">{product.usage}</Text>
-        );
+        return <Text className="text-sm text-gray-600">{product.usage}</Text>;
       case 3:
         return product.precautions.map((item, i) => (
-          <Text key={i} className="text-sm text-text-secondary mb-1">
+          <Text key={i} className="text-sm text-gray-600 mb-1">
             • {item}
           </Text>
         ));
@@ -101,112 +97,111 @@ export default function PharmacyProductDetails() {
         </View>
       </View>
 
-      <ScrollView>
-        {/* Image Carousel */}
-        <View className="my-4">
-          <Carousel
-            loop
-            width={width}
-            height={240}
-            autoPlay={false}
-            data={product.images}
-            scrollAnimationDuration={500}
-            onSnapToItem={(index) => setActiveSlide(index)}
-            renderItem={({ item }) => (
-              <Image
-                source={item}
-                className="w-full h-56 rounded-xl"
-                resizeMode="contain"
-              />
-            )}
-          />
-          <View className="flex-row justify-center mt-2">
-            {product.images.map((_, i) => (
-              <View
-                key={i}
-                className={`w-2 h-2 rounded-full mx-1 ${
-                  i === activeSlide ? "bg-blue-600" : "bg-gray-300"
-                }`}
-              />
-            ))}
-          </View>
+      {/* Carousel */}
+      <View className="my-4">
+        <Carousel
+          loop
+          width={width}
+          height={240}
+          autoPlay={false}
+          data={product.images}
+          scrollAnimationDuration={500}
+          onSnapToItem={(index) => setActiveSlide(index)}
+          renderItem={({ item }) => (
+            <Image source={item} className="w-full h-60" resizeMode="contain" />
+          )}
+        />
+        <View className="flex-row justify-center mt-2">
+          {product.images.map((_, i) => (
+            <View
+              key={i}
+              className={`w-2 h-2 rounded-full mx-1 ${
+                i === activeSlide ? "bg-blue-600" : "bg-gray-300"
+              }`}
+            />
+          ))}
         </View>
+      </View>
 
-        {/* Basic Info */}
-        <View className="px-4 mb-3">
-          <Text className="text-xl font-bold text-text-primary">
-            {product.title}
-          </Text>
-          <Text className="text-sm text-text-muted">
-            By {product.manufacturer}
-          </Text>
-        </View>
+      {/* Product Card */}
+      <View className="bg-white mx-4 p-4 rounded-xl shadow-sm mb-4">
+        <Text className="text-xl font-semibold text-gray-900">
+          {product.title}
+        </Text>
+        <Text className="text-sm text-gray-500 mb-3">
+          By {product.manufacturer}
+        </Text>
 
-        {/* Price Info */}
-        <View className="px-4 mb-4">
-          <Text className="text-lg font-bold text-text-primary">
+        <View className="flex-row items-center mb-2">
+          <Text className="text-lg font-bold text-gray-900">
             ₹{product.price}
           </Text>
-          <Text className="text-sm text-text-muted line-through">
+          <Text className="text-sm text-gray-400 line-through ml-2">
             MRP ₹{product.mrp}
           </Text>
-          <Text className="text-xs text-green-600">
-            Save ₹{(product.mrp - product.price).toFixed(0)}
-          </Text>
         </View>
+        <Text className="text-sm text-green-600">
+          Save ₹{product.mrp - product.price}
+        </Text>
+      </View>
 
-        {/* Tabs */}
-        <View className="px-4">
-          <View className="flex-row mb-3">
-            {tabs.map((tab, i) => (
-              <TouchableOpacity
-                key={i}
-                onPress={() => setActiveTab(i)}
-                className={`mr-3 pb-1 border-b-2 ${
-                  i === activeTab ? "border-blue-600" : "border-transparent"
+      {/* Tabs */}
+      <View className="mx-4 mb-2">
+        <View className="flex-row border-b border-gray-200">
+          {tabs.map((tab, i) => (
+            <TouchableOpacity
+              key={i}
+              onPress={() => setActiveTab(i)}
+              className={`mr-4 pb-2 ${
+                i === activeTab
+                  ? "border-b-2 border-blue-600"
+                  : "border-transparent"
+              }`}
+            >
+              <Text
+                className={`text-sm font-medium ${
+                  i === activeTab ? "text-blue-600" : "text-gray-500"
                 }`}
               >
-                <Text
-                  className={`text-sm font-semibold ${
-                    i === activeTab ? "text-blue-600" : "text-gray-500"
-                  }`}
-                >
-                  {tab}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          <View>{renderTabContent()}</View>
+                {tab}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
+        <View className="mt-3 bg-white p-4 rounded-xl shadow-sm">
+          {renderTabContent()}
+        </View>
+      </View>
 
-        {/* Similar Products */}
-        <View className="mt-6 px-4">
-          <Text className="text-lg font-bold mb-2">Similar Products</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {[...Array(3).keys()].map((_, index) => (
-              <TouchableOpacity
-                key={index}
-                className="mr-4 w-36 bg-white rounded-xl p-2 shadow-sm"
+      {/* Similar Products */}
+      <View className="mt-6 mx-4">
+        <Text className="text-lg font-bold text-gray-900 mb-3">
+          Similar Products
+        </Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {[...Array(3).keys()].map((_, index) => (
+            <TouchableOpacity
+              key={index}
+              className="mr-4 w-36 bg-white rounded-xl p-3 shadow-sm"
+            >
+              <Image
+                source={STATIC.IMAGES.COMPONENTS.MEDICINE_1}
+                className="h-20 w-full"
+                resizeMode="contain"
+              />
+              <Text
+                numberOfLines={2}
+                className="text-xs font-semibold text-gray-800 mt-2"
               >
-                <Image
-                  source={STATIC.IMAGES.COMPONENTS.MEDICINE_1}
-                  className="h-20 w-full"
-                  resizeMode="contain"
-                />
-                <Text
-                  numberOfLines={2}
-                  className="text-xs font-semibold text-text-primary mt-1"
-                >
-                  Similar Product {index + 1}
-                </Text>
-                <Text className="text-xs text-gray-500">₹199.00</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
+                Similar Product {index + 1}
+              </Text>
+              <Text className="text-xs text-gray-500">₹199.00</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
-        <View className="h-12" />
-      </ScrollView>
+      <View className="h-16" />
     </AppLayout>
   );
 }
