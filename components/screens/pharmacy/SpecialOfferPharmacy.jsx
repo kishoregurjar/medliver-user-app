@@ -14,7 +14,7 @@ const specialOffers = [
     offerPrice: "$10",
     discount: "15% Off",
     buttonText: "Buy Now",
-    image: STATIC.IMAGES.APP.LOGO,
+    image: STATIC.IMAGES.COMPONENTS.PROMO_PHARMACY,
     className:
       "p-5 bg-brand-primary rounded-2xl flex-row justify-between items-center",
   },
@@ -24,7 +24,7 @@ const specialOffers = [
     offerPrice: "$28",
     discount: "20% Off",
     buttonText: "Buy Now",
-    image: STATIC.IMAGES.APP.LOGO,
+    image: STATIC.IMAGES.COMPONENTS.PROMO_PHARMACY,
     className:
       "p-5 bg-brand-secondary rounded-2xl flex-row justify-between items-center",
   },
@@ -34,13 +34,13 @@ const specialOffers = [
     offerPrice: "$39",
     discount: "22% Off",
     buttonText: "Shop Now",
-    image: STATIC.IMAGES.APP.LOGO,
+    image: STATIC.IMAGES.COMPONENTS.PROMO_PHARMACY,
     className:
       "p-5 bg-accent-softIndigo rounded-2xl flex-row justify-between items-center",
   },
 ];
 
-const SpecialOfferSection = () => {
+const SpecialOfferPharmacy = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
@@ -121,4 +121,4 @@ const SpecialOfferSection = () => {
   );
 };
 
-export default SpecialOfferSection;
+export default SpecialOfferPharmacy;

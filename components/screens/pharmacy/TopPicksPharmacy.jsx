@@ -10,7 +10,7 @@ import {
   Platform,
 } from "react-native";
 
-const TopPicksSection = () => {
+const TopPicksPharmacy = () => {
   const topPicks = [
     {
       title: "Derma E",
@@ -79,4 +79,4 @@ const TopPicksSection = () => {
   );
 };
 
-export default TopPicksSection;
+export default TopPicksPharmacy;

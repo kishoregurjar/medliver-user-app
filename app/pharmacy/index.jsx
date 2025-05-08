@@ -1,10 +1,10 @@
 import Header from "@/components/common/Header";
 import AppLayout from "@/components/layouts/AppLayout";
-import BestSellerSection from "@/components/screens/pharmacy/BestSellerSection";
-import CategoriesSection from "@/components/screens/pharmacy/CategoriesSection";
-import HomePromoCarousel from "@/components/screens/pharmacy/HomePromoCarousel";
-import SpecialOfferSection from "@/components/screens/pharmacy/SpecialOfferSection";
-import TopPicksSection from "@/components/screens/pharmacy/TopPicksSection";
+import BestSellerPharmacy from "@/components/screens/pharmacy/BestSellerPharmacy";
+import CategoriesPharmacy from "@/components/screens/pharmacy/CategoriesPharmacy";
+import HomePromoCarouselPharmacy from "@/components/screens/pharmacy/HomePromoCarouselPharmacy";
+import SpecialOfferPharmacy from "@/components/screens/pharmacy/SpecialOfferPharmacy";
+import TopPicksPharmacy from "@/components/screens/pharmacy/TopPicksPharmacy";
 
 const PharmacyHome = () => {
 
@@ -14,19 +14,19 @@ const PharmacyHome = () => {
       <Header />
 
       {/* Promo Banner */}
-      <HomePromoCarousel />
+      <HomePromoCarouselPharmacy />
 
       {/* Categories */}
-      <CategoriesSection />
+      <CategoriesPharmacy />
 
       {/* Best Seller */}
-      <BestSellerSection />
+      <BestSellerPharmacy />
 
       {/* Special Offer */}
-      <SpecialOfferSection />
+      <SpecialOfferPharmacy />
 
       {/* Top Picks */}
-      <TopPicksSection />
+      <TopPicksPharmacy />
     </AppLayout>
   );
 };

@@ -13,7 +13,7 @@ const categories = [
   { label: "Pharmacy", icon: "storefront-outline" },
 ];
 
-const CategoriesSection = () => {
+const CategoriesPharmacy = () => {
   return (
     <View className="mb-6">
       {/* Heading */}
@@ -48,4 +48,4 @@ const CategoriesSection = () => {
   );
 };
 
-export default CategoriesSection;
+export default CategoriesPharmacy;

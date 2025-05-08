@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-  Platform,
 } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 
@@ -15,34 +14,34 @@ const { width } = Dimensions.get("window");
 const CARD_WIDTH = width * 0.99;
 const SPACING = 12;
 
-const promoBanners = [
+const pathologyPromos = [
   {
-    title: "15% Off",
-    subtitle: "Medicine at your doorstep",
-    buttonText: "Shop Now",
-    bgColor: "#EF4C47",
-    image: STATIC.IMAGES.COMPONENTS.PROMO,
-    className:"p-5 bg-brand-primary rounded-2xl w-full flex-row justify-between items-center"
+    title: "Book Lab Test",
+    subtitle: "Pathology tests at your doorstep",
+    buttonText: "Schedule Now",
+    image: STATIC.IMAGES.COMPONENTS.PROMO_PATHOLOGY, // Replace with actual pathology image
+    className:
+      "p-5 bg-brand-primary rounded-2xl w-full flex-row justify-between items-center",
   },
   {
-    title: "25% Off",
-    subtitle: "On First Order",
-    buttonText: "Explore",
-    bgColor: "#E2AD5F",
-    image: STATIC.IMAGES.COMPONENTS.PROMO,
-    className:"p-5 bg-brand-secondary rounded-2xl w-full flex-row justify-between items-center"
+    title: "Full Body Checkup",
+    subtitle: "Comprehensive Health Package",
+    buttonText: "Book Today",
+    image: STATIC.IMAGES.COMPONENTS.PROMO_PATHOLOGY,
+    className:
+      "p-5 bg-brand-secondary rounded-2xl w-full flex-row justify-between items-center",
   },
   {
-    title: "10% Off",
-    subtitle: "On First Order",
-    buttonText: "Explore",
-    bgColor: "#E2AD5F",
-    image: STATIC.IMAGES.COMPONENTS.PROMO,
-    className:"p-5 bg-accent-indigo rounded-2xl w-full flex-row justify-between items-center"
+    title: "Free Home Sample Pickup",
+    subtitle: "Safe & Contactless Collection",
+    buttonText: "Get Started",
+    image: STATIC.IMAGES.COMPONENTS.PROMO_PATHOLOGY,
+    className:
+      "p-5 bg-accent-indigo rounded-2xl w-full flex-row justify-between items-center",
   },
 ];
 
-const HomePromoCarousel = () => {
+const HomePromoCarouselPathology = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
@@ -52,7 +51,7 @@ const HomePromoCarousel = () => {
         autoPlay
         width={CARD_WIDTH}
         height={180}
-        data={promoBanners}
+        data={pathologyPromos}
         scrollAnimationDuration={800}
         autoPlayInterval={4000}
         mode="parallax"
@@ -72,7 +71,6 @@ const HomePromoCarousel = () => {
           <View
             className={item.className}
             style={{
-            //   backgroundColor: item.bgColor,
               width: CARD_WIDTH - SPACING,
               marginRight: SPACING,
             }}
@@ -82,8 +80,10 @@ const HomePromoCarousel = () => {
               <Text className="text-white font-lexend-bold text-2xl mb-1">
                 {item.title}
               </Text>
-              <Text className="text-white text-sm font-lexend mb-3">{item.subtitle}</Text>
-              <TouchableOpacity className="bg-brand-secondary rounded-full px-4 py-2 self-start">
+              <Text className="text-white text-sm font-lexend mb-3">
+                {item.subtitle}
+              </Text>
+              <TouchableOpacity className="bg-brand-background rounded-full px-4 py-2 self-start">
                 <Text className="text-brand-primary font-lexend-semibold text-sm">
                   {item.buttonText}
                 </Text>
@@ -102,7 +102,7 @@ const HomePromoCarousel = () => {
 
       {/* Dot Indicators */}
       <View className="flex-row justify-center mt-1">
-        {promoBanners.map((_, i) => (
+        {pathologyPromos.map((_, i) => (
           <View
             key={i}
             className={`h-2 rounded-full mx-1 ${
@@ -115,4 +115,4 @@ const HomePromoCarousel = () => {
   );
 };
 
-export default HomePromoCarousel;
+export default HomePromoCarouselPathology;

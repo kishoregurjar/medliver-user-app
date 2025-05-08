@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import STATIC from "@/utils/constants";
 
-const BestSellerSection = () => {
+const BestSellerPharmacy = () => {
   const bestSellers = [
     {
       title: "Vitamin D -3 250gm",
@@ -108,4 +108,4 @@ const BestSellerSection = () => {
   );
 };
 
-export default BestSellerSection;
+export default BestSellerPharmacy;
