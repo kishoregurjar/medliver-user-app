@@ -11,12 +11,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
 import GradientBackground from "../common/GradientEllipse";
 
+// Get screen width and height once at load time
 const { width, height } = Dimensions.get("window");
 
-const AppLayout = ({ children, scrollEnabled = true }) => {
+const AppLayout = ({ children }) => {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === "dark";
 
+  // Responsive paddings based on screen size
   const paddingHorizontal = width < 375 ? 12 : width < 768 ? 20 : 28;
   const paddingVertical = height < 667 ? 10 : height < 800 ? 16 : 24;
 
@@ -37,32 +39,19 @@ const AppLayout = ({ children, scrollEnabled = true }) => {
           darkMode={isDark}
           animationSpeed={1000}
           animationType="pulse"
-          scrollEnabled={scrollEnabled}
-          contentStyle={{
-            flex: 1,
-            ...(scrollEnabled
-              ? {
-                  paddingHorizontal,
-                  paddingVertical,
-                  minHeight: height,
-                }
-              : {
-                  paddingHorizontal,
-                  paddingVertical,
-                }),
-          }}
         >
-          {scrollEnabled ? (
-            <ScrollView
-              contentContainerStyle={{ flexGrow: 1 }}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-            >
-              <View style={{ flex: 1 }}>{children}</View>
-            </ScrollView>
-          ) : (
+          <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingHorizontal,
+              paddingVertical,
+              minHeight: height,
+            }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
             <View style={{ flex: 1 }}>{children}</View>
-          )}
+          </ScrollView>
         </GradientBackground>
       </KeyboardAvoidingView>
     </SafeAreaView>

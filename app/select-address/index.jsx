@@ -30,7 +30,7 @@ export default function SelectAddressScreen() {
   );
 
   return (
-    <AppLayout scrollEnabled={false}>
+    <AppLayout>
       {/* Header with back button */}
       <HeaderWithBack title="Select Address" clearStack backTo={"/home"} />
 

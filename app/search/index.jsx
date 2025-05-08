@@ -11,7 +11,7 @@ export default function SearchMedicineScreen() {
   const suggestions = ["Paracetamol", "Ibuprofen", "Cough Syrup"];
 
   return (
-    <AppLayout scrollEnabled={false}>
+    <AppLayout>
       {/* Header */}
       <HeaderWithBack title="Search Medicines" clearStack backTo={"/home"} />
 
