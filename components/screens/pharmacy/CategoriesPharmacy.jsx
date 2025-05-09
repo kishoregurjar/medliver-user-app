@@ -2,15 +2,15 @@ import React from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const categories = [
-  { label: "Medicine", icon: "medkit-outline" },
-  { label: "Hospital", icon: "business-outline" },
-  { label: "Pathology & Diagnosis", icon: "flask-outline" },
-  { label: "Health & Fitness", icon: "fitness-outline" },
-  { label: "Health Insurance", icon: "shield-checkmark-outline" },
-  { label: "Ambulance", icon: "car-sport-outline" },
-  { label: "Doctor", icon: "person-outline" },
-  { label: "Pharmacy", icon: "storefront-outline" },
+const pharmacyCategories = [
+  { label: "Tablets", icon: "tablet-portrait-outline" },
+  { label: "Syrups", icon: "flask-outline" },
+  { label: "Supplements", icon: "nutrition-outline" },
+  { label: "First Aid", icon: "medkit-outline" },
+  { label: "Personal Care", icon: "people-outline" },
+  { label: "Skin Care", icon: "leaf-outline" },
+  { label: "Baby Care", icon: "happy-outline" },
+  { label: "Medical Devices", icon: "thermometer-outline" },
 ];
 
 const CategoriesPharmacy = () => {
@@ -21,24 +21,25 @@ const CategoriesPharmacy = () => {
         Categories
       </Text>
 
-      {/* Scrollable Chips */}
+      {/* Scrollable Category Cards */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 4 }}
       >
-        {categories.map((cat, i) => (
+        {pharmacyCategories.map((cat, i) => (
           <TouchableOpacity
             key={i}
-            activeOpacity={0.7}
-            className="flex-row items-center bg-white rounded-full px-5 py-2 mr-3 border border-background-soft"
+            activeOpacity={0.8}
+            className="bg-white rounded-2xl items-center justify-center p-4 w-28 mr-4 shadow-sm"
           >
-            <Ionicons
-              name={cat.icon}
-              size={18}
-              color="#6E6A7C"
-              style={{ marginRight: 8 }}
-            />
-            <Text className="text-[#6E6A7C] text-sm font-lexend-medium">
+            {/* Icon Circle */}
+            <View className="bg-background-soft p-3 rounded-full mb-2">
+              <Ionicons name={cat.icon} size={26} color="#6E6A7C" />
+            </View>
+
+            {/* Label */}
+            <Text className="text-xs text-center font-lexend-medium text-text-primary">
               {cat.label}
             </Text>
           </TouchableOpacity>
