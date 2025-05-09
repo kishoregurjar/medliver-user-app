@@ -13,6 +13,7 @@ import Carousel from "react-native-reanimated-carousel";
 import STATIC from "@/utils/constants";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
+import { formatPrice, getDiscount } from "@/utils/format";
 
 const { width } = Dimensions.get("window");
 
@@ -41,9 +42,17 @@ const product = {
     "Store in a cool dry place.",
     "Keep out of reach of children.",
   ],
+  ingredients: ["Cholecalciferol (Vitamin D3)", "Gelatin", "Glycerin"],
+  storage: "Store in a cool, dry place away from sunlight.",
 };
 
-const tabs = ["Description", "Key Benefits", "How to Use", "Precaution"];
+const tabs = [
+  "Description",
+  "Key Benefits",
+  "How to Use",
+  "Precaution",
+  "Ingredients",
+];
 
 export default function PharmacyProductDetails() {
   const { productId } = useLocalSearchParams();
@@ -55,26 +64,26 @@ export default function PharmacyProductDetails() {
     switch (activeTab) {
       case 0:
         return (
-          <Text className="text-sm font-lexend text-text-muted">
-            {product.description}
-          </Text>
+          <Text className="text-sm text-text-muted">{product.description}</Text>
         );
       case 1:
         return product.benefits.map((item, i) => (
-          <Text key={i} className="text-sm font-lexend text-text-muted mb-1">
+          <Text key={i} className="text-sm text-text-muted mb-1">
             • {item}
           </Text>
         ));
       case 2:
-        return (
-          <Text className="text-sm font-lexend text-text-muted">
-            {product.usage}
-          </Text>
-        );
+        return <Text className="text-sm text-text-muted">{product.usage}</Text>;
       case 3:
         return product.precautions.map((item, i) => (
-          <Text key={i} className="text-sm font-lexend text-text-muted mb-1">
+          <Text key={i} className="text-sm text-text-muted mb-1">
             • {item}
+          </Text>
+        ));
+      case 4:
+        return product.ingredients.map((item, i) => (
+          <Text key={i} className="text-sm text-text-muted mb-1">
+            - {item}
           </Text>
         ));
       default:
@@ -84,17 +93,8 @@ export default function PharmacyProductDetails() {
 
   return (
     <AppLayout>
-      {/* Header */}
-      <HeaderWithBack
-        showCart
-        showNotification
-        showSearch
-        iconNavigation={{
-          search: { to: "/search", clearStack: false },
-          cart: { to: "/cart", clearStack: false },
-          notification: { to: "/notifications", clearStack: false },
-        }}
-      />
+      <HeaderWithBack showCart showNotification showSearch />
+
       {/* Carousel */}
       <View className="my-4">
         <Carousel
@@ -123,36 +123,31 @@ export default function PharmacyProductDetails() {
 
       {/* Product Info */}
       <View className="bg-white p-5 rounded-xl my-4">
-        <Text className="text-xl font-lexend-semibold text-gray-900 mb-4">
+        <Text className="text-xl font-lexend-semibold text-gray-900 mb-1">
           {product.title}
         </Text>
-        <Text className="text-sm font-lexend text-gray-500 mb-2">
-          Manufactured By : {product.manufacturer}
-        </Text>
-        <Text className="text-sm font-lexend text-gray-500 mb-2">
-          Country of Origin : {"India"}
-        </Text>
+        <Text className="text-sm text-gray-500">By {product.manufacturer}</Text>
+        <Text className="text-sm text-gray-500">Origin: India</Text>
       </View>
 
       {/* Price Info */}
       <View className="bg-brand-background p-4 rounded-xl mb-4">
         <View className="flex-row items-center mb-2">
           <Text className="text-lg font-lexend-bold text-gray-900">
-            ₹{product.price}
+            {formatPrice(product.price)}
           </Text>
-          <Text className="text-sm font-lexend text-gray-400 line-through ml-2">
-            MRP ₹{product.mrp}
+          <Text className="text-sm text-gray-400 line-through ml-2">
+            MRP {formatPrice(product.mrp)}
           </Text>
         </View>
-        <Text className="text-sm font-lexend text-green-600">
-          Save ₹{product.mrp - product.price}
+        <Text className="text-sm text-green-600">
+          Save {formatPrice(getDiscount(product.mrp, product.price))}
         </Text>
       </View>
 
-      {/* Product Details */}
-      {/* Tabs */}
-      <View className="my-4 p-4 bg-white rounded-xl">
-        <View className="flex-row border-b border-gray-200">
+      {/* Product Details Tabs */}
+      <View className="bg-white p-4 rounded-xl mb-4">
+        <View className="flex-row border-b border-gray-200 mb-3">
           {tabs.map((tab, i) => (
             <TouchableOpacity
               key={i}
@@ -164,7 +159,7 @@ export default function PharmacyProductDetails() {
               }`}
             >
               <Text
-                className={`text-sm font-lexend-medium ${
+                className={`text-sm ${
                   i === activeTab ? "text-brand-primary" : "text-text-muted"
                 }`}
               >
@@ -173,13 +168,19 @@ export default function PharmacyProductDetails() {
             </TouchableOpacity>
           ))}
         </View>
-        <View className="mt-3 bg-white p-4 rounded-xl">
-          {renderTabContent()}
-        </View>
+        {renderTabContent()}
+      </View>
+
+      {/* Storage Info */}
+      <View className="bg-white p-4 rounded-xl mb-4">
+        <Text className="text-md font-lexend-bold text-text-primary mb-1">
+          Storage Instructions
+        </Text>
+        <Text className="text-sm text-text-muted">{product.storage}</Text>
       </View>
 
       {/* Similar Products */}
-      <View className="mt-6">
+      <View className="mt-6 mb-8">
         <Text className="text-lg font-lexend-bold text-text-primary mb-3">
           Similar Products
         </Text>
@@ -205,7 +206,7 @@ export default function PharmacyProductDetails() {
             },
             {
               id: 3,
-              title: "Zincovit Tablets for Strong Immunity & Wellness",
+              title: "Zincovit Tablets",
               image: STATIC.IMAGES.COMPONENTS.MEDICINE_3,
               rating: 4.8,
               price: 150.0,
@@ -226,8 +227,6 @@ export default function PharmacyProductDetails() {
           ))}
         </ScrollView>
       </View>
-
-      <View className="h-16" />
     </AppLayout>
   );
 }
