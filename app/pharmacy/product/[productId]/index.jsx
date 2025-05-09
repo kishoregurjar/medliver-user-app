@@ -115,30 +115,37 @@ export default function PharmacyProductDetails() {
         </View>
       </View>
 
-      {/* Product Card */}
-      <View className="bg-white mx-4 p-4 rounded-xl shadow-sm mb-4">
-        <Text className="text-xl font-semibold text-gray-900">
+      {/* Product Info */}
+      <View className="bg-white p-5 rounded-xl my-4">
+        <Text className="text-xl font-lexend-semibold text-gray-900 mb-4">
           {product.title}
         </Text>
-        <Text className="text-sm text-gray-500 mb-3">
-          By {product.manufacturer}
+        <Text className="text-sm font-lexend text-gray-500 mb-2">
+          Manufactured By : {product.manufacturer}
         </Text>
+        <Text className="text-sm font-lexend text-gray-500 mb-2">
+          Country of Origin : {"India"}
+        </Text>
+      </View>
 
+      {/* Price Info */}
+      <View className="bg-brand-background p-4 rounded-xl mb-4">
         <View className="flex-row items-center mb-2">
-          <Text className="text-lg font-bold text-gray-900">
+          <Text className="text-lg font-lexend-bold text-gray-900">
             ₹{product.price}
           </Text>
-          <Text className="text-sm text-gray-400 line-through ml-2">
+          <Text className="text-sm font-lexend text-gray-400 line-through ml-2">
             MRP ₹{product.mrp}
           </Text>
         </View>
-        <Text className="text-sm text-green-600">
+        <Text className="text-sm font-lexend text-green-600">
           Save ₹{product.mrp - product.price}
         </Text>
       </View>
 
+      {/* Product Details */}
       {/* Tabs */}
-      <View className="mx-4 mb-2">
+      <View className="mb-2">
         <View className="flex-row border-b border-gray-200">
           {tabs.map((tab, i) => (
             <TouchableOpacity
@@ -166,8 +173,8 @@ export default function PharmacyProductDetails() {
       </View>
 
       {/* Similar Products */}
-      <View className="mt-6 mx-4">
-        <Text className="text-lg font-bold text-gray-900 mb-3">
+      <View className="mt-6">
+        <Text className="text-lg font-lexend-bold text-text-primary mb-3">
           Similar Products
         </Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
