@@ -52,7 +52,12 @@ const BookAnAppointmentScreen = () => {
 
   return (
     <AppLayout>
-      <HeaderWithBack title="Book an Appointment" clearStack backTo={"/home"} />
+      <HeaderWithBack
+        showBackButton
+        title="Book an Appointment"
+        clearStack
+        backTo={"/home"}
+      />
       <View className="py-8">
         <Text className="text-2xl font-lexend-bold text-text-primary mb-2">
           Book an Appointment with a Doctor

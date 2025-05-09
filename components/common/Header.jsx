@@ -11,84 +11,42 @@ import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import STATIC from "@/utils/constants";
 import { useLocalSearchParams, useRouter, usePathname } from "expo-router";
 import { useEffect } from "react";
+import HeaderWithBack from "./HeaderWithBack";
 
 const { width } = Dimensions.get("window");
-
-const IconButton = ({ icon, onPress }) => (
-  <TouchableOpacity onPress={onPress} activeOpacity={0.7} className="p-2">
-    {icon}
-  </TouchableOpacity>
-);
-
-const medicineSuggestions = [
-  "Paracetamol",
-  "Aspirin",
-  "Ibuprofen",
-  "Amoxicillin",
-  "Cough Syrup",
-  "Vitamin C",
-];
-
-const addresses = [
-  "Indore, Madhya Pradesh",
-  "Bhopal, Madhya Pradesh",
-  "Mumbai, Maharashtra",
-  "Delhi, India",
-  "Bangalore, Karnataka",
-  "Chennai, Tamil Nadu",
-  "Hyderabad, Telangana",
-  "Pune, Maharashtra",
-];
 
 const Header = () => {
   const router = useRouter();
   const [selectedAddress, setSelectedAddress] = useState(
     "Indore, Madhya Pradesh"
   );
-  const { selectedAddress: returnedAddress, searchQuery } = useLocalSearchParams();
+  const { selectedAddress: returnedAddress, searchQuery } =
+    useLocalSearchParams();
 
   useEffect(() => {
     if (returnedAddress) {
       setSelectedAddress(returnedAddress);
     }
-  
+
     if (searchQuery) {
       console.log("Searched for:", searchQuery);
       // Optionally set local state or search directly
     }
   }, [returnedAddress, searchQuery]);
-  
+
   return (
     <View>
       <View>
         {/* Logo & Icons */}
-        <View className="flex-row justify-between items-center mb-5">
-          <Image
-            source={STATIC.IMAGES.APP.LOGO_H}
-            style={{ width: width * 0.4, height: 48 }}
-            resizeMode="contain"
-          />
-          <View className="flex-row items-center space-x-2">
-            <IconButton
-              icon={
-                <MaterialCommunityIcons
-                  name="cart-outline"
-                  size={24}
-                  color="#000"
-                />
-              }
-            />
-            <IconButton
-              icon={
-                <MaterialCommunityIcons
-                  name="bell-outline"
-                  size={24}
-                  color="#000"
-                />
-              }
-            />
-          </View>
-        </View>
+        <HeaderWithBack
+          showCart
+          showNotification
+          iconNavigation={{
+            search: { to: "/search", clearStack: true },
+            cart: { to: "/cart", clearStack: true },
+            notification: { to: "/notifications", clearStack: true },
+          }}
+        />
 
         {/* Location & Login */}
         <View className="flex-row justify-between items-center mb-5">
@@ -156,9 +114,9 @@ const Header = () => {
             className="flex-1 ml-2 font-lexend text-sm text-gray-700"
             onFocus={() => router.push("/search")}
           />
-          <IconButton
+          {/* <IconButton
             icon={<Feather name="sliders" size={20} color="#6E6A7C" />}
-          />
+          /> */}
         </View>
       </View>
     </View>

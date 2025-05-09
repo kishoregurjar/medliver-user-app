@@ -73,7 +73,12 @@ const InsuranceEnquiryScreen = () => {
 
   return (
     <AppLayout>
-      <HeaderWithBack title="Insurance Enquiry" clearStack backTo={"/home"} />
+      <HeaderWithBack
+        showBackButton
+        title="Insurance Enquiry"
+        clearStack
+        backTo={"/home"}
+      />
       <View className="py-8">
         <Text className="text-2xl font-lexend-bold text-text-black dark:text-white mb-1">
           Insurance Enquiry

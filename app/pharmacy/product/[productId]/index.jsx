@@ -12,6 +12,7 @@ import { Ionicons, Feather } from "@expo/vector-icons";
 import AppLayout from "@/components/layouts/AppLayout";
 import Carousel from "react-native-reanimated-carousel";
 import STATIC from "@/utils/constants";
+import HeaderWithBack from "@/components/common/HeaderWithBack";
 
 const { width } = Dimensions.get("window");
 
@@ -78,25 +79,16 @@ export default function PharmacyProductDetails() {
   return (
     <AppLayout>
       {/* Header */}
-      <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-200">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} />
-        </TouchableOpacity>
-        <Image
-          source={STATIC.IMAGES.APP.LOGO}
-          className="w-24 h-6"
-          resizeMode="contain"
-        />
-        <View className="flex-row space-x-4">
-          <TouchableOpacity>
-            <Feather name="search" size={20} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Ionicons name="cart-outline" size={22} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
+      <HeaderWithBack
+        showCart
+        showNotification
+        showSearch
+        iconNavigation={{
+          search: { to: "/search", clearStack: false },
+          cart: { to: "/cart", clearStack: false },
+          notification: { to: "/notifications", clearStack: false },
+        }}
+      />
       {/* Carousel */}
       <View className="my-4">
         <Carousel
