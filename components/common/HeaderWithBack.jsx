@@ -44,7 +44,7 @@ export default function HeaderWithBack({
 
   return (
     <View
-      className="flex-row items-center justify-between border-b border-gray-100"
+      className="flex-row items-center justify-between"
       style={{
         paddingTop:
           Platform.OS === "android" ? StatusBar.currentHeight ?? 0 : 0,
