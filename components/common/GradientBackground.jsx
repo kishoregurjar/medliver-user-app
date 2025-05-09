@@ -106,16 +106,16 @@ const GradientBackground = ({
   return (
     <View className={`${isDark ? "bg-[#1C1C1E]" : "bg-[#F2F2F2]"} flex-1`}>
       {Platform.OS === "ios" ? (
-        <>
-          <ImageBackground
-            source={STATIC.IMAGES.APP.BACKGROUND}
-            resizeMode="cover"
-            className="flex-1"
-          >
-            {children}
-          </ImageBackground>
-        </>
+        // ✅ Wrap everything inside the ImageBackground
+        <ImageBackground
+          source={STATIC.IMAGES.APP.BACKGROUND}
+          resizeMode="cover"
+          className="flex-1"
+        >
+          {children}
+        </ImageBackground>
       ) : (
+        // ✅ Only render this on Android
         <>
           <GradientEllipse
             colors={getColors(
@@ -192,11 +192,11 @@ const GradientBackground = ({
             animationType={animationType}
             animationSpeed={animationSpeed}
           />
+
+          {/* ✅ Render children here ONLY for Android */}
+          {children}
         </>
       )}
-
-      {/* Screen Content */}
-      {children}
     </View>
   );
 };
