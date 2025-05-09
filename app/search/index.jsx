@@ -6,6 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AppLayout from "@/components/layouts/AppLayout";
@@ -57,76 +59,80 @@ export default function SearchMedicineScreen() {
 
   return (
     <AppLayout>
-      {/* Header */}
-      <HeaderWithBack
-        showBackButton
-        title="Search Medicines"
-        clearStack
-        backTo="/home"
-      />
+      <SafeAreaView className="flex-1">
+        {/* Header */}
+        <HeaderWithBack
+          showBackButton
+          title="Search Medicines"
+          clearStack
+          backTo="/home"
+        />
 
-      {/* Body */}
-      <ScrollView className="flex-1 pt-4" showsVerticalScrollIndicator={false}>
-        {/* Search Field */}
-        <View className="flex-row items-center bg-white border border-background-soft px-4 py-3 rounded-xl mb-6">
-          <Ionicons name="search" size={20} color="#888" className="mr-2" />
-          <TextInput
-            className="flex-1 text-base"
-            placeholder="Search for medicines"
-            value={query}
-            onChangeText={setQuery}
-            returnKeyType="search"
-          />
-        </View>
+        {/* Body */}
+        <ScrollView
+          className="flex-1 pt-4"
+          contentContainerStyle={{ paddingBottom: 40 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Search Field */}
+          <View className="flex-row items-center bg-white border border-background-soft px-4 py-3 rounded-xl mb-6">
+            <Ionicons name="search" size={20} color="#888" />
+            <TextInput
+              className="flex-1 ml-2 text-base"
+              placeholder="Search for medicines"
+              value={query}
+              onChangeText={setQuery}
+              returnKeyType="search"
+            />
+          </View>
 
-        {/* Categories */}
-        <View className="mb-6">
-          <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
-            Categories
-          </Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {categories.map((category, index) => (
-              <TouchableOpacity
-                key={index}
-                className="bg-brand-primary/10 border border-brand-primary/90 px-4 py-2 rounded-full mr-3"
-                onPress={() =>
-                  router.push({
-                    pathname: "/pharmacy",
-                    params: { query: category },
-                  })
-                }
-              >
-                <Text className="text-brand-primary text-sm font-lexend-medium">
-                  {category}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
+          {/* Categories */}
+          <View className="mb-6">
+            <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
+              Categories
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {categories.map((category, index) => (
+                <TouchableOpacity
+                  key={index}
+                  className="bg-brand-primary/10 border border-brand-primary/90 px-4 py-2 rounded-full mr-3"
+                  onPress={() =>
+                    router.push({
+                      pathname: "/pharmacy",
+                      params: { query: category },
+                    })
+                  }
+                >
+                  <Text className="text-brand-primary text-sm font-lexend-medium">
+                    {category}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
 
-        {/* Featured Products */}
-        <View className="mb-6">
-          <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
-            Featured Products
-          </Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {featuredProducts.map((item) => (
-              <PharmacyProductCard
-                key={item.id}
-                item={item}
-                onPress={() =>
-                  router.push({
-                    pathname: "/pharmacy/product/[productId]",
-                    params: { productId: item.id },
-                  })
-                }
-              />
-            ))}
-          </ScrollView>
-        </View>
-
-        <View className="h-6" />
-      </ScrollView>
+          {/* Featured Products */}
+          <View className="mb-6">
+            <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
+              Featured Products
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {featuredProducts.map((item) => (
+                <PharmacyProductCard
+                  key={item.id}
+                  item={item}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/pharmacy/product/[productId]",
+                      params: { productId: item.id },
+                    })
+                  }
+                />
+              ))}
+            </ScrollView>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </AppLayout>
   );
 }
