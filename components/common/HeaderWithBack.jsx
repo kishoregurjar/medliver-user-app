@@ -21,7 +21,7 @@ export default function HeaderWithBack({
   iconNavigation = {
     search: { to: "/search", clearStack: false },
     cart: { to: "/cart", clearStack: false },
-    notification: { to: "/notifications", clearStack: false },
+    notification: { to: "/notification", clearStack: false },
   },
 }) {
   const router = useRouter();

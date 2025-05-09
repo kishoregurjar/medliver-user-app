@@ -42,9 +42,9 @@ const Header = () => {
           showCart
           showNotification
           iconNavigation={{
-            search: { to: "/search", clearStack: true },
-            cart: { to: "/cart", clearStack: true },
-            notification: { to: "/notifications", clearStack: true },
+            search: { to: "/search", clearStack: false },
+            cart: { to: "/cart", clearStack: false },
+            notification: { to: "/notification", clearStack: false },
           }}
         />
 
