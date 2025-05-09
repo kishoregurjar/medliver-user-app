@@ -32,7 +32,7 @@ export default function SelectAddressScreen() {
   return (
     <AppLayout scroll={false}>
       {/* Header with back button */}
-      <HeaderWithBack title="Select Address" clearStack backTo={"/home"} />
+      <HeaderWithBack showBackButton title="Select Address" clearStack backTo={"/home"} />
 
       {/* Body */}
       <View className="flex-1 px-5 pt-4">
