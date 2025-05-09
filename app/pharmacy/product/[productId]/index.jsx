@@ -8,11 +8,11 @@ import {
   Dimensions,
 } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { Ionicons, Feather } from "@expo/vector-icons";
 import AppLayout from "@/components/layouts/AppLayout";
 import Carousel from "react-native-reanimated-carousel";
 import STATIC from "@/utils/constants";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
+import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
 
 const { width } = Dimensions.get("window");
 
@@ -55,19 +55,25 @@ export default function PharmacyProductDetails() {
     switch (activeTab) {
       case 0:
         return (
-          <Text className="text-sm text-text-muted">{product.description}</Text>
+          <Text className="text-sm font-lexend text-text-muted">
+            {product.description}
+          </Text>
         );
       case 1:
         return product.benefits.map((item, i) => (
-          <Text key={i} className="text-sm text-text-muted mb-1">
+          <Text key={i} className="text-sm font-lexend text-text-muted mb-1">
             • {item}
           </Text>
         ));
       case 2:
-        return <Text className="text-sm text-text-muted">{product.usage}</Text>;
+        return (
+          <Text className="text-sm font-lexend text-text-muted">
+            {product.usage}
+          </Text>
+        );
       case 3:
         return product.precautions.map((item, i) => (
-          <Text key={i} className="text-sm text-text-muted mb-1">
+          <Text key={i} className="text-sm font-lexend text-text-muted mb-1">
             • {item}
           </Text>
         ));
@@ -145,7 +151,7 @@ export default function PharmacyProductDetails() {
 
       {/* Product Details */}
       {/* Tabs */}
-      <View className="mb-2">
+      <View className="my-4 p-4 bg-white rounded-xl">
         <View className="flex-row border-b border-gray-200">
           {tabs.map((tab, i) => (
             <TouchableOpacity
@@ -158,7 +164,7 @@ export default function PharmacyProductDetails() {
               }`}
             >
               <Text
-                className={`text-sm font-medium ${
+                className={`text-sm font-lexend-medium ${
                   i === activeTab ? "text-brand-primary" : "text-text-muted"
                 }`}
               >
@@ -167,7 +173,7 @@ export default function PharmacyProductDetails() {
             </TouchableOpacity>
           ))}
         </View>
-        <View className="mt-3 bg-white p-4 rounded-xl shadow-sm">
+        <View className="mt-3 bg-white p-4 rounded-xl">
           {renderTabContent()}
         </View>
       </View>
@@ -178,24 +184,45 @@ export default function PharmacyProductDetails() {
           Similar Products
         </Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {[...Array(3).keys()].map((_, index) => (
-            <TouchableOpacity
-              key={index}
-              className="mr-4 w-36 bg-white rounded-xl p-3 shadow-sm"
-            >
-              <Image
-                source={STATIC.IMAGES.COMPONENTS.MEDICINE_1}
-                className="h-20 w-full"
-                resizeMode="contain"
-              />
-              <Text
-                numberOfLines={2}
-                className="text-xs font-semibold text-gray-800 mt-2"
-              >
-                Similar Product {index + 1}
-              </Text>
-              <Text className="text-xs text-text-muted">₹199.00</Text>
-            </TouchableOpacity>
+          {[
+            {
+              id: 1,
+              title: "Vitamin D -3 250gm",
+              image: STATIC.IMAGES.COMPONENTS.MEDICINE_2,
+              rating: 5,
+              price: 212.0,
+              mrp: 235.0,
+              manufacturer: "Loren Ipsum Pharmaceutical Industries LTD",
+            },
+            {
+              id: 2,
+              title: "Omega 3 Softgels",
+              image: STATIC.IMAGES.COMPONENTS.MEDICINE_1,
+              rating: 4.5,
+              price: 299.0,
+              mrp: 349.0,
+              manufacturer: "HeartHealth Pharma Limited",
+            },
+            {
+              id: 3,
+              title: "Zincovit Tablets for Strong Immunity & Wellness",
+              image: STATIC.IMAGES.COMPONENTS.MEDICINE_3,
+              rating: 4.8,
+              price: 150.0,
+              mrp: 180.0,
+              manufacturer: "Wellness Labs",
+            },
+          ].map((product) => (
+            <PharmacyProductCard
+              key={product.id}
+              item={product}
+              onPress={() =>
+                navigation.push({
+                  pathname: "/pharmacy/product/[productId]",
+                  params: { productId: product.id },
+                })
+              }
+            />
           ))}
         </ScrollView>
       </View>

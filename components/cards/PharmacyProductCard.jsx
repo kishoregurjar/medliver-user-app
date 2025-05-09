@@ -57,14 +57,14 @@ const PharmacyProductCard = ({
           >
             {title}
           </Text>
-          <Text className="text-text-primary text-sm font-bold">
+          <Text className="text-text-primary text-sm font-lexend-bold">
             {formatPrice(item.price)}
           </Text>
         </View>
 
         {/* Subtitle */}
         <Text
-          className="text-xs text-gray-500 mb-3 leading-tight"
+          className="text-xs font-lexend text-gray-500 mb-3 leading-tight"
           numberOfLines={2}
         >
           {subtitle || manufacturer}
@@ -105,7 +105,7 @@ const PharmacyProductCard = ({
       {/* Rating */}
       <View className="flex-row items-center mb-1 border border-background-soft rounded-full px-2 py-0.5 w-fit self-start">
         <Ionicons name="star" size={14} color="#FFD700" />
-        <Text className="text-xs text-text-muted ml-1">
+        <Text className="text-xs font-lexend text-text-muted ml-1">
           {formatNumber(item.rating, 1)}
         </Text>
       </View>
@@ -114,19 +114,19 @@ const PharmacyProductCard = ({
       <Text
         numberOfLines={1}
         ellipsizeMode="tail"
-        className="font-semibold text-sm text-text-primary leading-tight mb-1"
+        className="font-lexend-bold text-sm text-text-primary leading-tight mb-1"
       >
         {title}
       </Text>
 
       {/* Price Info */}
-      <Text className="text-text-primary text-sm font-bold">
+      <Text className="text-text-primary text-sm font-lexend-bold">
         {formatPrice(item.price)}
       </Text>
-      <Text className="text-xs text-text-muted line-through">
+      <Text className="text-xs font-lexend text-text-muted line-through">
         MRP {formatPrice(item.mrp)}
       </Text>
-      <Text className="text-[10px] text-green-600 mb-1">
+      <Text className="text-[10px] font-lexend text-green-600 mb-1">
         Save ₹{getDiscount(item.mrp, item.price).toFixed(0)}
       </Text>
 
@@ -134,7 +134,7 @@ const PharmacyProductCard = ({
       <Text
         numberOfLines={1}
         ellipsizeMode="tail"
-        className="text-[10px] text-text-muted leading-tight mb-2"
+        className="text-[10px] font-lexend text-text-muted leading-tight mb-2"
       >
         By {manufacturer}
       </Text>
