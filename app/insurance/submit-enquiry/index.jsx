@@ -10,6 +10,7 @@ import Checkbox from "expo-checkbox";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
 import FORM_VALIDATIONS from "@/libs/form-validations";
 import AppLayout from "@/components/layouts/AppLayout";
+import HeaderWithBack from "@/components/common/HeaderWithBack";
 
 const InsuranceEnquiryScreen = () => {
   const {
@@ -72,7 +73,8 @@ const InsuranceEnquiryScreen = () => {
 
   return (
     <AppLayout>
-      <View className="gap-y-2">
+      <HeaderWithBack title="Insurance Enquiry" clearStack backTo={"/home"} />
+      <View className="py-8">
         <Text className="text-2xl font-lexend-bold text-text-black dark:text-white mb-1">
           Insurance Enquiry
         </Text>

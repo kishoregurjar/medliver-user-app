@@ -9,6 +9,7 @@ import FORM_VALIDATIONS from "@/libs/form-validations";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
 import { useAppToast } from "@/hooks/useAppToast";
 import useAxios from "@/hooks/useAxios";
+import HeaderWithBack from "@/components/common/HeaderWithBack";
 
 const BookAnAppointmentScreen = () => {
   const {
@@ -51,9 +52,10 @@ const BookAnAppointmentScreen = () => {
 
   return (
     <AppLayout>
+      <HeaderWithBack title="Book an Appointment" clearStack backTo={"/home"} />
       <View className="py-8">
         <Text className="text-2xl font-lexend-bold text-text-primary mb-2">
-          Book an Appointment
+          Book an Appointment with a Doctor
         </Text>
         <Text className="text-base font-lexend text-text-muted mb-6 leading-relaxed">
           Schedule a visit with a medical expert

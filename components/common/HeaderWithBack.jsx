@@ -26,7 +26,7 @@ export default function HeaderWithBack({ title, clearStack = false, backTo }) {
       <TouchableOpacity onPress={handleBack} className="mr-3">
         <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
-      <Text className="text-xl font-bold">{title}</Text>
+      <Text className="text-xl font-lexend-bold">{title}</Text>
     </View>
   );
 }

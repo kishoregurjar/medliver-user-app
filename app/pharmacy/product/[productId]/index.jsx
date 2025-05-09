@@ -54,19 +54,19 @@ export default function PharmacyProductDetails() {
     switch (activeTab) {
       case 0:
         return (
-          <Text className="text-sm text-gray-600">{product.description}</Text>
+          <Text className="text-sm text-text-muted">{product.description}</Text>
         );
       case 1:
         return product.benefits.map((item, i) => (
-          <Text key={i} className="text-sm text-gray-600 mb-1">
+          <Text key={i} className="text-sm text-text-muted mb-1">
             • {item}
           </Text>
         ));
       case 2:
-        return <Text className="text-sm text-gray-600">{product.usage}</Text>;
+        return <Text className="text-sm text-text-muted">{product.usage}</Text>;
       case 3:
         return product.precautions.map((item, i) => (
-          <Text key={i} className="text-sm text-gray-600 mb-1">
+          <Text key={i} className="text-sm text-text-muted mb-1">
             • {item}
           </Text>
         ));
@@ -116,7 +116,7 @@ export default function PharmacyProductDetails() {
             <View
               key={i}
               className={`w-2 h-2 rounded-full mx-1 ${
-                i === activeSlide ? "bg-blue-600" : "bg-gray-300"
+                i === activeSlide ? "bg-brand-primary" : "bg-text-muted"
               }`}
             />
           ))}
@@ -154,13 +154,13 @@ export default function PharmacyProductDetails() {
               onPress={() => setActiveTab(i)}
               className={`mr-4 pb-2 ${
                 i === activeTab
-                  ? "border-b-2 border-blue-600"
+                  ? "border-b-2 border-brand-primary"
                   : "border-transparent"
               }`}
             >
               <Text
                 className={`text-sm font-medium ${
-                  i === activeTab ? "text-blue-600" : "text-gray-500"
+                  i === activeTab ? "text-brand-primary" : "text-text-muted"
                 }`}
               >
                 {tab}
@@ -195,7 +195,7 @@ export default function PharmacyProductDetails() {
               >
                 Similar Product {index + 1}
               </Text>
-              <Text className="text-xs text-gray-500">₹199.00</Text>
+              <Text className="text-xs text-text-muted">₹199.00</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
