@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,17 +7,20 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
-  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
-import STATIC from "@/utils/constants";
+import useAxios from "@/hooks/useAxios";
 import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
+import SkeletonPharmacyProductCard from "@/components/skeletons/SkeletonPharmacyProductCard";
 
 export default function SearchMedicineScreen() {
   const [query, setQuery] = useState("");
+  const [products, setProducts] = useState([]);
   const router = useRouter();
+
+  const { request: searchMedicines, loading: isLoading, error } = useAxios();
 
   const categories = [
     "Pain Relief",
@@ -27,40 +30,32 @@ export default function SearchMedicineScreen() {
     "Heart Care",
   ];
 
-  const featuredProducts = [
-    {
-      id: 1,
-      title: "Vitamin D-3 250gm",
-      image: STATIC.IMAGES.COMPONENTS.MEDICINE_2,
-      rating: 4.8,
-      price: 212,
-      mrp: 235,
-      manufacturer: "Loren Ipsum Pharma",
-    },
-    {
-      id: 2,
-      title: "Cough Syrup",
-      image: STATIC.IMAGES.COMPONENTS.MEDICINE_1,
-      rating: 4.2,
-      price: 130,
-      mrp: 150,
-      manufacturer: "ColdFix Pharma",
-    },
-    {
-      id: 3,
-      title: "Paracetamol Tablets",
-      image: STATIC.IMAGES.COMPONENTS.MEDICINE_3,
-      rating: 4.5,
-      price: 50,
-      mrp: 60,
-      manufacturer: "Medico Labs",
-    },
-  ];
+  const handleSearch = async (searchTerm) => {
+    if (!searchTerm?.trim()) return;
+
+    const { data, error } = await searchMedicines({
+      method: "GET",
+      url: `/user/search-medicine?query=${searchTerm}&page=1`,
+    });
+
+    if (error) {
+      console.error("Search error:", error);
+      return;
+    }
+
+    if (data?.data?.products) {
+      setProducts(data.data.products);
+    }
+  };
+
+  useEffect(() => {
+    // Optionally run default search or show featured on mount
+    handleSearch("vitamin"); // or leave it empty to show nothing initially
+  }, []);
 
   return (
     <AppLayout>
       <SafeAreaView className="flex-1">
-        {/* Header */}
         <HeaderWithBack
           showBackButton
           title="Search Medicines"
@@ -68,7 +63,6 @@ export default function SearchMedicineScreen() {
           backTo="/home"
         />
 
-        {/* Body */}
         <ScrollView
           className="flex-1 pt-4"
           contentContainerStyle={{ paddingBottom: 40 }}
@@ -81,7 +75,10 @@ export default function SearchMedicineScreen() {
               className="flex-1 ml-2 text-base"
               placeholder="Search for medicines"
               value={query}
-              onChangeText={setQuery}
+              onChangeText={(text) => {
+                setQuery(text);
+                handleSearch(text);
+              }}
               returnKeyType="search"
             />
           </View>
@@ -96,12 +93,10 @@ export default function SearchMedicineScreen() {
                 <TouchableOpacity
                   key={index}
                   className="bg-brand-primary/10 border border-brand-primary/90 px-4 py-2 rounded-full mr-3"
-                  onPress={() =>
-                    router.push({
-                      pathname: "/pharmacy",
-                      params: { query: category },
-                    })
-                  }
+                  onPress={() => {
+                    setQuery(category);
+                    handleSearch(category);
+                  }}
                 >
                   <Text className="text-brand-primary text-sm font-lexend-medium">
                     {category}
@@ -111,24 +106,36 @@ export default function SearchMedicineScreen() {
             </ScrollView>
           </View>
 
-          {/* Featured Products */}
+          {/* Products */}
           <View className="mb-6">
             <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
-              Featured Products
+              {query?.length > 0 ? "Search Results" : "Featured Products"}
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {featuredProducts.map((item) => (
-                <PharmacyProductCard
-                  key={item.id}
-                  item={item}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/pharmacy/product/[productId]",
-                      params: { productId: item.id },
-                    })
-                  }
-                />
-              ))}
+              {isLoading ? (
+                Array.from({ length: 3 }).map((_, index) => (
+                  <SkeletonPharmacyProductCard key={index} />
+                ))
+              ) : products.length === 0 ? (
+                <View className="h-28 justify-center items-center px-4">
+                  <Text className="text-gray-400 text-sm font-lexend-medium">
+                    No products found.
+                  </Text>
+                </View>
+              ) : (
+                products.map((item) => (
+                  <PharmacyProductCard
+                    key={item._id}
+                    item={item}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/pharmacy/product/[productId]",
+                        params: { productId: item._id },
+                      })
+                    }
+                  />
+                ))
+              )}
             </ScrollView>
           </View>
         </ScrollView>

@@ -47,7 +47,7 @@ const BestSellerPharmacy = () => {
       {/* Header */}
       <View className="flex-row justify-between items-center mb-3 px-1">
         <Text className="text-lg font-lexend-bold text-text-primary">
-          Best Seller Products
+          Best Seller
         </Text>
         <TouchableOpacity>
           <Text className="text-blue-600 text-sm font-lexend-bold">

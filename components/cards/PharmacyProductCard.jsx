@@ -62,17 +62,12 @@ const PharmacyProductCard = ({
         )}
 
         {/* Title & Price */}
-        <View className="flex-row justify-between items-center mb-1">
-          <Text
-            className="text-sm font-lexend-bold text-black"
-            numberOfLines={1}
-          >
-            {name}
-          </Text>
-          <Text className="text-text-primary text-sm font-lexend-bold">
-            {formatPrice(price)}
-          </Text>
-        </View>
+        <Text className="text-sm font-lexend-bold text-black" numberOfLines={1}>
+          {name}
+        </Text>
+        <Text className="text-text-primary text-sm font-lexend-bold">
+          {formatPrice(price)}
+        </Text>
 
         {/* Subtitle */}
         <Text

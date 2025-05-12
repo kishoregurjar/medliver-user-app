@@ -1,47 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
-import STATIC from "@/utils/constants";
+import { useRouter } from "expo-router";
+import useAxios from "@/hooks/useAxios";
+import SkeletonPharmacyCarouselCard from "@/components/skeletons/SkeletonPharmacyCarouselCard";
 
 const { width } = Dimensions.get("window");
 const SPACING = 12;
 const CARD_WIDTH = width * 0.99 - SPACING * 2;
 
-const specialOffers = [
-  {
-    title: "Baby Organix",
-    originalPrice: "$20",
-    offerPrice: "$10",
-    discount: "15% Off",
-    buttonText: "Buy Now",
-    image: STATIC.IMAGES.COMPONENTS.PROMO_PHARMACY,
-    className:
-      "p-5 bg-brand-primary rounded-2xl flex-row justify-between items-center",
-  },
-  {
-    title: "Natural Care Kit",
-    originalPrice: "$35",
-    offerPrice: "$28",
-    discount: "20% Off",
-    buttonText: "Buy Now",
-    image: STATIC.IMAGES.COMPONENTS.PROMO_PHARMACY,
-    className:
-      "p-5 bg-brand-secondary rounded-2xl flex-row justify-between items-center",
-  },
-  {
-    title: "Skin Essentials",
-    originalPrice: "$50",
-    offerPrice: "$39",
-    discount: "22% Off",
-    buttonText: "Shop Now",
-    image: STATIC.IMAGES.COMPONENTS.PROMO_PHARMACY,
-    className:
-      "p-5 bg-accent-softIndigo rounded-2xl flex-row justify-between items-center",
-  },
-];
-
 const SpecialOfferPharmacy = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [products, setProducts] = useState([]);
+  const {
+    request: fetchSpecialOffers,
+    loading: isLoading,
+    error: hasError,
+  } = useAxios();
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchOffers = async () => {
+      const { data, error } = await fetchSpecialOffers({
+        method: "GET",
+        url: "/user/get-all-special-offer?page=1",
+      });
+      if (error) {
+        console.error("Error fetching special offers:", error);
+        return;
+      }
+      if (data?.data?.specialOffers) {
+        setProducts(data.data.specialOffers);
+      }
+    };
+
+    fetchOffers();
+  }, []);
+
+  const handlePress = (id) => {
+    router.push({
+      pathname: "/pharmacy/product/[productId]",
+      params: { productId: id },
+    });
+  };
 
   return (
     <View className="mb-6">
@@ -50,73 +51,91 @@ const SpecialOfferPharmacy = () => {
         Special Offers
       </Text>
 
-      {/* Carousel */}
-      <Carousel
-        loop
-        autoPlay
-        width={width}
-        height={160}
-        data={specialOffers}
-        scrollAnimationDuration={800}
-        autoPlayInterval={4000}
-        snapEnabled
-        pagingEnabled
-        onSnapToItem={setActiveIndex}
-        mode="parallax"
-        modeConfig={{
-          parallaxScrollingScale: 0.92,
-          parallaxScrollingOffset: 60,
-          parallaxAdjacentItemScale: 0.85,
-        }}
-        panGestureHandlerProps={{
-          activeOffsetX: [-10, 10],
-        }}
-        style={{ alignSelf: "center" }}
-        renderItem={({ item }) => (
-          <View
-            className={item.className}
-            style={{
-              width: CARD_WIDTH,
+      {isLoading ? (
+        <SkeletonPharmacyCarouselCard />
+      ) : products.length === 0 ? (
+        <View className="h-28 justify-center items-center px-4">
+          <Text className="text-gray-400 text-sm font-lexend-medium">
+            No Offers Available
+          </Text>
+        </View>
+      ) : (
+        <>
+          {/* Carousel */}
+          <Carousel
+            loop
+            autoPlay
+            width={width}
+            height={160}
+            data={products}
+            scrollAnimationDuration={800}
+            autoPlayInterval={4000}
+            snapEnabled
+            pagingEnabled
+            onSnapToItem={setActiveIndex}
+            mode="parallax"
+            modeConfig={{
+              parallaxScrollingScale: 0.92,
+              parallaxScrollingOffset: 60,
+              parallaxAdjacentItemScale: 0.85,
             }}
-          >
-            <View>
-              <Text className="text-white font-lexend-bold text-lg mb-1">
-                {item.title}
-              </Text>
-              <Text className="text-white/70 line-through text-sm">
-                {item.originalPrice}
-              </Text>
-              <Text className="text-white font-lexend-bold text-xl">
-                {item.offerPrice}
-              </Text>
-              <Text className="text-white text-xs">{item.discount}</Text>
-              <TouchableOpacity className="bg-brand-background rounded-full px-3 py-1 mt-2 self-start">
-                <Text className="text-brand-primary font-lexend-medium text-sm">
-                  {item.buttonText}
-                </Text>
+            panGestureHandlerProps={{
+              activeOffsetX: [-10, 10],
+            }}
+            style={{ alignSelf: "center" }}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => handlePress(item.product?._id)}
+                activeOpacity={0.9}
+                className="p-5 bg-brand-primary rounded-2xl flex-row justify-between items-center"
+                style={{ width: CARD_WIDTH }}
+              >
+                <View className="flex-1 pr-3">
+                  <Text className="text-white font-lexend-bold text-lg mb-1">
+                    {item.product?.name ?? "Unnamed Product"}
+                  </Text>
+                  <Text className="text-white/70 line-through text-sm">
+                    ₹{item.originalPrice?.toFixed(2)}
+                  </Text>
+                  <Text className="text-white font-lexend-bold text-xl">
+                    ₹{item.offerPrice?.toFixed(2)}
+                  </Text>
+                  <Text className="text-white text-xs">
+                    {item.offerPercentage}% Off
+                  </Text>
+                  <View className="bg-brand-background rounded-full px-3 py-1 mt-2 self-start">
+                    <Text className="text-brand-primary font-lexend-medium text-sm">
+                      Buy Now
+                    </Text>
+                  </View>
+                </View>
+
+                <Image
+                  source={
+                    item.image
+                      ? { uri: item.image }
+                      : require("@/assets/logos/logo.png")
+                  }
+                  className="w-24 h-24"
+                  resizeMode="contain"
+                />
               </TouchableOpacity>
-            </View>
-
-            <Image
-              source={item.image}
-              className="w-24 h-24"
-              resizeMode="contain"
-            />
-          </View>
-        )}
-      />
-
-      {/* Dot Indicators */}
-      <View className="flex-row justify-center mt-3">
-        {specialOffers.map((_, i) => (
-          <View
-            key={i}
-            className={`h-2 rounded-full mx-1 ${
-              i === activeIndex ? "w-5 bg-brand-primary" : "w-2 bg-gray-400"
-            }`}
+            )}
           />
-        ))}
-      </View>
+
+          {/* Dot Indicators */}
+          <View className="flex-row justify-center mt-3">
+            {products.map((_, i) => (
+              <View
+                key={i}
+                className={`h-2 rounded-full mx-1 ${
+                  i === activeIndex ? "w-5 bg-brand-primary" : "w-2 bg-gray-400"
+                }`}
+              />
+            ))}
+          </View>
+        </>
+      )}
     </View>
   );
 };

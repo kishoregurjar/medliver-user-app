@@ -33,8 +33,6 @@ const TopPicksPharmacy = () => {
         console.error("Error fetching top picks:", error);
         return;
       }
-
-      console.log(data.data);
       if (data?.data?.featuredProducts) {
         setProducts(data.data.featuredProducts);
       }
