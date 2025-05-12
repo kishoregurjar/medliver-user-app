@@ -9,26 +9,38 @@ const PharmacyProductCard = ({
   showAddToCart = true,
   type = "default",
 }) => {
-  if (!item || typeof item !== "object") return null; // Basic safety
+  if (!item || typeof item !== "object" || !item.product) return null;
+
+  const { _id: id = "", soldCount = 0, product = {} } = item;
 
   const {
-    id = "",
-    image,
-    title = "No Title",
-    subtitle = "",
+    name = "No Name",
     price = 0,
-    mrp = 0,
-    rating = 0,
+    packSizeLabel = "",
     manufacturer = "Unknown",
-  } = item;
+    short_composition1 = "",
+    short_composition2 = "",
+    isPrescriptionRequired = false,
+    images = null,
+  } = product;
 
-  const discount = Math.max(mrp - price, 0);
+  const imageSource =
+    images && Array.isArray(images) && images.length > 0
+      ? { uri: images[0] }
+      : null;
+
+  const subtitle = `${short_composition1?.trim() || ""} ${
+    short_composition2?.trim() || ""
+  }`.trim();
 
   const handlePress = () => {
     if (typeof onPress === "function") {
       onPress(id);
     }
   };
+
+  const mrp = price + 15; // dummy MRP for UI
+  const discount = Math.max(mrp - price, 0);
 
   if (type === "small") {
     return (
@@ -39,9 +51,9 @@ const PharmacyProductCard = ({
         key={id}
       >
         {/* Image */}
-        {image ? (
+        {imageSource ? (
           <Image
-            source={image}
+            source={imageSource}
             className="w-full h-24 mb-3"
             resizeMode="contain"
           />
@@ -55,10 +67,10 @@ const PharmacyProductCard = ({
             className="text-sm font-lexend-bold text-black"
             numberOfLines={1}
           >
-            {title}
+            {name}
           </Text>
           <Text className="text-text-primary text-sm font-lexend-bold">
-            {formatPrice(item.price)}
+            {formatPrice(price)}
           </Text>
         </View>
 
@@ -92,9 +104,9 @@ const PharmacyProductCard = ({
       key={id}
     >
       {/* Image */}
-      {image ? (
+      {imageSource ? (
         <Image
-          source={image}
+          source={imageSource}
           className="w-full h-24 mb-3"
           resizeMode="contain"
         />
@@ -102,11 +114,11 @@ const PharmacyProductCard = ({
         <View className="w-full h-24 mb-3 bg-gray-100 rounded-xl" />
       )}
 
-      {/* Rating */}
+      {/* Rating / Sold Count */}
       <View className="flex-row items-center mb-1 border border-background-soft rounded-full px-2 py-0.5 w-fit self-start">
         <Ionicons name="star" size={14} color="#FFD700" />
         <Text className="text-xs font-lexend text-text-muted ml-1">
-          {formatNumber(item.rating, 1)}
+          {formatNumber(soldCount || 0, 1)}
         </Text>
       </View>
 
@@ -116,19 +128,21 @@ const PharmacyProductCard = ({
         ellipsizeMode="tail"
         className="font-lexend-bold text-sm text-text-primary leading-tight mb-1"
       >
-        {title}
+        {name}
       </Text>
 
       {/* Price Info */}
       <Text className="text-text-primary text-sm font-lexend-bold">
-        {formatPrice(item.price)}
+        {formatPrice(price)}
       </Text>
-      <Text className="text-xs font-lexend text-text-muted line-through">
-        MRP {formatPrice(item.mrp)}
-      </Text>
-      <Text className="text-[10px] font-lexend text-green-600 mb-1">
-        Save ₹{getDiscount(item.mrp, item.price).toFixed(0)}
-      </Text>
+      <View className="flex-row items-center justify-between mb-1">
+        <Text className="text-xs font-lexend text-text-muted line-through">
+          MRP {formatPrice(mrp)}
+        </Text>
+        <Text className="text-[10px] font-lexend text-green-600 mb-1">
+          Save ₹{discount.toFixed(0)}
+        </Text>
+      </View>
 
       {/* Manufacturer */}
       <Text

@@ -55,11 +55,12 @@ const AccountScreen = () => {
 
   return (
     <AppLayout scroll={false}>
+      {/* Header */}
       <HeaderWithBack showBackButton title="My Account" backTo="/home" />
 
-      <View className="flex-1 relative bg-gray-50 pb-24">
+      <View className="flex-1 relative pb-20">
         {/* User Info */}
-        <View className="items-center mt-8 space-y-3 px-4">
+        <View className="items-center mt-8 mb-4 space-y-3">
           <Image
             source={{ uri: userImage }}
             className="w-24 h-24 rounded-full border-4 border-white shadow-md"
@@ -81,17 +82,20 @@ const AccountScreen = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Divider */}
+        <View className="h-px bg-gray-200 my-4" />
+
         {/* Account Options */}
-        <View className="mt-6 mx-4 rounded-3xl bg-white shadow-md overflow-hidden">
+        <View className="flex-1 bg-white rounded-3xl shadow-md overflow-hidden">
           <ScrollView
-            contentContainerStyle={{ paddingVertical: 16 }}
+            contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
             showsVerticalScrollIndicator={false}
           >
             {accountOptions.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                className="flex-row items-center justify-between px-5 py-3 active:bg-gray-50"
-                activeOpacity={0.8}
+                className="flex-row items-center justify-between p-2 rounded-xl"
+                activeOpacity={0.7}
                 onPress={() => {
                   if (item.path) {
                     router.push(item.path);
@@ -99,10 +103,10 @@ const AccountScreen = () => {
                 }}
               >
                 <View className="flex-row items-center space-x-4">
-                  <View className="w-10 h-10 bg-brand-primary/20 rounded-full items-center justify-center">
+                  <View className="w-10 h-10 bg-brand-primary/30 rounded-full items-center justify-center flex mr-5">
                     <Ionicons name={item.icon} size={22} color="#E55150" />
                   </View>
-                  <Text className="text-sm font-lexend-medium text-gray-800">
+                  <Text className="text-xs font-lexend-medium text-gray-800">
                     {item.label}
                   </Text>
                 </View>
@@ -112,19 +116,19 @@ const AccountScreen = () => {
           </ScrollView>
         </View>
 
-        {/* Logout Button */}
-        <View
-          className="absolute bottom-4 left-4 right-4 bg-brand-primary/90 rounded-2xl"
-          style={{ paddingBottom: insets.bottom || 12 }}
-        >
+        {/* Divider */}
+        <View className="h-px bg-gray-200 mt-4" />
+
+        {/* Fixed Logout Button */}
+        <View className="w-full mt-0 rounded-3xl bg-brand-primary/90 absolute bottom-0">
           <TouchableOpacity
-            className="flex-row items-center justify-between p-4"
-            activeOpacity={0.8}
+            className="flex-row items-center justify-between p-3 rounded-xl"
+            activeOpacity={0.7}
             onPress={handleLogout}
           >
             <View className="flex-row items-center space-x-3">
-              <View className="w-8 h-8 bg-white/20 rounded-xl items-center justify-center">
-                <Ionicons name="log-out-outline" size={22} color="white" />
+              <View className="w-8 h-8 bg-t rounded-xl items-center justify-center flex">
+                <Ionicons name="log-out-outline" size={24} color="white" />
               </View>
               <Text className="text-base font-lexend-bold text-white">
                 Logout
