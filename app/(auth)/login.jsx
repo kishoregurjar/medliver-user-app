@@ -14,6 +14,7 @@ import { useAppToast } from "../../hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import { useAuthUser } from "@/contexts/AuthContext";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -23,6 +24,8 @@ export default function LoginScreen() {
     loading: isLoading,
     error: hasError,
   } = useAxios();
+
+  const { login } = useAuthUser();
 
   const { showToast } = useAppToast();
 
@@ -49,11 +52,12 @@ export default function LoginScreen() {
       payload: payload,
     });
 
-    console.log("Signin response:", data, error);
-
     if (!error) {
       showToast("success", data.message || "User logged in successfully.");
-      data.status === 200 ? router.push(ROUTE_PATH.APP.HOME) : null;
+      if (data.status === 200) {
+        router.push(ROUTE_PATH.APP.HOME);
+        login(data.data);
+      }
     } else {
       showToast("error", error || "Something went wrong");
       console.log(error || "Something went wrong");
@@ -137,9 +141,7 @@ export default function LoginScreen() {
       <View className="flex-row justify-center mt-6">
         <Text className="text-text-muted font-bold">New User?</Text>
         <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}>
-          <Text className="text-accent-softIndigo font-bold ml-2">
-            Sign Up
-          </Text>
+          <Text className="text-accent-softIndigo font-bold ml-2">Sign Up</Text>
         </Pressable>
       </View>
     </AuthLayout>

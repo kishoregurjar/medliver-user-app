@@ -1,7 +1,5 @@
-"use client";
-
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/routes/route.constants";
@@ -34,19 +32,19 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (response) => {
-    const { token, role, permissions } = response;
+    const { token, role } = response;
     const userData = {
       user: response,
       isAuthenticated: true,
       token,
-      role,
-      permissions,
     };
     setAuthUser(userData);
     try {
       await AsyncStorage.setItem("authUser", JSON.stringify(userData));
+      
     } catch (error) {
       console.error("Failed to save auth user:", error);
+      router.replace(ROUTE_PATH.AUTH.LOGIN);
     }
   };
 
@@ -67,7 +65,7 @@ export const AuthProvider = ({ children }) => {
   if (!isAuthLoaded) {
     return (
       <View className="flex-1 justify-center items-center px-4 bg-white">
-        <Text className="text-xl font-semibold text-gray-600 mb-5">
+        <Text className="text-xl font-lexend-bold text-gray-600 mb-5">
           Please Wait...
         </Text>
         <AppSpinner size="large" color="red" />

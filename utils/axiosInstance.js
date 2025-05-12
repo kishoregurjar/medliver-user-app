@@ -1,9 +1,12 @@
 // axiosInstance.js
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { router } from "expo-router";
 // import { showToast } from "@/components/_ui/toast-utils";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL || "http://192.168.31.151:4002/api/v1",
+  baseURL:
+    process.env.EXPO_PUBLIC_API_URL || "http://192.168.31.151:4002/api/v1",
   // withCredentials: true, // Ensure cookies are sent
   headers: {
     "Content-Type": "application/json", // Default content type
@@ -12,7 +15,9 @@ const axiosInstance = axios.create({
 
 // Interceptor for request logging (optional)
 axiosInstance.interceptors.request.use((config) => {
-  console.log("Making request to:", config.url);
+  console.log(
+    `Making Request: METHOD - ${config.method} URL - ${config.url} HEADERS - ${config.headers}`
+  );
   return config;
 });
 
@@ -22,17 +27,23 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    console.log("API Error:", error.response);
+    console.log(
+      `API Error: ${error.config.url || "NA"} - ${
+        error.response.status || error.response.data.status || "NA"
+      } - ${error.response.data.message || "Something went wrong"}`
+    );
+    // console.log(`API Error: ${error.response}`);
 
     // ✅ Handle 401 Unauthorized Error
     if (error.response?.data?.status === 401) {
       console.error("Unauthorized Access:", error.response.data);
-      // showToast(
-      //   "error",
-      //   error.response?.data?.message || "Session expired. Please login again."
-      // );
-      localStorage.removeItem("authUser");
-      window.location.href = "/"; // Ensures full reload
+
+      // Optional toast
+      // showToast("error", error.response?.data?.message || "Session expired. Please login again.");
+
+      await AsyncStorage.removeItem("authUser");
+      router.replace("/index"); // navigate to login
+
       return Promise.reject(error);
     }
 
