@@ -52,6 +52,8 @@ export default function SignupScreen() {
   });
 
   const onSubmit = async (payload) => {
+    delete payload.confirmPassword;
+    delete payload.agree;
     const payloadToSend = {
       ...payload,
       userCoordinates: location || { lat: 0, long: 0 },
@@ -69,29 +71,20 @@ export default function SignupScreen() {
 
     if (!error) {
       showToast("success", data.message || "User registered successfully.");
-      data.status === 200
-        ? router.push(
-            generateDynamicRoute(
-              ROUTE_PATH.AUTH.OTP_VERIFICATION,
-              {
-                type: "signup",
-                email: payload.email,
-              },
-              "queryParams"
-            )
+
+      if (data?.data?.isVerified === false) {
+        router.push(
+          generateDynamicRoute(
+            ROUTE_PATH.AUTH.OTP_VERIFICATION,
+            {
+              type: "signup",
+              email: payload.email,
+            },
+            "queryParams"
           )
-        : data.status === 201
-        ? router.push(
-            generateDynamicRoute(
-              ROUTE_PATH.AUTH.OTP_VERIFICATION,
-              {
-                type: "signup",
-                email: payload.email,
-              },
-              "queryParams"
-            )
-          )
-        : null;
+        );
+      }
+      // No navigation if already verified
     } else {
       showToast("error", error || "Something went wrong");
       console.log(error || "Something went wrong");

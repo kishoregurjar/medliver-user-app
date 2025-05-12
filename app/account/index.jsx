@@ -9,11 +9,27 @@ import { useRouter } from "expo-router";
 const accountOptions = [
   { label: "My Wallet", icon: "wallet-outline", path: "/account/wallet" },
   { label: "Offers", icon: "pricetags-outline", path: "/account/offers" },
-  { label: "My Prescriptions", icon: "medkit-outline", path: "/account/prescriptions" },
-  { label: "Notifications", icon: "notifications-outline", path: "/account/notifications" },
+  {
+    label: "My Prescriptions",
+    icon: "medkit-outline",
+    path: "/account/prescriptions",
+  },
+  {
+    label: "Notifications",
+    icon: "notifications-outline",
+    path: "/account/notifications",
+  },
   { label: "Help", icon: "help-circle-outline", path: "/account/help" },
-  { label: "Privacy Policy", icon: "shield-checkmark-outline", path: "/account/privacy-policy" },
-  { label: "Terms of Use", icon: "document-text-outline", path: "/account/terms-of-use" },
+  {
+    label: "Privacy Policy",
+    icon: "shield-checkmark-outline",
+    path: "/account/privacy-policy",
+  },
+  {
+    label: "Terms of Use",
+    icon: "document-text-outline",
+    path: "/account/terms-of-use",
+  },
   // { label: "Settings", icon: "settings-outline", path: "/account/settings" },
   { label: "Logout", icon: "log-out-outline" },
 ];
@@ -27,10 +43,10 @@ const AccountScreen = () => {
 
   return (
     <AppLayout scroll={false}>
-      <View className="flex-1 px-4 pb-6">
-        {/* Header */}
-        <HeaderWithBack showBackButton title="My Account" backTo="/home" />
-
+      {/* Header */}
+      <HeaderWithBack showBackButton title="My Account" backTo="/home" />
+      
+      <View className="flex-1 pb-6">
         {/* User Info Section */}
         <View className="items-center mt-8 mb-4 space-y-3">
           <Image
@@ -60,7 +76,10 @@ const AccountScreen = () => {
         {/* Scrollable Options Only */}
         <View className="flex-1 bg-white rounded-3xl shadow-md overflow-hidden">
           <ScrollView
-            contentContainerStyle={{ padding: 16, paddingBottom: insets.bottom + 20 }}
+            contentContainerStyle={{
+              padding: 16,
+              paddingBottom: insets.bottom + 20,
+            }}
             showsVerticalScrollIndicator={false}
           >
             {accountOptions.map((item, index) => (
