@@ -1,208 +1,161 @@
-import { Dimensions } from "react-native"; // Import Dimensions for screen width
+import { Dimensions, Pressable } from "react-native";
 import {
   Toast,
-  ToastTitle,
   ToastDescription,
+  ToastTitle,
   useToast,
 } from "@/components/ui/toast";
-import { Button, ButtonGroup, ButtonText } from "@/components/ui/button";
+import { AppIcon } from "@/components/common/AppIcon";
+import { HStack } from "@/components/ui/hstack";
 import {
   Avatar,
   AvatarFallbackText,
   AvatarImage,
 } from "@/components/ui/avatar";
-import { Divider } from "@/components/ui/divider";
-import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
-import { Pressable } from "@/components/ui/pressable";
-import { Text } from "@/components/ui/text";
-import { Heading } from "@/components/ui/heading";
-import { Box } from "@/components/ui/box";
-import { AppIcon } from "@/components/common/AppIcon";
 
-/**
- * @typedef {'error' | 'notification' | 'update' | 'success'} ToastType
- *
- * @typedef {{
- *   fallback: string,
- *   uri: string
- * }} ToastAvatar
- *
- * @typedef {{
- *   title?: string,
- *   description?: string,
- *   avatar?: ToastAvatar,
- *   duration?: number
- * }} ToastConfig
- */
-
-/**
- * Custom reusable toast hook with autocomplete and shortcut-style calling.
- */
 export const useAppToast = () => {
   const toast = useToast();
+  const { width: screenWidth } = Dimensions.get("window");
 
-  const { width: screenWidth } = Dimensions.get("window"); // Get screen width
+  const containerStyle = {
+    width: Math.min(screenWidth * 0.9, 443),
+    marginHorizontal: "5%",
+  };
 
   /**
-   * Show toast easily with type and optional config.
-   * @param {ToastType} type
-   * @param {string | ToastConfig} messageOrConfig
+   * Show a toast message with various types and customization options.
+   *
+   * @param {'success' | 'info' | 'error' | 'warning' | 'muted' | 'notification'} type - The type of the toast.
+   * @param {string | {
+   *   title?: string,
+   *   subtitle?: string,
+   *   description?: string,
+   *   duration?: number,
+   *   placement?: 'top' | 'bottom',
+   *   avatar?: string,
+   *   icon?: string,
+   *   className?: string,
+   *   dismissable?: boolean
+   * }} config - Either a string (used as title) or a full config object.
+   *
+   * ## Examples:
+   * showToast("success", "Saved successfully!");
+   *
+   * showToast("error", {
+   *   title: "Something went wrong",
+   *   description: "Please try again later",
+   * });
+   *
+   * showToast("notification", {
+   *   title: "Order Update",
+   *   subtitle: "Your medicine is ready for pickup",
+   *   avatar: "https://example.com/avatar.jpg",
+   *   dismissable: true,
+   * });
    */
-  const showToast = (type, messageOrConfig) => {
+  const showToast = (type, config) => {
     const id = Math.random();
 
-    console.log("Show toast:", type, messageOrConfig);
+    const toastConfig =
+      typeof config === "string" ? { title: config } : config || {};
 
-    const config =
-      typeof messageOrConfig === "string"
-        ? { title: messageOrConfig }
-        : messageOrConfig || {};
+    const {
+      title,
+      subtitle,
+      description,
+      duration = 4000,
+      placement = "bottom",
+      avatar,
+      icon,
+      className = "",
+      dismissable = true,
+    } = toastConfig;
 
-    const { title, description, avatar, duration } = config;
-
-    // Set the width to a percentage of the screen width with padding
-    const toastWidth = screenWidth * 0.9; // Adjust 0.9 to your desired width percentage
-    const maxWidth = 443; // You can tweak this to a specific value to limit max width
-
-    const renderers = {
-      success: () => (
-        <Toast
-          nativeID={`toast-${id}`}
-          className="px-5 py-3 gap-4 shadow-soft-1 items-center flex-row"
-          style={{
-            width: Math.min(toastWidth, maxWidth),
-            marginHorizontal: "5%",
-          }} // Centering and limiting width
-        >
-          <AppIcon name="CheckCircle2" size={24} color="#10B981" />
-          <Divider orientation="vertical" className="h-[30px] bg-outline-200" />
-          <ToastTitle size="sm">{title || "Success"}</ToastTitle>
-        </Toast>
-      ),
-
-      error: () => (
-        <Toast
-          action="error"
-          variant="outline"
-          nativeID={`toast-${id}`}
-          className="p-4 gap-6 border-error-500 w-full shadow-hard-5 flex-row justify-between"
-          style={{
-            width: Math.min(toastWidth, maxWidth),
-            marginHorizontal: "5%",
-          }} // Centering and limiting width
-        >
-          <HStack space="md">
-            <AppIcon
-              name="HelpCircle"
-              size={20}
-              color="#EF4444"
-              className="mt-0.5"
-            />
-            <VStack space="xs">
-              <ToastTitle className="font-semibold text-error-500">
-                {title || "Error!"}
-              </ToastTitle>
-              <ToastDescription size="sm">
-                {description || "Something went wrong."}
-              </ToastDescription>
-            </VStack>
-          </HStack>
-          <HStack className="min-[450px]:gap-3 gap-1">
-            <Button variant="link" size="sm" className="px-3.5 self-center">
-              <ButtonText>Retry</ButtonText>
-            </Button>
-            <Pressable onPress={() => toast.close(id)}>
-              <AppIcon name="X" size={20} color="#EF4444" />
-            </Pressable>
-          </HStack>
-        </Toast>
-      ),
-
-      update: () => (
-        <Toast
-          nativeID={`toast-${id}`}
-          className="p-4 gap-4 w-full max-w-[386px] bg-background-0 shadow-hard-2 flex-row"
-          style={{
-            width: Math.min(toastWidth, maxWidth),
-            marginHorizontal: "5%",
-          }} // Centering and limiting width
-        >
-          <Box className="h-11 w-11 items-center justify-center hidden min-[400px]:flex bg-background-50">
-            <AppIcon name="RefreshCcw" size={24} color="#1F2937" />
-          </Box>
-          <VStack space="xl">
-            <VStack space="xs">
-              <HStack className="justify-between">
-                <ToastTitle className="text-typography-900 font-semibold">
-                  {title || "Update available"}
-                </ToastTitle>
-                <Pressable onPress={() => toast.close(id)}>
-                  <AppIcon name="X" size={20} color="#EF4444" />
-                </Pressable>
-              </HStack>
-              <ToastDescription className="text-typography-700">
-                {description ||
-                  "A new software version is available for download."}
-              </ToastDescription>
-            </VStack>
-            <ButtonGroup className="gap-3 flex-row">
-              <Button
-                action="secondary"
-                variant="outline"
-                size="sm"
-                className="flex-grow"
-              >
-                <ButtonText>Not now</ButtonText>
-              </Button>
-              <Button size="sm" className="flex-grow">
-                <ButtonText>Update</ButtonText>
-              </Button>
-            </ButtonGroup>
-          </VStack>
-        </Toast>
-      ),
-
-      notification: () => (
-        <Toast
-          nativeID={`toast-${id}`}
-          className="p-4 gap-3 w-full sm:min-w-[386px] max-w-[386px] bg-background-0 shadow-hard-2 flex-row"
-          style={{
-            width: Math.min(toastWidth, maxWidth),
-            marginHorizontal: "5%",
-          }} // Centering and limiting width
-        >
-          <Avatar>
-            <AvatarFallbackText>{avatar?.fallback}</AvatarFallbackText>
-            <AvatarImage source={{ uri: avatar?.uri }} />
-          </Avatar>
-          <VStack className="web:flex-1">
-            <HStack className="justify-between">
-              <Heading size="sm" className="text-typography-950 font-semibold">
-                {title || "User"}
-              </Heading>
-              <Text size="sm" className="text-typography-500">
-                2m ago
-              </Text>
-            </HStack>
-            <Text size="sm" className="text-typography-500">
-              {description || "Commented on your photo"}
-            </Text>
-          </VStack>
-        </Toast>
-      ),
+    const iconMap = {
+      success: "CheckCircle2",
+      info: "Info",
+      error: "AlertCircle",
+      warning: "AlertTriangle",
+      muted: "Info",
     };
+
+    const renderStandard = () => {
+      const isCustom = !!className;
+
+      return (
+        <Toast
+          nativeID={`toast-${id}`}
+          className={
+            isCustom
+              ? `flex-row items-center gap-3 px-4 py-3 rounded-xl shadow-md ${className}`
+              : undefined
+          }
+          style={isCustom ? containerStyle : undefined}
+          variant={"solid"}
+          action={type}
+        >
+          <HStack space="md" alignItems="center">
+            <AppIcon
+              name={icon || iconMap[type]}
+              size={20}
+              color={isCustom ? "white" : 'white'}
+            />
+            <ToastTitle className={isCustom ? "text-white font-medium" : ""}>
+              {title || type.charAt(0).toUpperCase() + type.slice(1)}
+            </ToastTitle>
+          </HStack>
+        </Toast>
+      );
+    };
+
+    const renderNotification = () => (
+      <Toast
+        nativeID={`toast-${id}`}
+        className={`flex-row justify-between gap-4 px-4 py-3 rounded-xl shadow-md ${
+          className || "bg-background-900"
+        }`}
+        style={containerStyle}
+      >
+        <HStack space="md" alignItems="center">
+          {avatar ? (
+            <Avatar size="sm">
+              <AvatarImage source={{ uri: avatar }} />
+              <AvatarFallbackText>U</AvatarFallbackText>
+            </Avatar>
+          ) : icon ? (
+            <AppIcon name={icon} size={20} color="#fff" />
+          ) : null}
+
+          <VStack space="xs">
+            <ToastTitle className="text-white font-semibold text-base">
+              {title || "Notification"}
+            </ToastTitle>
+            {(description || subtitle) && (
+              <ToastDescription className="text-white text-sm">
+                {description || subtitle}
+              </ToastDescription>
+            )}
+          </VStack>
+        </HStack>
+
+        {dismissable && (
+          <Pressable onPress={() => toast.close(id)}>
+            <AppIcon name="X" size={18} color="#fff" />
+          </Pressable>
+        )}
+      </Toast>
+    );
 
     toast.show({
       id,
-      placement: "bottom",
-      duration: duration || 3000,
-      render: () => renderers[type](),
+      duration,
+      placement,
       avoidKeyboard: true,
+      swipeEnabled: true,
+      render: type === "notification" ? renderNotification : renderStandard,
     });
   };
 
-  return {
-    showToast,
-  };
+  return { showToast };
 };
