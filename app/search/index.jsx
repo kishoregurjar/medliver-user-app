@@ -52,8 +52,10 @@ export default function SearchMedicineScreen() {
       return;
     }
 
-    if (data?.data?.products) {
-      setProducts(data.data.products);
+    console.log("Search results:", data.data.data);
+
+    if (data?.data?.data) {
+      setProducts(data.data.data);
     }
   };
 
