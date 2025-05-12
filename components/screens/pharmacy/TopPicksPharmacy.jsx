@@ -1,40 +1,19 @@
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { useRouter } from "expo-router";
+import useAxios from "@/hooks/useAxios";
 import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
-import STATIC from "@/utils/constants";
-import { Ionicons } from "@expo/vector-icons";
-import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  Platform,
-} from "react-native";
+import SkeletonPharmacyProductCard from "@/components/skeletons/SkeletonPharmacyProductCard";
 
 const TopPicksPharmacy = () => {
-  const topPicks = [
-    {
-      id: 1,
-      title: "Derma E",
-      subtitle: "Tea Tree & Vitamin E Antiseptic Cream",
-      price: "₹5.20",
-      image: STATIC.IMAGES.COMPONENTS.MEDICINE_1,
-    },
-    {
-      id: 2,
-      title: "Chest-eaze",
-      subtitle: "Bronchodilator & Expectorant 100ml Syrup",
-      price: "₹5.20",
-      image: STATIC.IMAGES.COMPONENTS.MEDICINE_2,
-    },
-    {
-      id: 3,
-      title: "Zincovit",
-      subtitle: "Multivitamin & Multimineral Supplement",
-      price: "₹9.99",
-      image: STATIC.IMAGES.COMPONENTS.MEDICINE_3,
-    },
-  ];
+  const router = useRouter();
+  const {
+    request: fetchTopPicks,
+    loading: isLoading,
+    error: hasError,
+  } = useAxios();
+
+  const [products, setProducts] = useState([]);
 
   const handlePress = (id) => {
     router.push({
@@ -43,10 +22,31 @@ const TopPicksPharmacy = () => {
     });
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await fetchTopPicks({
+        method: "GET",
+        url: "/user/get-all-feature-product?page=1",
+      });
+
+      if (error) {
+        console.error("Error fetching top picks:", error);
+        return;
+      }
+
+      console.log(data.data);
+      if (data?.data?.featuredProducts) {
+        setProducts(data.data.featuredProducts);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
-    <View className="mb-10">
-      <View className="flex-row justify-between items-center mb-4 px-1">
+    <View className="mb-6">
+      {/* Header */}
+      <View className="flex-row justify-between items-center mb-3 px-1">
         <Text className="text-lg font-lexend-bold text-text-primary">
           Top Picks for You
         </Text>
@@ -57,15 +57,32 @@ const TopPicksPharmacy = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {topPicks.map((item, index) => (
-          <PharmacyProductCard
-            type="small"
-            key={item.id}
-            item={item}
-            onPress={handlePress}
-          />
-        ))}
+      {/* Product Cards */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className="pl-1"
+      >
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, index) => (
+            <SkeletonPharmacyProductCard key={index} type="small" />
+          ))
+        ) : products.length === 0 ? (
+          <View className="h-28 justify-center items-center px-4">
+            <Text className="text-gray-400 text-sm font-lexend-medium">
+              No Medicine Available
+            </Text>
+          </View>
+        ) : (
+          products.map((item) => (
+            <PharmacyProductCard
+              type="small"
+              key={item._id}
+              item={item}
+              onPress={handlePress}
+            />
+          ))
+        )}
       </ScrollView>
     </View>
   );

@@ -77,7 +77,7 @@ const PharmacyProductCard = ({
         {/* Subtitle */}
         <Text
           className="text-xs font-lexend text-gray-500 mb-3 leading-tight"
-          numberOfLines={2}
+          numberOfLines={1}
         >
           {subtitle || manufacturer}
         </Text>

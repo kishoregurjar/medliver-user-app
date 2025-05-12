@@ -35,7 +35,6 @@ const BestSellerPharmacy = () => {
       }
 
       if (data?.data?.products) {
-        console.log(data.data.products);
         setProducts(data.data.products);
       }
     };

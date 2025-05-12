@@ -56,6 +56,9 @@ const tabs = [
 
 export default function PharmacyProductDetails() {
   const { productId } = useLocalSearchParams();
+
+  console.log("Product ID:", productId);
+  
   const navigation = useNavigation();
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
