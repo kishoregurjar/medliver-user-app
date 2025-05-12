@@ -20,7 +20,16 @@ export default function SearchMedicineScreen() {
   const [products, setProducts] = useState([]);
   const router = useRouter();
 
-  const { request: searchMedicines, loading: isLoading, error } = useAxios();
+  const {
+    request: searchMedicines,
+    loading: isLoading,
+    error: hasError,
+  } = useAxios();
+  const {
+    request: fetchFeaturedProducts,
+    loading: isFeaturedLoading,
+    error: hasFeaturedError,
+  } = useAxios();
 
   const categories = [
     "Pain Relief",
@@ -49,8 +58,23 @@ export default function SearchMedicineScreen() {
   };
 
   useEffect(() => {
-    // Optionally run default search or show featured on mount
-    handleSearch("vitamin"); // or leave it empty to show nothing initially
+    const fetchFeatured = async () => {
+      const { data, error } = await fetchFeaturedProducts({
+        method: "GET",
+        url: "/user/get-all-feature-product?page=1",
+      });
+
+      if (error) {
+        console.error("Error fetching featured products:", error);
+        return;
+      }
+
+      if (data?.data?.featuredProducts) {
+        setProducts(data.data.featuredProducts);
+      }
+    };
+
+    fetchFeatured();
   }, []);
 
   return (
