@@ -44,6 +44,16 @@ const SpecialOfferPharmacy = () => {
     });
   };
 
+  const bgColors = [
+    "bg-brand-primary",
+    "bg-accent-royalBlue",
+    "bg-accent-maroon",
+    "bg-brand-secondary",
+    "bg-accent-softIndigo",
+    "bg-accent-indigo",
+    "bg-accent-pink",
+    ];
+
   return (
     <View className="mb-6">
       {/* Heading */}
@@ -83,44 +93,48 @@ const SpecialOfferPharmacy = () => {
               activeOffsetX: [-10, 10],
             }}
             style={{ alignSelf: "center" }}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => handlePress(item.product?._id)}
-                activeOpacity={0.9}
-                className="p-5 bg-brand-primary rounded-2xl flex-row justify-between items-center"
-                style={{ width: CARD_WIDTH }}
-              >
-                <View className="flex-1 pr-3">
-                  <Text className="text-white font-lexend-bold text-lg mb-1">
-                    {item.product?.name ?? "Unnamed Product"}
-                  </Text>
-                  <Text className="text-white/70 line-through text-sm">
-                    ₹{item.originalPrice?.toFixed(2)}
-                  </Text>
-                  <Text className="text-white font-lexend-bold text-xl">
-                    ₹{item.offerPrice?.toFixed(2)}
-                  </Text>
-                  <Text className="text-white text-xs">
-                    {item.offerPercentage}% Off
-                  </Text>
-                  <View className="bg-brand-background rounded-full px-3 py-1 mt-2 self-start">
-                    <Text className="text-brand-primary font-lexend-medium text-sm">
-                      Buy Now
-                    </Text>
-                  </View>
-                </View>
+            renderItem={({ item, index }) => {
+              const bgColor = bgColors[index % bgColors.length];
 
-                <Image
-                  source={
-                    item.image
-                      ? { uri: item.image }
-                      : require("@/assets/logos/logo.png")
-                  }
-                  className="w-24 h-24"
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-            )}
+              return (
+                <TouchableOpacity
+                  onPress={() => handlePress(item.product?._id)}
+                  activeOpacity={0.9}
+                  className={`p-5 rounded-2xl flex-row justify-between items-center ${bgColor}`}
+                  style={{ width: CARD_WIDTH }}
+                >
+                  <View className="flex-1 pr-3">
+                    <Text className="text-white font-lexend-bold text-lg mb-1">
+                      {item.product?.name ?? "Unnamed Product"}
+                    </Text>
+                    <Text className="text-white/70 line-through text-sm">
+                      ₹{item.originalPrice?.toFixed(2)}
+                    </Text>
+                    <Text className="text-white font-lexend-bold text-xl">
+                      ₹{item.offerPrice?.toFixed(2)}
+                    </Text>
+                    <Text className="text-white text-xs">
+                      {item.offerPercentage}% Off
+                    </Text>
+                    <View className="bg-white rounded-full px-3 py-1 mt-2 self-start">
+                      <Text className="text-brand-primary font-lexend-medium text-sm">
+                        Buy Now
+                      </Text>
+                    </View>
+                  </View>
+
+                  <Image
+                    source={
+                      item.image
+                        ? { uri: item.image }
+                        : require("@/assets/logos/logo.png")
+                    }
+                    className="w-24 h-24"
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+              );
+            }}
           />
 
           {/* Dot Indicators */}

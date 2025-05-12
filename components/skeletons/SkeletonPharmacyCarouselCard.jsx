@@ -8,9 +8,6 @@ const CARD_WIDTH = width * 0.99 - SPACING * 2;
 const SkeletonSpecialOfferCarousel = () => {
   return (
     <View className="mb-6">
-      {/* Heading Skeleton */}
-      <View className="h-5 w-32 rounded-full bg-gray-300 mb-4" />
-
       {/* Offer Card Skeleton */}
       <View
         className="p-5 bg-gray-200 rounded-2xl flex-row justify-between items-center animate-pulse"
