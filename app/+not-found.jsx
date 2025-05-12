@@ -21,7 +21,7 @@ export default function NotFoundScreen() {
         </Text>
 
         {/* Call to Action - Navigate back to Home */}
-        <Link href="/" asChild>
+        <Link href="/home" asChild replace>
           <Pressable className="mt-6 bg-blue-600 px-6 py-3 rounded-xl shadow-md active:opacity-80">
             <Text className="text-white text-base font-medium">
               Go to Home Screen

@@ -4,9 +4,6 @@ import AppLayout from "@/components/layouts/AppLayout";
 import { useAuthUser } from "@/contexts/AuthContext";
 
 export default function HomeScreen() {
-  const { authUser } = useAuthUser();
-  console.log("authUser Home", authUser);
-
   return (
     <AppLayout>
       {/* Header */}

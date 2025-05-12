@@ -114,7 +114,7 @@ const Header = () => {
       {/* Search Area (Clickable only) */}
       <Pressable
         onPress={() => router.push("/search")}
-        className="flex-row items-center bg-white border border-background-soft rounded-xl px-4 py-3 mb-4"
+        className="flex-row items-center bg-white border border-background-soft rounded-xl px-4 py-4 mb-4"
       >
         <Ionicons name="search" size={20} color="#6E6A7C" />
         <Text className="ml-2 font-lexend text-sm text-gray-500">
