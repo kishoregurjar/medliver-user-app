@@ -64,7 +64,7 @@ const SpecialOfferPharmacy = () => {
       {isLoading ? (
         <SkeletonPharmacyCarouselCard />
       ) : products.length === 0 ? (
-        <View className="h-28 justify-center items-center px-4">
+        <View className="h-28 justify-center px-4">
           <Text className="text-gray-400 text-sm font-lexend-medium">
             No Offers Available
           </Text>
