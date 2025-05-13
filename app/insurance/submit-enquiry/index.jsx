@@ -25,6 +25,7 @@ const InsuranceEnquiryScreen = () => {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(FORM_VALIDATIONS.INSURANCE_SUBMIT_ENQUIRY),
@@ -64,6 +65,7 @@ const InsuranceEnquiryScreen = () => {
     if (!error) {
       if (data.status === 201) {
         showToast("success", data.message || "Enquiry submitted successfully.");
+        reset();
       }
     } else {
       showToast("error", error || "Something went wrong");

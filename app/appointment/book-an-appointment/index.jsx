@@ -24,6 +24,7 @@ const BookAnAppointmentScreen = () => {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(FORM_VALIDATIONS.BOOK_APPOINTMENT_DOCTOR),
     defaultValues: {
@@ -43,6 +44,7 @@ const BookAnAppointmentScreen = () => {
     if (!error) {
       if (data.status === 201) {
         showToast("success", data.message || "Enquiry submitted successfully.");
+        reset();
       }
     } else {
       showToast("error", error || "Something went wrong");
