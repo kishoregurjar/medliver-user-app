@@ -3,6 +3,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import STATIC from "@/utils/constants";
+import ROUTE_PATH from "@/routes/route.constants";
 
 const IconButton = ({ icon, onPress }) => (
   <TouchableOpacity onPress={onPress} activeOpacity={0.7} className="p-2">
@@ -19,9 +20,9 @@ export default function HeaderWithBack({
   showCart = false,
   showNotification = false,
   iconNavigation = {
-    search: { to: "/search", clearStack: false },
-    cart: { to: "/cart", clearStack: false },
-    notification: { to: "/notification", clearStack: false },
+    search: { to: ROUTE_PATH.APP.SEARCH.INDEX, clearStack: false },
+    cart: { to: ROUTE_PATH.APP.CART.INDEX, clearStack: false },
+    notification: { to: ROUTE_PATH.APP.NOTIFICATION.INDEX, clearStack: false },
   },
 }) {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function HeaderWithBack({
     if (backTo) {
       router.replace(backTo);
     } else if (clearStack) {
-      router.replace("/");
+      router.replace(ROUTE_PATH.APP.HOME);
     } else {
       router.back();
     }
@@ -63,7 +64,7 @@ export default function HeaderWithBack({
         {title ? (
           <Text className="text-xl font-lexend-bold text-black">{title}</Text>
         ) : (
-          <TouchableOpacity onPress={() => router.replace("/(home)/home")}>
+          <TouchableOpacity onPress={() => router.replace(ROUTE_PATH.APP.HOME)}>
             <Image source={STATIC.IMAGES.APP.LOGO_H} resizeMode="contain" />
           </TouchableOpacity>
         )}

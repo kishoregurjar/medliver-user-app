@@ -8,6 +8,7 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
+import ROUTE_PATH from "@/routes/route.constants";
 
 const CustomTabBar = () => {
   const insets = useSafeAreaInsets();
@@ -21,26 +22,31 @@ const CustomTabBar = () => {
   const opacity = useSharedValue(0);
 
   const tabs = [
-    { name: "home", icon: "home-outline", label: "Home", path: "/home" },
+    {
+      name: "home",
+      icon: "home-outline",
+      label: "Home",
+      path: ROUTE_PATH.APP.HOME,
+    },
     {
       name: "explore",
       icon: "search-outline",
       label: "Explore",
-      path: "/search",
+      path: ROUTE_PATH.APP.SEARCH.INDEX,
     },
     {
       name: "cart",
       icon: "cart-outline",
       label: "Cart",
       badge: cartCount,
-      path: "/cart",
+      path: ROUTE_PATH.APP.CART.INDEX,
     },
     {
       name: "account",
       icon: "person-outline",
       label: "Account",
       badge: notificationCount,
-      path: "/account",
+      path: ROUTE_PATH.APP.ACCOUNT.INDEX,
     },
   ];
 

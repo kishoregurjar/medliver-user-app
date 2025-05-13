@@ -11,6 +11,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import HeaderWithBack from "./HeaderWithBack";
 import { useAuthUser } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallbackText, AvatarImage } from "../ui/avatar";
+import ROUTE_PATH from "@/routes/route.constants";
 
 const { width } = Dimensions.get("window");
 
@@ -39,9 +40,12 @@ const Header = () => {
         showCart
         showNotification
         iconNavigation={{
-          search: { to: "/search", clearStack: false },
-          cart: { to: "/cart", clearStack: false },
-          notification: { to: "/notification", clearStack: false },
+          search: { to: ROUTE_PATH.APP.SEARCH.INDEX, clearStack: false },
+          cart: { to: ROUTE_PATH.APP.CART.INDEX, clearStack: false },
+          notification: {
+            to: ROUTE_PATH.APP.NOTIFICATION.INDEX,
+            clearStack: false,
+          },
         }}
       />
 
@@ -53,7 +57,7 @@ const Header = () => {
           className="flex-row items-center flex-shrink pr-2"
           onPress={() =>
             router.push({
-              pathname: "/select-address",
+              pathname: ROUTE_PATH.APP.SELECT_ADDRESS.INDEX,
               params: { current: selectedAddress },
             })
           }
@@ -81,7 +85,7 @@ const Header = () => {
           <TouchableOpacity
             activeOpacity={0.7}
             className="flex-row items-center bg-brand-primary rounded-lg px-4 py-2 ml-2"
-            onPress={() => router.push("/login")}
+            onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}
           >
             <Ionicons name="person" size={15} color="#fff" />
             <Text className="text-xs text-white font-lexend ml-2">Login</Text>
@@ -113,7 +117,7 @@ const Header = () => {
 
       {/* Search Area (Clickable only) */}
       <Pressable
-        onPress={() => router.push("/search")}
+        onPress={() => router.push(ROUTE_PATH.APP.SEARCH.INDEX)}
         className="flex-row items-center bg-white border border-background-soft rounded-xl px-4 py-4 mb-4"
       >
         <Ionicons name="search" size={20} color="#6E6A7C" />

@@ -9,6 +9,7 @@ import {
   Image,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import ROUTE_PATH from "@/routes/route.constants";
 const { width, height } = Dimensions.get("window");
 
 export default function NavigationTiles() {
@@ -19,31 +20,31 @@ export default function NavigationTiles() {
       label: "Buy Medicine",
       icon: STATIC.IMAGES.COMPONENTS.HOME_NAV_TILE_1,
       cta: "Buy Now",
-      path: "/pharmacy",
+      path: ROUTE_PATH.APP.PHARMACY.INDEX,
     },
     {
       label: "Pathology & Diagnosis",
       icon: STATIC.IMAGES.COMPONENTS.HOME_NAV_TILE_2,
       cta: "Book Now",
-      path: "/pathology",
+      path: ROUTE_PATH.APP.PATHOLOGY.INDEX,
     },
     {
       label: "Insurance",
       icon: STATIC.IMAGES.COMPONENTS.HOME_NAV_TILE_3,
       cta: "Get Now",
-      path: "/insurance",
+      path: ROUTE_PATH.APP.INSURANCE.INDEX,
     },
     // {
     //   label: "Emergency Cab Booking",
     //   icon: STATIC.IMAGES.COMPONENTS.HOME_NAV_TILE_4,
     //   cta: "Get Now",
-    //   path: "/cab",
+    //   path: ROUTE_PATH.APP.CAB.INDEX,
     // },
     {
       label: "Book Doctor Appointment",
       icon: STATIC.IMAGES.COMPONENTS.HOME_NAV_TILE_4,
       cta: "Book Now",
-      path: "/appointment/book-an-appointment",
+      path: ROUTE_PATH.APP.APPOINTMENT.BOOK_AN_APPOINTMENT,
     },
   ];
 

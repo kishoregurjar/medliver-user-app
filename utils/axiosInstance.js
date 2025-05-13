@@ -1,4 +1,5 @@
 // axiosInstance.js
+import ROUTE_PATH from "@/routes/route.constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router } from "expo-router";
@@ -42,7 +43,7 @@ axiosInstance.interceptors.response.use(
       // showToast("error", error.response?.data?.message || "Session expired. Please login again.");
 
       await AsyncStorage.removeItem("authUser");
-      router.replace("/"); // navigate to login
+      router.replace(ROUTE_PATH.APP.HOME); // navigate to login
 
       return Promise.reject(error);
     }

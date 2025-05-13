@@ -161,7 +161,7 @@ export default function OtpVerificationScreen() {
 
       <TouchableOpacity
         className="items-center"
-        onPress={() => router.replace(generateRoute("AUTH", "LOGIN"))}
+        onPress={() => router.replace(ROUTE_PATH.AUTH.LOGIN)}
       >
         <Text className="text-gray-600 text-sm">Back to Login</Text>
       </TouchableOpacity>

@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAuthUser } from "@/contexts/AuthContext";
 import { useAppToast } from "@/hooks/useAppToast";
+import ROUTE_PATH from "@/routes/route.constants";
 
 const accountOptions = [
   { label: "My Wallet", icon: "wallet-outline", path: "/account/wallet" },
@@ -41,17 +42,16 @@ const AccountScreen = () => {
   const { showToast } = useAppToast();
 
   const { authUser } = useAuthUser();
-  console.log("Auth User:", authUser);
-  
+
   const user = authUser?.user;
   const userImage = user?.profilePicture || "https://i.pravatar.cc/150?img=12";
-  const userName = user?.fullName || "Yash Tiwari";
+  const userName = user?.fullName || "Guest User";
 
   const handleLogout = async () => {
     try {
       await logout();
       showToast("success", "Logged out successfully.");
-      router.replace("/login");
+      router.replace(ROUTE_PATH.APP.HOME);
     } catch (error) {
       showToast("error", error.message || "Unexpected error");
       console.error("Logout failed:", error);
@@ -74,17 +74,31 @@ const AccountScreen = () => {
             {userName}
           </Text>
 
-          <TouchableOpacity
-            className="px-5 py-2 bg-indigo-100 rounded-full"
-            activeOpacity={0.8}
-            onPress={() => {
-              // Navigate to Edit Profile
-            }}
-          >
-            <Text className="text-sm font-medium text-indigo-600">
-              Edit Profile
-            </Text>
-          </TouchableOpacity>
+          {authUser && authUser.isAuthenticated ? (
+            <TouchableOpacity
+              className="px-5 py-2 mt-4 bg-indigo-100 rounded-lg"
+              activeOpacity={0.8}
+              onPress={() => {
+                router.push("/account/edit-profile");
+              }}
+            >
+              <Text className="text-sm font-medium text-indigo-600">
+                Edit Profile
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              className="px-5 py-2 mt-4 bg-indigo-100 rounded-lg"
+              activeOpacity={0.8}
+              onPress={() => {
+                router.push(ROUTE_PATH.AUTH.LOGIN);
+              }}
+            >
+              <Text className="text-sm font-medium text-indigo-600">
+                Sign In
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Divider */}
@@ -125,22 +139,24 @@ const AccountScreen = () => {
         <View className="h-px bg-gray-200 mt-4" />
 
         {/* Fixed Logout Button */}
-        <View className="w-full mt-0 rounded-3xl bg-brand-primary/90 absolute bottom-0">
-          <TouchableOpacity
-            className="flex-row items-center justify-between p-3 rounded-xl"
-            activeOpacity={0.7}
-            onPress={handleLogout}
-          >
-            <View className="flex-row items-center space-x-3">
-              <View className="w-8 h-8 bg-t rounded-xl items-center justify-center flex">
-                <Ionicons name="log-out-outline" size={24} color="white" />
+        {authUser && authUser.isAuthenticated && (
+          <View className="w-full mt-0 rounded-3xl bg-brand-primary/90 absolute bottom-0">
+            <TouchableOpacity
+              className="flex-row items-center justify-between p-3 rounded-xl"
+              activeOpacity={0.7}
+              onPress={handleLogout}
+            >
+              <View className="flex-row items-center space-x-3">
+                <View className="w-8 h-8 bg-t rounded-xl items-center justify-center flex">
+                  <Ionicons name="log-out-outline" size={24} color="white" />
+                </View>
+                <Text className="text-base font-lexend-bold text-white">
+                  Logout
+                </Text>
               </View>
-              <Text className="text-base font-lexend-bold text-white">
-                Logout
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </AppLayout>
   );

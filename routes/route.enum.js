@@ -6,23 +6,50 @@ export const AuthRouteEnum = {
   OTP_VERIFICATION: "/otp-verification",
   FORGOT_PASSWORD: "/forgot",
   RESET_PASSWORD: "/reset-password",
+  CHANGE_PASSWORD: "/change-password",
+  EDIT_PROFILE: "/edit-profile",
 };
 
 export const AppRouteEnum = {
+  INDEX: "/",
   HOME: "/home",
-  SETTINGS: "/settings",
-};
-
-export const InsuranceRouteEnum = {
-  GET_QUOTES: "/insurance/get-quotes",
-  SUBMIT_ENQUIRY: "/insurance/submit-enquiry",
-};
-
-export const CabRouteEnum = {
-  BOOK_CAB: "/cab/book-cab",
-};
-
-export const StaticRouteEnum = {
-  PRIVACY_POLICY: "/privacy-policy",
-  TERMS_AND_CONDITIONS: "/terms-and-conditions",
+  ACCOUNT: {
+    INDEX: "/account",
+    WALLET: "/account/wallet",
+    OFFERS: "/account/offers",
+    PRESCRIPTIONS: "/account/prescriptions",
+    NOTIFICATIONS: "/account/notifications",
+    HELP: "/account/help",
+    PRIVACY_POLICY: "/account/privacy-policy",
+    TERMS_OF_USE: "/account/terms-of-use",
+    SETTINGS: "/account/settings",
+  },
+  APPOINTMENT: {
+    INDEX: "/appointment",
+    BOOK_AN_APPOINTMENT: "/appointment/book-an-appointment",
+  },
+  CAB: { INDEX: "/cab", BOOK_CAB: "/cab/book-cab" },
+  CART: { INDEX: "/cart" },
+  INSURANCE: {
+    INDEX: "/insurance",
+    GET_QUOTES: "/insurance/get-quotes",
+    SUBMIT_ENQUIRY: "/insurance/submit-enquiry",
+  },
+  NOTIFICATION: { INDEX: "/notification" },
+  PATHOLOGY: {
+    INDEX: "/pathology",
+    BOOK_TEST: "/pathology/book-test",
+    BOOK_TEST_DETAILS: "/pathology/book-test/[id]",
+    BOOK_TEST_TRACK: "/pathology/book-test/[id]/track",
+    BOOK_TEST_INVOICE: "/pathology/book-test/[id]/invoice",
+  },
+  PHARMACY: {
+    INDEX: "/pharmacy",
+    ORDER_MEDICINE: "/pharmacy/order-medicine",
+    ORDER_MEDICINE_DETAILS: "/pharmacy/order-medicine/[id]",
+    ORDER_MEDICINE_TRACK: "/pharmacy/order-medicine/[id]/track",
+    ORDER_MEDICINE_INVOICE: "/pharmacy/order-medicine/[id]/invoice",
+  },
+  SEARCH: { INDEX: "/search" },
+  SELECT_ADDRESS: { INDEX: "/select-address" },
 };
