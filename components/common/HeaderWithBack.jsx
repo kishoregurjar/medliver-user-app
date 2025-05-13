@@ -63,7 +63,9 @@ export default function HeaderWithBack({
         {title ? (
           <Text className="text-xl font-lexend-bold text-black">{title}</Text>
         ) : (
-          <Image source={STATIC.IMAGES.APP.LOGO_H} resizeMode="contain" />
+          <TouchableOpacity onPress={() => router.replace("/(home)/home")}>
+            <Image source={STATIC.IMAGES.APP.LOGO_H} resizeMode="contain" />
+          </TouchableOpacity>
         )}
       </View>
 
