@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,13 +7,14 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import AppLayout from "@/components/layouts/AppLayout";
 import Carousel from "react-native-reanimated-carousel";
 import STATIC from "@/utils/constants";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
 import { formatPrice, getDiscount } from "@/utils/format";
+import useAxios from "@/hooks/useAxios";
 
 const { width } = Dimensions.get("window");
 
@@ -57,9 +58,17 @@ const tabs = [
 export default function PharmacyProductDetails() {
   const { productId } = useLocalSearchParams();
 
-  console.log("Product ID:", productId);
-  
-  const navigation = useNavigation();
+  const {
+    request: getProductDetails,
+    loading: isLoading,
+    error: hasError,
+  } = useAxios();
+
+  const [productDetails, setProductDetails] = useState({});
+
+  console.log("Product ID on screen:", productId);
+
+  const router = useRouter();
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -67,25 +76,31 @@ export default function PharmacyProductDetails() {
     switch (activeTab) {
       case 0:
         return (
-          <Text className="text-sm text-text-muted">{product.description}</Text>
+          <Text className="text-base font-lexend text-text-muted">
+            {product.description}
+          </Text>
         );
       case 1:
         return product.benefits.map((item, i) => (
-          <Text key={i} className="text-sm text-text-muted mb-1">
+          <Text key={i} className="text-base font-lexend text-text-muted mb-1">
             • {item}
           </Text>
         ));
       case 2:
-        return <Text className="text-sm text-text-muted">{product.usage}</Text>;
+        return (
+          <Text className="text-base font-lexend text-text-muted">
+            {product.usage}
+          </Text>
+        );
       case 3:
         return product.precautions.map((item, i) => (
-          <Text key={i} className="text-sm text-text-muted mb-1">
+          <Text key={i} className="text-base font-lexend text-text-muted mb-1">
             • {item}
           </Text>
         ));
       case 4:
         return product.ingredients.map((item, i) => (
-          <Text key={i} className="text-sm text-text-muted mb-1">
+          <Text key={i} className="text-base font-lexend text-text-muted mb-1">
             - {item}
           </Text>
         ));
@@ -93,6 +108,26 @@ export default function PharmacyProductDetails() {
         return null;
     }
   };
+
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      try {
+        const { data, error } = await getProductDetails({
+          url: `/user/get-medicine-by-id`,
+          method: "GET",
+          params: {
+            medicineId: productId,
+          },
+        });
+        console.log("Product Details:", data);
+        setProductDetails(data.data);
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+      }
+    };
+
+    fetchProductDetails();
+  }, [productId]);
 
   return (
     <AppLayout>
@@ -129,8 +164,10 @@ export default function PharmacyProductDetails() {
         <Text className="text-xl font-lexend-semibold text-gray-900 mb-1">
           {product.title}
         </Text>
-        <Text className="text-sm text-gray-500">By {product.manufacturer}</Text>
-        <Text className="text-sm text-gray-500">Origin: India</Text>
+        <Text className="text-sm font-lexend text-gray-500">
+          By {product.manufacturer}
+        </Text>
+        <Text className="text-sm font-lexend text-gray-500">Origin: India</Text>
       </View>
 
       {/* Price Info */}
@@ -139,18 +176,24 @@ export default function PharmacyProductDetails() {
           <Text className="text-lg font-lexend-bold text-gray-900">
             {formatPrice(product.price)}
           </Text>
-          <Text className="text-sm text-gray-400 line-through ml-2">
+          <Text className="text-sm font-lexend text-gray-400 line-through ml-2">
             MRP {formatPrice(product.mrp)}
           </Text>
         </View>
-        <Text className="text-sm text-green-600">
+        <Text className="text-sm font-lexend text-green-600">
           Save {formatPrice(getDiscount(product.mrp, product.price))}
         </Text>
       </View>
 
       {/* Product Details Tabs */}
       <View className="bg-white p-4 rounded-xl mb-4">
-        <View className="flex-row border-b border-gray-200 mb-3">
+        {/* Scrollable Tabs */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="border-b border-gray-200 mb-3"
+          contentContainerStyle={{ paddingHorizontal: 4 }}
+        >
           {tabs.map((tab, i) => (
             <TouchableOpacity
               key={i}
@@ -162,7 +205,7 @@ export default function PharmacyProductDetails() {
               }`}
             >
               <Text
-                className={`text-sm ${
+                className={`text-base font-lexend ${
                   i === activeTab ? "text-brand-primary" : "text-text-muted"
                 }`}
               >
@@ -170,7 +213,9 @@ export default function PharmacyProductDetails() {
               </Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </ScrollView>
+
+        {/* Tab Content (NOT scrollable) */}
         {renderTabContent()}
       </View>
 
@@ -179,7 +224,9 @@ export default function PharmacyProductDetails() {
         <Text className="text-md font-lexend-bold text-text-primary mb-1">
           Storage Instructions
         </Text>
-        <Text className="text-sm text-text-muted">{product.storage}</Text>
+        <Text className="text-sm font-lexend text-text-muted">
+          {product.storage}
+        </Text>
       </View>
 
       {/* Similar Products */}
@@ -221,7 +268,7 @@ export default function PharmacyProductDetails() {
               key={product.id}
               item={product}
               onPress={() =>
-                navigation.push({
+                router.push({
                   pathname: "/pharmacy/product/[productId]",
                   params: { productId: product.id },
                 })

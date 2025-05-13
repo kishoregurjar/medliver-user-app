@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { formatNumber, formatPrice, getDiscount } from "@/utils/format";
+import { formatNumber, formatPrice } from "@/utils/format";
 
 const PharmacyProductCard = ({
   item,
@@ -9,9 +9,12 @@ const PharmacyProductCard = ({
   showAddToCart = true,
   type = "default",
 }) => {
-  if (!item || typeof item !== "object" || !item.product) return null;
+  if (!item || typeof item !== "object") return null;
 
-  const { _id: id = "", soldCount = 0, product = {} } = item;
+  // ✅ ID handling based on presence of product object
+  const id = item?.product?._id || item?._id || "";
+  const { soldCount = 0 } = item;
+  const product = item?.product || item;
 
   const {
     name = "No Name",
@@ -39,7 +42,7 @@ const PharmacyProductCard = ({
     }
   };
 
-  const mrp = price + 15; // dummy MRP for UI
+  const mrp = price + 15; // Dummy MRP for UI
   const discount = Math.max(mrp - price, 0);
 
   if (type === "small") {

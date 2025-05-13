@@ -10,6 +10,9 @@ export default function useAxios() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
+  console.log("Auth User in useAxios:", authUser);
+  
+
   /**
    * Make API requests with better flexibility.
    *

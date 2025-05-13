@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import useAxios from "@/hooks/useAxios";
 import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
 import SkeletonPharmacyProductCard from "@/components/skeletons/SkeletonPharmacyProductCard";
+import { useAuthUser } from "@/contexts/AuthContext";
 
 const TopPicksPharmacy = () => {
   const router = useRouter();
@@ -14,6 +15,7 @@ const TopPicksPharmacy = () => {
   } = useAxios();
 
   const [products, setProducts] = useState([]);
+  const { authUser } = useAuthUser();
 
   const handlePress = (id) => {
     router.push({
@@ -26,15 +28,19 @@ const TopPicksPharmacy = () => {
     const fetchData = async () => {
       const { data, error } = await fetchTopPicks({
         method: "GET",
-        url: "/user/get-all-feature-product?page=1",
+        url: "/user/get-top-picks",
+        authRequired: authUser?.token ? true : false,
       });
 
       if (error) {
         console.error("Error fetching top picks:", error);
         return;
       }
-      if (data?.data?.featuredProducts) {
-        setProducts(data.data.featuredProducts);
+
+      console.log("Top Picks Data:", data);
+
+      if (data?.data) {
+        setProducts(data.data);
       }
     };
 
@@ -75,9 +81,9 @@ const TopPicksPharmacy = () => {
           products.map((item) => (
             <PharmacyProductCard
               type="small"
-              key={item._id}
+              key={item.medicineId || item._id}
               item={item}
-              onPress={handlePress}
+              onPress={() => handlePress(item.medicineId || item._id)}
             />
           ))
         )}

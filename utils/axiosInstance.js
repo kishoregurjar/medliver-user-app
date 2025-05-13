@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(
       // showToast("error", error.response?.data?.message || "Session expired. Please login again.");
 
       await AsyncStorage.removeItem("authUser");
-      router.replace("/index"); // navigate to login
+      router.replace("/"); // navigate to login
 
       return Promise.reject(error);
     }
