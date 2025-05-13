@@ -138,7 +138,7 @@ export default function SearchMedicineScreen() {
               {query?.length > 0 ? "Search Results" : "Featured Products"}
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {isLoading ? (
+              {isFeaturedLoading ? (
                 Array.from({ length: 3 }).map((_, index) => (
                   <SkeletonPharmacyProductCard key={index} />
                 ))
