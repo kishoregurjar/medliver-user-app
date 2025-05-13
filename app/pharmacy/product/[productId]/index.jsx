@@ -313,12 +313,12 @@ export default function PharmacyProductDetailsScreen() {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {productsWithManufaturer.map((product) => (
                 <PharmacyProductCard
-                  key={product.id}
+                  key={product._id}
                   item={product}
                   onPress={() =>
                     router.push({
                       pathname: "/pharmacy/product/[productId]",
-                      params: { productId: product.id },
+                      params: { productId: product._id },
                     })
                   }
                 />
