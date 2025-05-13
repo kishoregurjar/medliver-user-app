@@ -15,6 +15,7 @@ import HeaderWithBack from "@/components/common/HeaderWithBack";
 import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
 import { formatPrice, getDiscount } from "@/utils/format";
 import useAxios from "@/hooks/useAxios";
+import SkeletonPharmacyProductDetails from "@/components/skeletons/SkeletonPharmacyProductDetails";
 
 const { width } = Dimensions.get("window");
 
@@ -55,7 +56,7 @@ const tabs = [
   "Ingredients",
 ];
 
-export default function PharmacyProductDetails() {
+export default function PharmacyProductDetailsScreen() {
   const { productId } = useLocalSearchParams();
 
   const {
@@ -133,150 +134,164 @@ export default function PharmacyProductDetails() {
     <AppLayout>
       <HeaderWithBack showCart showNotification showSearch />
 
-      {/* Carousel */}
-      <View className="my-4">
-        <Carousel
-          loop
-          width={width}
-          height={240}
-          autoPlay={false}
-          data={product.images}
-          scrollAnimationDuration={500}
-          onSnapToItem={(index) => setActiveSlide(index)}
-          renderItem={({ item }) => (
-            <Image source={item} className="w-full h-60" resizeMode="contain" />
-          )}
-        />
-        <View className="flex-row justify-center mt-2">
-          {product.images.map((_, i) => (
-            <View
-              key={i}
-              className={`w-2 h-2 rounded-full mx-1 ${
-                i === activeSlide ? "bg-brand-primary" : "bg-text-muted"
-              }`}
+      {isLoading ? (
+        <>
+          <SkeletonPharmacyProductDetails />
+        </>
+      ) : (
+        <>
+          {/* Carousel */}
+          <View className="my-4">
+            <Carousel
+              loop
+              width={width}
+              height={240}
+              autoPlay={false}
+              data={product.images}
+              scrollAnimationDuration={500}
+              onSnapToItem={(index) => setActiveSlide(index)}
+              renderItem={({ item }) => (
+                <Image
+                  source={item}
+                  className="w-full h-60"
+                  resizeMode="contain"
+                />
+              )}
             />
-          ))}
-        </View>
-      </View>
+            <View className="flex-row justify-center mt-2">
+              {product.images.map((_, i) => (
+                <View
+                  key={i}
+                  className={`w-2 h-2 rounded-full mx-1 ${
+                    i === activeSlide ? "bg-brand-primary" : "bg-text-muted"
+                  }`}
+                />
+              ))}
+            </View>
+          </View>
 
-      {/* Product Info */}
-      <View className="bg-white p-5 rounded-xl my-4">
-        <Text className="text-xl font-lexend-semibold text-gray-900 mb-1">
-          {product.title}
-        </Text>
-        <Text className="text-sm font-lexend text-gray-500">
-          By {product.manufacturer}
-        </Text>
-        <Text className="text-sm font-lexend text-gray-500">Origin: India</Text>
-      </View>
+          {/* Product Info */}
+          <View className="bg-white p-5 rounded-xl my-4">
+            <Text className="text-xl font-lexend-semibold text-gray-900 mb-1">
+              {productDetails.name}
+            </Text>
+            <Text className="text-sm font-lexend text-gray-500">
+              By {productDetails.manufacturer}
+            </Text>
+            <Text className="text-sm font-lexend text-gray-500">
+              Origin: India
+            </Text>
+          </View>
 
-      {/* Price Info */}
-      <View className="bg-brand-background p-4 rounded-xl mb-4">
-        <View className="flex-row items-center mb-2">
-          <Text className="text-lg font-lexend-bold text-gray-900">
-            {formatPrice(product.price)}
-          </Text>
-          <Text className="text-sm font-lexend text-gray-400 line-through ml-2">
-            MRP {formatPrice(product.mrp)}
-          </Text>
-        </View>
-        <Text className="text-sm font-lexend text-green-600">
-          Save {formatPrice(getDiscount(product.mrp, product.price))}
-        </Text>
-      </View>
-
-      {/* Product Details Tabs */}
-      <View className="bg-white p-4 rounded-xl mb-4">
-        {/* Scrollable Tabs */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="border-b border-gray-200 mb-3"
-          contentContainerStyle={{ paddingHorizontal: 4 }}
-        >
-          {tabs.map((tab, i) => (
-            <TouchableOpacity
-              key={i}
-              onPress={() => setActiveTab(i)}
-              className={`mr-4 pb-2 ${
-                i === activeTab
-                  ? "border-b-2 border-brand-primary"
-                  : "border-transparent"
-              }`}
-            >
-              <Text
-                className={`text-base font-lexend ${
-                  i === activeTab ? "text-brand-primary" : "text-text-muted"
-                }`}
-              >
-                {tab}
+          {/* Price Info */}
+          <View className="bg-brand-background p-4 rounded-xl mb-4">
+            <View className="flex-row items-center mb-2">
+              <Text className="text-lg font-lexend-bold text-gray-900">
+                {formatPrice(productDetails.price)}
               </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+              <Text className="text-sm font-lexend text-gray-400 line-through ml-2">
+                MRP {formatPrice(product.mrp)}
+              </Text>
+            </View>
+            <Text className="text-sm font-lexend text-green-600">
+              Save {formatPrice(getDiscount(product.mrp, product.price))}
+            </Text>
+          </View>
 
-        {/* Tab Content (NOT scrollable) */}
-        {renderTabContent()}
-      </View>
+          {/* Product Details Tabs */}
+          <View className="bg-white p-4 rounded-xl mb-4">
+            {/* Scrollable Tabs */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="border-b border-gray-200 mb-3"
+              contentContainerStyle={{ paddingHorizontal: 4 }}
+            >
+              {tabs.map((tab, i) => (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() => setActiveTab(i)}
+                  className={`mr-4 pb-2 ${
+                    i === activeTab
+                      ? "border-b-2 border-brand-primary"
+                      : "border-transparent"
+                  }`}
+                >
+                  <Text
+                    className={`text-base font-lexend ${
+                      i === activeTab ? "text-brand-primary" : "text-text-muted"
+                    }`}
+                  >
+                    {tab}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
 
-      {/* Storage Info */}
-      <View className="bg-white p-4 rounded-xl mb-4">
-        <Text className="text-md font-lexend-bold text-text-primary mb-1">
-          Storage Instructions
-        </Text>
-        <Text className="text-sm font-lexend text-text-muted">
-          {product.storage}
-        </Text>
-      </View>
+            {/* Tab Content (NOT scrollable) */}
+            {renderTabContent()}
+          </View>
 
-      {/* Similar Products */}
-      <View className="mt-6 mb-8">
-        <Text className="text-lg font-lexend-bold text-text-primary mb-3">
-          Similar Products
-        </Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {[
-            {
-              id: 1,
-              title: "Vitamin D -3 250gm",
-              image: STATIC.IMAGES.COMPONENTS.MEDICINE_2,
-              rating: 5,
-              price: 212.0,
-              mrp: 235.0,
-              manufacturer: "Loren Ipsum Pharmaceutical Industries LTD",
-            },
-            {
-              id: 2,
-              title: "Omega 3 Softgels",
-              image: STATIC.IMAGES.COMPONENTS.MEDICINE_1,
-              rating: 4.5,
-              price: 299.0,
-              mrp: 349.0,
-              manufacturer: "HeartHealth Pharma Limited",
-            },
-            {
-              id: 3,
-              title: "Zincovit Tablets",
-              image: STATIC.IMAGES.COMPONENTS.MEDICINE_3,
-              rating: 4.8,
-              price: 150.0,
-              mrp: 180.0,
-              manufacturer: "Wellness Labs",
-            },
-          ].map((product) => (
-            <PharmacyProductCard
-              key={product.id}
-              item={product}
-              onPress={() =>
-                router.push({
-                  pathname: "/pharmacy/product/[productId]",
-                  params: { productId: product.id },
-                })
-              }
-            />
-          ))}
-        </ScrollView>
-      </View>
+          {/* Storage Info */}
+          <View className="bg-white p-4 rounded-xl mb-4">
+            <Text className="text-md font-lexend-bold text-text-primary mb-1">
+              Storage Instructions
+            </Text>
+            <Text className="text-sm font-lexend text-text-muted">
+              {product.storage}
+            </Text>
+          </View>
+
+          {/* Similar Products */}
+          <View className="mt-6 mb-8">
+            <Text className="text-lg font-lexend-bold text-text-primary mb-3">
+              Similar Products
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {[
+                {
+                  id: 1,
+                  title: "Vitamin D -3 250gm",
+                  image: STATIC.IMAGES.COMPONENTS.MEDICINE_2,
+                  rating: 5,
+                  price: 212.0,
+                  mrp: 235.0,
+                  manufacturer: "Loren Ipsum Pharmaceutical Industries LTD",
+                },
+                {
+                  id: 2,
+                  title: "Omega 3 Softgels",
+                  image: STATIC.IMAGES.COMPONENTS.MEDICINE_1,
+                  rating: 4.5,
+                  price: 299.0,
+                  mrp: 349.0,
+                  manufacturer: "HeartHealth Pharma Limited",
+                },
+                {
+                  id: 3,
+                  title: "Zincovit Tablets",
+                  image: STATIC.IMAGES.COMPONENTS.MEDICINE_3,
+                  rating: 4.8,
+                  price: 150.0,
+                  mrp: 180.0,
+                  manufacturer: "Wellness Labs",
+                },
+              ].map((product) => (
+                <PharmacyProductCard
+                  key={product.id}
+                  item={product}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/pharmacy/product/[productId]",
+                      params: { productId: product.id },
+                    })
+                  }
+                />
+              ))}
+            </ScrollView>
+          </View>
+        </>
+      )}
     </AppLayout>
   );
 }
