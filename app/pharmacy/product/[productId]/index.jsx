@@ -227,14 +227,22 @@ export default function PharmacyProductDetailsScreen() {
 
           {/* Price Info */}
           <View className="bg-brand-background p-4 rounded-xl mb-4">
-            <View className="flex-row items-center mb-2">
-              <Text className="text-lg font-lexend-bold text-gray-900">
-                {formatPrice(productDetails.price || product.price)}
-              </Text>
-              <Text className="text-sm font-lexend text-gray-400 line-through ml-2">
-                MRP {formatPrice(productDetails.mrp || product.mrp)}
-              </Text>
+            <View className="flex-row justify-between items-center mb-2">
+              <View className="flex-row items-center">
+                <Text className="text-lg font-lexend-bold text-gray-900">
+                  {formatPrice(productDetails.price || product.price)}
+                </Text>
+                <Text className="text-sm font-lexend text-gray-400 line-through ml-2">
+                  MRP {formatPrice(productDetails.mrp || product.mrp)}
+                </Text>
+              </View>
+              <TouchableOpacity className="bg-brand-primary px-4 py-2 rounded-lg">
+                <Text className="text-white text-sm font-lexend-semibold">
+                  Add to Cart
+                </Text>
+              </TouchableOpacity>
             </View>
+
             <Text className="text-sm font-lexend text-green-600">
               Save{" "}
               {formatPrice(
@@ -244,6 +252,7 @@ export default function PharmacyProductDetailsScreen() {
                 )
               )}
             </Text>
+
             <View className="flex-row items-center mt-2">
               <Ionicons name="star" size={20} color="yellow" className="mr-1" />
               <Text className="text-sm font-lexend text-gray-500">
