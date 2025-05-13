@@ -53,7 +53,7 @@ export default function SearchMedicineScreen() {
       return;
     }
 
-    console.log("Search results:", data.data.data);
+    console.log("Search Results:", data.data.data);
 
     if (data?.data?.data) {
       setProducts(data.data.data);
@@ -90,13 +90,9 @@ export default function SearchMedicineScreen() {
           backTo="/home"
         />
 
-        <ScrollView
-          className="flex-1 pt-4"
-          contentContainerStyle={{ paddingBottom: 40 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Search Field */}
-          <View className="flex-row items-center bg-white border border-background-soft px-4 py-3 rounded-xl mb-6">
+        {/* Fixed Search Bar */}
+        <View className="pt-4">
+          <View className="flex-row items-center bg-white border border-background-soft px-4 py-3 rounded-xl">
             <Ionicons name="search" size={20} color="#888" />
             <TextInput
               className="flex-1 ml-2 text-base"
@@ -109,7 +105,14 @@ export default function SearchMedicineScreen() {
               returnKeyType="search"
             />
           </View>
+        </View>
 
+        {/* Scrollable Content */}
+        <ScrollView
+          className="flex-1 pt-4"
+          contentContainerStyle={{ paddingBottom: 40 }}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Categories */}
           {query.length === 0 && (
             <View className="mb-6">
@@ -138,25 +141,30 @@ export default function SearchMedicineScreen() {
           {/* Products Section */}
           <View className="mb-6">
             {query?.length > 0 ? (
-              <>
-                <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
-                  Search Results
-                </Text>
+              <View className="bg-white rounded-2xl p-4">
                 {isLoading ? (
-                  Array.from({ length: 5 }).map((_, index) => (
-                    <SkeletonPharmacyProductCard key={index} />
+                  Array.from({ length: 10 }).map((_, index) => (
+                    <>
+                      {/* Skeleton for list of products */}
+                      <View className="animate-pulse flex-row items-center border-b border-background-soft p-2 mb-4">
+                        <View className="flex-1">
+                          <View className="h-4 w-full bg-gray-300 rounded mb-2"></View>
+                          <View className="h-4 w-3/4 bg-gray-300 rounded"></View>
+                        </View>
+                      </View>
+                    </>
                   ))
                 ) : products.length === 0 ? (
                   <View className="h-28 justify-center items-center px-4">
                     <Text className="text-gray-400 text-sm font-lexend-medium">
-                      No products found.
+                      No products found for "{query}".
                     </Text>
                   </View>
                 ) : (
                   products.map((item) => (
                     <TouchableOpacity
                       key={item._id}
-                      className="bg-white border border-background-soft rounded-xl p-4 mb-4 mx-1 flex-row items-center"
+                      className="border-b border-background-soft p-1 mb-4 flex-row items-center"
                       onPress={() =>
                         router.push({
                           pathname: "/pharmacy/product/[productId]",
@@ -164,37 +172,26 @@ export default function SearchMedicineScreen() {
                         })
                       }
                     >
-                      <View className="w-16 h-16 rounded-md overflow-hidden bg-gray-100 mr-4">
-                        {/* Use a fallback if image is not available */}
-                        <Image
-                          source={{
-                            uri:
-                              item.image || "https://via.placeholder.com/100",
-                          }}
-                          className="w-full h-full object-cover"
-                        />
-                      </View>
                       <View className="flex-1">
                         <Text
-                          className="text-base font-lexend-semibold text-gray-900"
+                          className="text-base font-lexend-semibold text-text-primary"
                           numberOfLines={1}
                         >
                           {item.name}
                         </Text>
                         <Text
-                          className="text-sm text-gray-500 mt-1"
-                          numberOfLines={2}
+                          className="text-sm text-text-muted mt-1"
+                          numberOfLines={1}
                         >
-                          {item.saltComposition || "No composition info"}
+                          {item.short_composition1 || "No composition info"}
                         </Text>
                       </View>
                     </TouchableOpacity>
                   ))
                 )}
-              </>
+              </View>
             ) : (
               <>
-                {/* Featured Products (only when no search query) */}
                 <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
                   Featured Products
                 </Text>
