@@ -16,6 +16,7 @@ import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
 import { formatPrice, getDiscount } from "@/utils/format";
 import useAxios from "@/hooks/useAxios";
 import SkeletonPharmacyProductDetails from "@/components/skeletons/SkeletonPharmacyProductDetails";
+import { Ionicons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 
@@ -65,9 +66,14 @@ export default function PharmacyProductDetailsScreen() {
     error: hasError,
   } = useAxios();
 
-  const [productDetails, setProductDetails] = useState({});
+  const {
+    request: fetchProductsWithManufacturer,
+    loading: isFeaturedLoading,
+    error: hasFeaturedError,
+  } = useAxios();
 
-  console.log("Product ID on screen:", productId);
+  const [productDetails, setProductDetails] = useState({});
+  const [productsWithManufaturer, setProductsWithManufacturer] = useState([]);
 
   const router = useRouter();
   const [activeSlide, setActiveSlide] = useState(0);
@@ -78,11 +84,11 @@ export default function PharmacyProductDetailsScreen() {
       case 0:
         return (
           <Text className="text-base font-lexend text-text-muted">
-            {product.description}
+            {productDetails.description || product.description}
           </Text>
         );
       case 1:
-        return product.benefits.map((item, i) => (
+        return (productDetails.benefits || product.benefits).map((item, i) => (
           <Text key={i} className="text-base font-lexend text-text-muted mb-1">
             • {item}
           </Text>
@@ -90,21 +96,31 @@ export default function PharmacyProductDetailsScreen() {
       case 2:
         return (
           <Text className="text-base font-lexend text-text-muted">
-            {product.usage}
+            {productDetails.usage || product.usage}
           </Text>
         );
       case 3:
-        return product.precautions.map((item, i) => (
-          <Text key={i} className="text-base font-lexend text-text-muted mb-1">
-            • {item}
-          </Text>
-        ));
+        return (productDetails.precautions || product.precautions).map(
+          (item, i) => (
+            <Text
+              key={i}
+              className="text-base font-lexend text-text-muted mb-1"
+            >
+              • {item}
+            </Text>
+          )
+        );
       case 4:
-        return product.ingredients.map((item, i) => (
-          <Text key={i} className="text-base font-lexend text-text-muted mb-1">
-            - {item}
-          </Text>
-        ));
+        return (productDetails.ingredients || product.ingredients).map(
+          (item, i) => (
+            <Text
+              key={i}
+              className="text-base font-lexend text-text-muted mb-1"
+            >
+              - {item}
+            </Text>
+          )
+        );
       default:
         return null;
     }
@@ -112,21 +128,41 @@ export default function PharmacyProductDetailsScreen() {
 
   useEffect(() => {
     const fetchProductDetails = async () => {
-      try {
-        const { data, error } = await getProductDetails({
-          url: `/user/get-medicine-by-id`,
-          method: "GET",
-          params: {
-            medicineId: productId,
-          },
-        });
-        console.log("Product Details:", data);
-        setProductDetails(data.data);
-      } catch (error) {
+      const { data, error } = await getProductDetails({
+        url: `/user/get-medicine-by-id`,
+        method: "GET",
+        params: {
+          medicineId: productId,
+        },
+      });
+      if (error) {
         console.error("Error fetching product details:", error);
+        return;
+      }
+      if (data?.data) {
+        setProductDetails(data.data);
       }
     };
 
+    const fetchProductsByManufacturer = async () => {
+      const { data, error } = await fetchProductsWithManufacturer({
+        url: `/user/medicines-by-manufacturer`,
+        method: "GET",
+        params: {
+          medicineId: productId,
+        },
+      });
+
+      if (error) {
+        console.error("Error fetching products by manufacturer:", error);
+        return;
+      }
+      if (data?.data?.medicines) {
+        setProductsWithManufacturer(data.data.medicines);
+      }
+    };
+
+    fetchProductsByManufacturer();
     fetchProductDetails();
   }, [productId]);
 
@@ -147,7 +183,11 @@ export default function PharmacyProductDetailsScreen() {
               width={width}
               height={240}
               autoPlay={false}
-              data={product.images}
+              data={
+                productDetails.images?.length
+                  ? productDetails.images
+                  : product.images
+              }
               scrollAnimationDuration={500}
               onSnapToItem={(index) => setActiveSlide(index)}
               renderItem={({ item }) => (
@@ -159,24 +199,26 @@ export default function PharmacyProductDetailsScreen() {
               )}
             />
             <View className="flex-row justify-center mt-2">
-              {product.images.map((_, i) => (
-                <View
-                  key={i}
-                  className={`w-2 h-2 rounded-full mx-1 ${
-                    i === activeSlide ? "bg-brand-primary" : "bg-text-muted"
-                  }`}
-                />
-              ))}
+              {productDetails.images?.length
+                ? productDetails.images
+                : product.images.map((_, i) => (
+                    <View
+                      key={i}
+                      className={`w-2 h-2 rounded-full mx-1 ${
+                        i === activeSlide ? "bg-brand-primary" : "bg-text-muted"
+                      }`}
+                    />
+                  ))}
             </View>
           </View>
 
           {/* Product Info */}
           <View className="bg-white p-5 rounded-xl my-4">
             <Text className="text-xl font-lexend-semibold text-gray-900 mb-1">
-              {productDetails.name}
+              {productDetails.name || product.title}
             </Text>
             <Text className="text-sm font-lexend text-gray-500">
-              By {productDetails.manufacturer}
+              By {productDetails.manufacturer || product.manufacturer}
             </Text>
             <Text className="text-sm font-lexend text-gray-500">
               Origin: India
@@ -187,15 +229,27 @@ export default function PharmacyProductDetailsScreen() {
           <View className="bg-brand-background p-4 rounded-xl mb-4">
             <View className="flex-row items-center mb-2">
               <Text className="text-lg font-lexend-bold text-gray-900">
-                {formatPrice(productDetails.price)}
+                {formatPrice(productDetails.price || product.price)}
               </Text>
               <Text className="text-sm font-lexend text-gray-400 line-through ml-2">
-                MRP {formatPrice(product.mrp)}
+                MRP {formatPrice(productDetails.mrp || product.mrp)}
               </Text>
             </View>
             <Text className="text-sm font-lexend text-green-600">
-              Save {formatPrice(getDiscount(product.mrp, product.price))}
+              Save{" "}
+              {formatPrice(
+                getDiscount(
+                  productDetails.mrp || product.mrp,
+                  productDetails.price || product.price
+                )
+              )}
             </Text>
+            <View className="flex-row items-center mt-2">
+              <Ionicons name="star" size={20} color="yellow" className="mr-1" />
+              <Text className="text-sm font-lexend text-gray-500">
+                {productDetails.rating || product.rating}
+              </Text>
+            </View>
           </View>
 
           {/* Product Details Tabs */}
@@ -238,45 +292,17 @@ export default function PharmacyProductDetailsScreen() {
               Storage Instructions
             </Text>
             <Text className="text-sm font-lexend text-text-muted">
-              {product.storage}
+              {productDetails.storage || product.storage}
             </Text>
           </View>
 
           {/* Similar Products */}
           <View className="mt-6 mb-8">
             <Text className="text-lg font-lexend-bold text-text-primary mb-3">
-              Similar Products
+              More by {productDetails.manufacturer}
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {[
-                {
-                  id: 1,
-                  title: "Vitamin D -3 250gm",
-                  image: STATIC.IMAGES.COMPONENTS.MEDICINE_2,
-                  rating: 5,
-                  price: 212.0,
-                  mrp: 235.0,
-                  manufacturer: "Loren Ipsum Pharmaceutical Industries LTD",
-                },
-                {
-                  id: 2,
-                  title: "Omega 3 Softgels",
-                  image: STATIC.IMAGES.COMPONENTS.MEDICINE_1,
-                  rating: 4.5,
-                  price: 299.0,
-                  mrp: 349.0,
-                  manufacturer: "HeartHealth Pharma Limited",
-                },
-                {
-                  id: 3,
-                  title: "Zincovit Tablets",
-                  image: STATIC.IMAGES.COMPONENTS.MEDICINE_3,
-                  rating: 4.8,
-                  price: 150.0,
-                  mrp: 180.0,
-                  manufacturer: "Wellness Labs",
-                },
-              ].map((product) => (
+              {productsWithManufaturer.map((product) => (
                 <PharmacyProductCard
                   key={product.id}
                   item={product}
