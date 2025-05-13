@@ -35,12 +35,17 @@ const accountOptions = [
 ];
 
 const AccountScreen = () => {
-  const userName = "Yash Tiwari";
-  const userImage = "https://i.pravatar.cc/150?img=12";
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { logout } = useAuthUser();
   const { showToast } = useAppToast();
+
+  const { authUser } = useAuthUser();
+  console.log("Auth User:", authUser);
+  
+  const user = authUser?.user;
+  const userImage = user?.profilePicture || "https://i.pravatar.cc/150?img=12";
+  const userName = user?.fullName || "Yash Tiwari";
 
   const handleLogout = async () => {
     try {
