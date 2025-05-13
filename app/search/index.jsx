@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AppLayout from "@/components/layouts/AppLayout";
@@ -80,7 +81,7 @@ export default function SearchMedicineScreen() {
   }, []);
 
   return (
-    <AppLayout>
+    <AppLayout scroll={false}>
       <SafeAreaView className="flex-1">
         <HeaderWithBack
           showBackButton
@@ -110,59 +111,121 @@ export default function SearchMedicineScreen() {
           </View>
 
           {/* Categories */}
-          <View className="mb-6">
-            <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
-              Categories
-            </Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {categories.map((category, index) => (
-                <TouchableOpacity
-                  key={index}
-                  className="bg-brand-primary/10 border border-brand-primary/90 px-4 py-2 rounded-full mr-3"
-                  onPress={() => {
-                    setQuery(category);
-                    handleSearch(category);
-                  }}
-                >
-                  <Text className="text-brand-primary text-sm font-lexend-medium">
-                    {category}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
+          {query.length === 0 && (
+            <View className="mb-6">
+              <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
+                Categories
+              </Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {categories.map((category, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    className="bg-brand-primary/10 border border-brand-primary/90 px-4 py-2 rounded-full mr-3"
+                    onPress={() => {
+                      setQuery(category);
+                      handleSearch(category);
+                    }}
+                  >
+                    <Text className="text-brand-primary text-sm font-lexend-medium">
+                      {category}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          )}
 
-          {/* Products */}
+          {/* Products Section */}
           <View className="mb-6">
-            <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
-              {query?.length > 0 ? "Search Results" : "Featured Products"}
-            </Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {isFeaturedLoading ? (
-                Array.from({ length: 3 }).map((_, index) => (
-                  <SkeletonPharmacyProductCard key={index} />
-                ))
-              ) : products.length === 0 ? (
-                <View className="h-28 justify-center items-center px-4">
-                  <Text className="text-gray-400 text-sm font-lexend-medium">
-                    No products found.
-                  </Text>
-                </View>
-              ) : (
-                products.map((item) => (
-                  <PharmacyProductCard
-                    key={item._id}
-                    item={item}
-                    onPress={() =>
-                      router.push({
-                        pathname: "/pharmacy/product/[productId]",
-                        params: { productId: item._id },
-                      })
-                    }
-                  />
-                ))
-              )}
-            </ScrollView>
+            {query?.length > 0 ? (
+              <>
+                <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
+                  Search Results
+                </Text>
+                {isLoading ? (
+                  Array.from({ length: 5 }).map((_, index) => (
+                    <SkeletonPharmacyProductCard key={index} />
+                  ))
+                ) : products.length === 0 ? (
+                  <View className="h-28 justify-center items-center px-4">
+                    <Text className="text-gray-400 text-sm font-lexend-medium">
+                      No products found.
+                    </Text>
+                  </View>
+                ) : (
+                  products.map((item) => (
+                    <TouchableOpacity
+                      key={item._id}
+                      className="bg-white border border-background-soft rounded-xl p-4 mb-4 mx-1 flex-row items-center"
+                      onPress={() =>
+                        router.push({
+                          pathname: "/pharmacy/product/[productId]",
+                          params: { productId: item._id },
+                        })
+                      }
+                    >
+                      <View className="w-16 h-16 rounded-md overflow-hidden bg-gray-100 mr-4">
+                        {/* Use a fallback if image is not available */}
+                        <Image
+                          source={{
+                            uri:
+                              item.image || "https://via.placeholder.com/100",
+                          }}
+                          className="w-full h-full object-cover"
+                        />
+                      </View>
+                      <View className="flex-1">
+                        <Text
+                          className="text-base font-lexend-semibold text-gray-900"
+                          numberOfLines={1}
+                        >
+                          {item.name}
+                        </Text>
+                        <Text
+                          className="text-sm text-gray-500 mt-1"
+                          numberOfLines={2}
+                        >
+                          {item.saltComposition || "No composition info"}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))
+                )}
+              </>
+            ) : (
+              <>
+                {/* Featured Products (only when no search query) */}
+                <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
+                  Featured Products
+                </Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  {isFeaturedLoading ? (
+                    Array.from({ length: 3 }).map((_, index) => (
+                      <SkeletonPharmacyProductCard key={index} />
+                    ))
+                  ) : products.length === 0 ? (
+                    <View className="h-28 justify-center items-center px-4">
+                      <Text className="text-gray-400 text-sm font-lexend-medium">
+                        No products found.
+                      </Text>
+                    </View>
+                  ) : (
+                    products.map((item) => (
+                      <PharmacyProductCard
+                        key={item._id}
+                        item={item}
+                        onPress={() =>
+                          router.push({
+                            pathname: "/pharmacy/product/[productId]",
+                            params: { productId: item._id },
+                          })
+                        }
+                      />
+                    ))
+                  )}
+                </ScrollView>
+              </>
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
