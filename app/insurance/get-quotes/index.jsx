@@ -14,7 +14,7 @@ const GetQuotesScreen = () => {
           Compare & Buy Insurance Instantly
         </Text>
         <Text className="text-white font-lexend text-xl text-center opacity-90">
-          Health, Life, Car & More. Get the best quotes in minutes!
+          Health & Life. Get the best quotes in minutes!
         </Text>
       </View>
 
