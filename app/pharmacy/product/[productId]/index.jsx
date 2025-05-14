@@ -17,6 +17,7 @@ import { formatPrice, getDiscount } from "@/utils/format";
 import useAxios from "@/hooks/useAxios";
 import SkeletonPharmacyProductDetails from "@/components/skeletons/SkeletonPharmacyProductDetails";
 import { Ionicons } from "@expo/vector-icons";
+import AddToCartModalButton from "@/components/modals/AddToCartModalButton";
 
 const { width } = Dimensions.get("window");
 
@@ -236,11 +237,7 @@ export default function PharmacyProductDetailsScreen() {
                   MRP {formatPrice(productDetails.mrp || product.mrp)}
                 </Text>
               </View>
-              <TouchableOpacity className="bg-brand-primary px-4 py-2 rounded-lg">
-                <Text className="text-white text-sm font-lexend-semibold">
-                  Add to Cart
-                </Text>
-              </TouchableOpacity>
+              <AddToCartModalButton product={productDetails || product} />
             </View>
 
             <Text className="text-sm font-lexend text-green-600">

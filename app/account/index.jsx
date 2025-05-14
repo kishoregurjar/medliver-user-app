@@ -136,26 +136,29 @@ const AccountScreen = () => {
         </View>
 
         {/* Divider */}
-        <View className="h-px bg-gray-200 mt-4" />
 
         {/* Fixed Logout Button */}
         {authUser && authUser.isAuthenticated && (
-          <View className="w-full mt-0 rounded-3xl bg-brand-primary/90 absolute bottom-0">
-            <TouchableOpacity
-              className="flex-row items-center justify-between p-3 rounded-xl"
-              activeOpacity={0.7}
-              onPress={handleLogout}
-            >
-              <View className="flex-row items-center space-x-3">
-                <View className="w-8 h-8 bg-t rounded-xl items-center justify-center flex">
-                  <Ionicons name="log-out-outline" size={24} color="white" />
+          <>
+            <View className="h-px bg-gray-200 mt-4" />
+
+            <View className="w-full mt-0 rounded-3xl bg-brand-primary/90 absolute bottom-0">
+              <TouchableOpacity
+                className="flex-row items-center justify-between p-3 rounded-xl"
+                activeOpacity={0.7}
+                onPress={handleLogout}
+              >
+                <View className="flex-row items-center space-x-3">
+                  <View className="w-8 h-8 bg-t rounded-xl items-center justify-center flex">
+                    <Ionicons name="log-out-outline" size={24} color="white" />
+                  </View>
+                  <Text className="text-base font-lexend-bold text-white">
+                    Logout
+                  </Text>
                 </View>
-                <Text className="text-base font-lexend-bold text-white">
-                  Logout
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+              </TouchableOpacity>
+            </View>
+          </>
         )}
       </View>
     </AppLayout>
