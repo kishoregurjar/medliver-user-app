@@ -44,8 +44,6 @@ export default function LoginScreen() {
   });
 
   const onSubmit = async (payload) => {
-    console.log("Login data:", payload);
-
     const { data, error } = await loginUser({
       url: "/user/user-login",
       method: "POST",
@@ -60,7 +58,6 @@ export default function LoginScreen() {
       }
     } else {
       showToast("error", error || "Something went wrong");
-      console.log(error || "Something went wrong");
     }
   };
 

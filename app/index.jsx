@@ -21,9 +21,9 @@ const LetsStartScreen = () => {
     const setupNotifications = async () => {
       try {
         const token = await registerForPushNotificationsAsync();
-        console.log("✅ Push Notification Token:", token);
+        console.log("Expo Push Notification Token :", token);
       } catch (error) {
-        console.error("❌ Error setting up notifications:", error);
+        console.log("Error setting up notifications:", error);
       }
     };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import AppLayout from "@/components/layouts/AppLayout";
+import useAxios from "@/hooks/useAxios";
 
 const tabs = ["Medicine", "Lab Test"];
 
@@ -39,10 +40,39 @@ export default function CartScreen() {
   const [activeTab, setActiveTab] = useState("Medicine");
   const [promoCode, setPromoCode] = useState("");
   const [urgentDelivery, setUrgentDelivery] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
   const { colors } = useTheme();
+  const {
+    request: getAllCartItems,
+    loading: isLoading,
+    error: hasError,
+  } = useAxios();
+
+  const {
+    request: removeCartItem,
+    loading: removeLoading,
+    error: removeError,
+  } = useAxios();
 
   const calculateTotal = () =>
     medicineItems.reduce((sum, item) => sum + item.price, 0);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      const { data, error } = await getAllCartItems({
+        url: "/user/get-cart",
+        method: "GET",
+      });
+      console.log("Cart items fetched successfully:", data);
+      if (error) {
+        console.error("Error fetching cart items:", error);
+      } else {
+        setCartItems(data);
+      }
+    };
+
+    fetchCartItems();
+  }, []);
 
   return (
     <AppLayout>

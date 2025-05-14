@@ -37,8 +37,6 @@ const TopPicksPharmacy = () => {
         return;
       }
 
-      console.log("Top Picks Data:", data);
-
       if (data?.data) {
         setProducts(data.data);
       }

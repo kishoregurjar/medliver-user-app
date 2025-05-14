@@ -59,8 +59,6 @@ export default function SignupScreen() {
       userCoordinates: location || { lat: 0, long: 0 },
     };
 
-    console.log("Signup data:", payloadToSend);
-
     const { data, error } = await registerUser({
       url: "/user/register-user",
       method: "POST",

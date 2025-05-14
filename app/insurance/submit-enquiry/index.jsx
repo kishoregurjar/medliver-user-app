@@ -54,8 +54,6 @@ const InsuranceEnquiryScreen = () => {
   }));
 
   const onSubmit = async (payload) => {
-    console.log("Insurance Enquiry Submitted:", payload);
-
     const { data, error } = await submitEnquiry({
       url: "/user/apply-for-insurance",
       method: "POST",
@@ -69,7 +67,6 @@ const InsuranceEnquiryScreen = () => {
       }
     } else {
       showToast("error", error || "Something went wrong");
-      console.log(error || "Something went wrong");
     }
   };
 

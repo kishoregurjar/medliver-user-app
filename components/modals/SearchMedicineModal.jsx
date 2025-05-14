@@ -81,7 +81,6 @@ const SearchMedicineModal = ({ visible, onClose, onSelect, suggestions }) => {
             <TouchableOpacity
               className="mt-6 border-t border-gray-200 pt-4"
               onPress={() => {
-                console.log("Upload prescription option clicked!");
                 onClose();
               }}
             >

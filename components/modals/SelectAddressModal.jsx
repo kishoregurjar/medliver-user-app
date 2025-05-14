@@ -55,7 +55,6 @@ const SelectAddressModal = ({ visible, onClose, onSelect, addresses }) => {
                   className="flex-1 ml-2 text-base font-lexend text-gray-800"
                   value={search}
                   onChangeText={setSearch}
-                  onFocus={() => console.log("Focused")}
                 />
               </View>
 

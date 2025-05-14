@@ -60,7 +60,6 @@ const BookAmbulanceScreen = () => {
         lng: 0,
       },
     };
-    console.log("Ambulance Request:", payload);
   };
 
 

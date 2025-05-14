@@ -47,14 +47,10 @@ export default function SearchMedicineScreen() {
       method: "GET",
       url: `/user/search-medicine?query=${searchTerm}&page=1`,
     });
-
     if (error) {
       console.error("Search error:", error);
       return;
     }
-
-    console.log("Search Results:", data.data.data);
-
     if (data?.data?.data) {
       setProducts(data.data.data);
     }

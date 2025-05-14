@@ -33,8 +33,6 @@ const BookAnAppointmentScreen = () => {
   });
 
   const onSubmit = async (payload) => {
-    console.log("Appointment Request:", payload);
-
     const { data, error } = await submitDoctorAppointment({
       url: "/user/create-doctoreLead",
       method: "POST",
@@ -48,7 +46,6 @@ const BookAnAppointmentScreen = () => {
       }
     } else {
       showToast("error", error || "Something went wrong");
-      console.log(error || "Something went wrong");
     }
   };
 
