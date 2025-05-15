@@ -24,7 +24,8 @@ export const socialButtons = [
 const IMAGES = {
   APP: {
     LOGO: require("../assets/logos/logo.png"),
-    LOGO_H: require("../assets/logos/logo_horizontal.png"),
+    LOGO_FULL: require("../assets/logos/logo_full.png"),
+    LOGO_TEXT: require("../assets/logos/logo_text.png"),
     BACKGROUND: require("../assets/images/app_background.png"),
   },
   PAGES: {
@@ -38,14 +39,12 @@ const IMAGES = {
     HOME_NAV_TILE_2: require("../assets/images/book_test.png"),
     HOME_NAV_TILE_3: require("../assets/images/buy_insurance.png"),
     HOME_NAV_TILE_4: require("../assets/images/book_cab.png"),
-    USER: require("../assets/images/user.png"),
     PROMO_PHARMACY: require("../assets/images/promo_pharmacy.png"),
     PROMO_PATHOLOGY: require("../assets/images/promo_pathology.png"),
     MEDICINE_1: require("../assets/images/medicine_1.png"),
     MEDICINE_2: require("../assets/images/medicine_2.png"),
     MEDICINE_3: require("../assets/images/medicine_3.png"),
     MEDICINE_4: require("../assets/images/medicine_4.png"),
-    MEDICINE_5: require("../assets/images/medicine_5.png"),
     PATHOLOGY_CAT_1: require("../assets/images/pathology_cat_1.png"),
     PATHOLOGY_CAT_2: require("../assets/images/pathology_cat_2.png"),
   },

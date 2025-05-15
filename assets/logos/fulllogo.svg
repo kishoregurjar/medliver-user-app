@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 627.87 172.7">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: .09em;
+      }
+
+      .cls-2 {
+        fill: #231f20;
+        font-family: Aileron-SemiBold, Aileron;
+        font-size: 33px;
+        font-weight: 600;
+      }
+
+      .cls-3 {
+        fill: #ecc01d;
+        font-family: Aileron-Black, Aileron;
+        font-size: 87.56px;
+        font-weight: 800;
+      }
+
+      .cls-4 {
+        fill: #4cad73;
+      }
+
+      .cls-5 {
+        fill: #b31f24;
+      }
+
+      .cls-6 {
+        letter-spacing: .1em;
+      }
+    </style>
+  </defs>
+  <g>
+    <path class="cls-5" d="M160.85,28.77h-36.51V10.21c0-5.64-4.57-10.21-10.21-10.21H55.91c-5.64,0-10.21,4.57-10.21,10.21V28.77H9.19c-5.08,0-9.19,4.12-9.19,9.19v17.62H170.04v-17.62c0-5.08-4.12-9.19-9.19-9.19ZM58.64,18.04c0-2.73,2.21-4.94,4.94-4.94h42.89c2.73,0,4.94,2.21,4.94,4.94v10.72H58.64v-10.72Z"/>
+    <g>
+      <path class="cls-5" d="M7.66,62.4v91.15c0,10.58,8.57,19.15,19.15,19.15h116.43c10.58,0,19.15-8.57,19.15-19.15V62.4H7.66Zm110.81,61.45c0,1.97-1.6,3.57-3.57,3.57h-20v20c0,1.97-1.6,3.57-3.57,3.57h-12.6c-1.97,0-3.57-1.6-3.57-3.57v-20h-20c-1.97,0-3.57-1.6-3.57-3.57v-12.6c0-1.97,1.6-3.57,3.57-3.57h20v-20c0-1.97,1.6-3.57,3.57-3.57h12.6c1.97,0,3.57,1.6,3.57,3.57v20h20c1.97,0,3.57,1.6,3.57,3.57v12.6Z"/>
+      <circle class="cls-4" cx="144.82" cy="154.91" r="6.81"/>
+    </g>
+  </g>
+  <circle class="cls-4" cx="217.54" cy="150.89" r="11.49"/>
+  <text class="cls-3" transform="translate(201.13 117.58)"><tspan x="0" y="0">Medlivurr</tspan></text>
+  <text class="cls-2" transform="translate(246.41 156.49)"><tspan class="cls-1" x="0" y="0">y</tspan><tspan class="cls-6" x="20.59" y="0">our needy services</tspan></text>
+</svg>
