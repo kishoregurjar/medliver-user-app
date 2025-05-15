@@ -41,7 +41,7 @@ export default function NavigationTiles() {
     //   path: ROUTE_PATH.APP.CAB.INDEX,
     // },
     {
-      label: "Book Doctor Appointment",
+      label: "Nursing Services",
       icon: STATIC.IMAGES.COMPONENTS.HOME_NAV_TILE_4,
       cta: "Book Now",
       path: ROUTE_PATH.APP.APPOINTMENT.BOOK_AN_APPOINTMENT,
