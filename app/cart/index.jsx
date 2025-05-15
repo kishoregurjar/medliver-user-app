@@ -22,7 +22,6 @@ export default function CartScreen() {
   const [urgentDelivery, setUrgentDelivery] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [localQuantities, setLocalQuantities] = useState({});
-
   const { authUser } = useAuthUser();
   const { showToast } = useAppToast();
 
@@ -56,12 +55,14 @@ export default function CartScreen() {
     const { data, error } = await removeCartItem({
       url: `/user/remove-item-from-cart`,
       method: "PUT",
-      payload: { itemId, type: "medicine" },
+      payload: { itemId, type: "Medicine" },
       authRequired: true,
     });
 
     if (!error) {
-      setCartItems((prev) => prev.filter((item) => item._id !== itemId));
+      setCartItems((prev) =>
+        prev.filter((item) => item.item_id._id !== itemId)
+      );
       setLocalQuantities((prev) => {
         const copy = { ...prev };
         delete copy[itemId];
@@ -186,7 +187,7 @@ export default function CartScreen() {
 
                 <View className="flex-row justify-between items-center mt-3">
                   <TouchableOpacity
-                    onPress={() => handleRemove(item._id)}
+                    onPress={() => handleRemove(item.item_id._id)}
                     className="bg-brand-primary/90 p-2 rounded-lg flex-row items-center"
                   >
                     <Ionicons name="trash-outline" size={16} color="white" />
