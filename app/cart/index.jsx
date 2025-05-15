@@ -41,31 +41,32 @@ export default function CartScreen() {
       const items = data?.data?.items || [];
       setCartItems(items);
       setLocalQuantities(
-        Object.fromEntries(items.map((item) => [item._id, item.quantity]))
+        Object.fromEntries(
+          items.map((item) => [item.item_id._id, item.quantity])
+        )
       );
     })();
   }, [authUser]);
 
-  const handleQuantityChange = (itemId, newQty) => {
-    console.log("handleQuantityChange", itemId, newQty);
-    console.log("localQuantities", localQuantities);
+  const handleQuantityChange = (productId, newQty) => {
+    setLocalQuantities((prev) => ({ ...prev, [productId]: newQty }));
 
-    setLocalQuantities((prev) => ({ ...prev, [itemId]: newQty }));
+    if (timers.current[productId]) clearTimeout(timers.current[productId]);
 
-    if (timers.current[itemId]) clearTimeout(timers.current[itemId]);
-
-    timers.current[itemId] = setTimeout(async () => {
-      const item = cartItems.find((i) => i._id === itemId);
+    timers.current[productId] = setTimeout(async () => {
+      const item = cartItems.find((i) => i.item_id._id === productId);
       if (!item || item.quantity === newQty || newQty < 1) return;
 
       setCartItems((prev) =>
-        prev.map((i) => (i._id === itemId ? { ...i, quantity: newQty } : i))
+        prev.map((i) =>
+          i.item_id._id === productId ? { ...i, quantity: newQty } : i
+        )
       );
 
       await updateCartItemQuantity({
         url: "/user/change-cart-product-quantity",
         method: "PUT",
-        payload: { itemId, quantity: newQty, type: "Medicine" },
+        payload: { itemId: productId, quantity: newQty, type: "Medicine" },
         authRequired: true,
       });
     }, 600);
@@ -97,7 +98,8 @@ export default function CartScreen() {
   const itemTotal = useMemo(
     () =>
       cartItems.reduce(
-        (sum, item) => sum + item.price * (localQuantities[item._id] || 1),
+        (sum, item) =>
+          sum + item.price * (localQuantities[item.item_id._id] || 1),
         0
       ),
     [cartItems, localQuantities]
@@ -179,9 +181,11 @@ export default function CartScreen() {
             <CartItemCard
               key={item.item_id._id}
               item={item}
-              quantity={localQuantities[item._id]}
+              quantity={localQuantities[item.item_id._id] || 1}
               onRemove={() => handleRemove(item.item_id._id)}
-              onQuantityChange={(qty) => handleQuantityChange(item._id, qty)}
+              onQuantityChange={(qty) =>
+                handleQuantityChange(item.item_id._id, qty)
+              }
             />
           ))
         ) : (
