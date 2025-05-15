@@ -62,10 +62,11 @@ const LetsStartScreen = () => {
 
         <View className="flex-1 items-center justify-center px-4">
           <Image
-            source={STATIC.IMAGES.PAGES.LETS_START}
+            // source={STATIC.IMAGES.PAGES.LETS_START}
+            source={STATIC.IMAGES.APP.LOGO_FULL}
             resizeMode="contain"
             style={{
-              width: width * 0.6,
+              width: width * 0.8,
               height: height * 0.3,
               marginBottom: height * 0.04,
             }}

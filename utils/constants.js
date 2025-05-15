@@ -27,6 +27,7 @@ const IMAGES = {
     LOGO_FULL: require("../assets/logos/logo_full.png"),
     LOGO_TEXT: require("../assets/logos/logo_text.png"),
     BACKGROUND: require("../assets/images/app_background.png"),
+    COVER: require("../assets/images/app_cover.png"),
   },
   PAGES: {
     LETS_START: require("../assets/images/lets_start_screen.png"),
