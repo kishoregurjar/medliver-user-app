@@ -1,13 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-  Image,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import AppLayout from "@/components/layouts/AppLayout";
 import useAxios from "@/hooks/useAxios";
@@ -15,6 +7,10 @@ import { useAuthUser } from "@/contexts/AuthContext";
 import { useAppToast } from "@/hooks/useAppToast";
 import { router } from "expo-router";
 import ROUTE_PATH from "@/routes/route.constants";
+import CartItemCard from "@/components/cards/CartItemCard";
+import CartPromoCodeInput from "@/components/cards/CartPromoCodeInput";
+import CartUrgentDeliveryToggle from "@/components/cards/CartUrgentDeliveryToggle";
+import CartPaymentSummary from "@/components/cards/CartPaymentSummary";
 
 export default function CartScreen() {
   const [cartItems, setCartItems] = useState([]);
@@ -51,6 +47,9 @@ export default function CartScreen() {
   }, [authUser]);
 
   const handleQuantityChange = (itemId, newQty) => {
+    console.log("handleQuantityChange", itemId, newQty);
+    console.log("localQuantities", localQuantities);
+
     setLocalQuantities((prev) => ({ ...prev, [itemId]: newQty }));
 
     if (timers.current[itemId]) clearTimeout(timers.current[itemId]);
@@ -177,86 +176,13 @@ export default function CartScreen() {
       <ScrollView className="flex-1 py-4">
         {cartItems.length > 0 ? (
           cartItems.map((item) => (
-            <View
+            <CartItemCard
               key={item.item_id._id}
-              className="bg-white p-4 my-1 rounded-xl flex-row items-start space-x-4"
-            >
-              <View className="w-1/4 h-24 bg-gray-100 rounded-lg overflow-hidden">
-                <Image
-                  source={{
-                    uri:
-                      item.item_id.image || "https://via.placeholder.com/100",
-                  }}
-                  className="w-full h-full"
-                  resizeMode="cover"
-                />
-              </View>
-
-              <View className="flex-1">
-                <Text
-                  className="text-lg font-lexend-semibold"
-                  numberOfLines={1}
-                >
-                  {item.name}
-                </Text>
-                <Text className="text-sm text-gray-600">
-                  {item.item_id.short_composition1}
-                </Text>
-                <Text className="text-sm text-gray-600">
-                  {item.item_id.packSizeLabel}
-                </Text>
-                <Text className="text-base text-text-muted mt-1">
-                  ₹{item.price.toFixed(2)} x {localQuantities[item._id]} = ₹
-                  {(item.price * localQuantities[item._id]).toFixed(2)}
-                </Text>
-
-                <View className="flex-row justify-between items-center mt-3">
-                  <TouchableOpacity
-                    onPress={() => handleRemove(item.item_id._id)}
-                    className="bg-brand-primary/90 p-2 rounded-lg flex-row items-center"
-                  >
-                    <Ionicons name="trash-outline" size={16} color="white" />
-                    <Text className="text-white text-xs ml-1">Remove</Text>
-                  </TouchableOpacity>
-
-                  <View className="flex-row items-center bg-text-muted/20 rounded-lg px-2 py-1">
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleQuantityChange(
-                          item._id,
-                          Math.max(1, localQuantities[item._id] - 1)
-                        )
-                      }
-                      className="p-1 rounded-full border border-text-muted"
-                    >
-                      <Ionicons name="remove" size={14} color="black" />
-                    </TouchableOpacity>
-
-                    <TextInput
-                      value={String(localQuantities[item._id] || 1)}
-                      onChangeText={(text) =>
-                        handleQuantityChange(item._id, parseInt(text) || 1)
-                      }
-                      keyboardType="numeric"
-                      maxLength={2}
-                      className="w-10 text-center text-sm text-text-muted"
-                    />
-
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleQuantityChange(
-                          item._id,
-                          localQuantities[item._id] + 1
-                        )
-                      }
-                      className="p-1 rounded-full border border-text-muted"
-                    >
-                      <Ionicons name="add" size={14} color="black" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View>
+              item={item}
+              quantity={localQuantities[item._id]}
+              onRemove={() => handleRemove(item.item_id._id)}
+              onQuantityChange={(qty) => handleQuantityChange(item._id, qty)}
+            />
           ))
         ) : (
           <Text className="text-center text-text-muted font-lexend mt-10">
@@ -266,84 +192,26 @@ export default function CartScreen() {
 
         {cartItems.length > 0 && (
           <>
-            {/* Promo Code */}
-            <TouchableOpacity
-              className="bg-white p-5 rounded-xl flex-row items-center space-x-3 mt-4"
-              onPress={() => setIsPromoApplied((v) => !v)}
-            >
-              <Ionicons
-                name={isPromoApplied ? "radio-button-on" : "radio-button-off"}
-                size={24}
-              />
-              <Text className="text-base font-lexend text-gray-800">
-                Apply Promo Code
-              </Text>
-            </TouchableOpacity>
-
-            {isPromoApplied && (
-              <TextInput
-                value={promoCode}
-                onChangeText={setPromoCode}
-                placeholder="Enter Promo Code"
-                className="bg-white p-5 rounded-xl font-lexend shadow-md mt-2"
-              />
-            )}
-
-            {/* Urgent Delivery */}
-            <TouchableOpacity
-              className="flex-row bg-white p-5 rounded-xl items-center space-x-3 mt-4"
-              onPress={() => setUrgentDelivery((v) => !v)}
-            >
-              <Ionicons
-                name={urgentDelivery ? "checkbox-outline" : "square-outline"}
-                size={24}
-              />
-              <Text className="text-base font-lexend text-gray-800">
-                Mark as Urgent Delivery
-              </Text>
-            </TouchableOpacity>
-
-            {/* Payment Summary */}
-            <View className="bg-white border border-background-surface p-4 rounded-xl shadow-md mt-4">
-              <Text className="text-lg font-lexend-semibold text-text-muted">
-                Payment Details
-              </Text>
-              <View className="gap-3 mt-4">
-                <SummaryRow label="Item Total" value={itemTotal} />
-                <SummaryRow label="Promo Discount" value={-promoDiscount} />
-                <SummaryRow label="Urgent Delivery" value={deliveryCharge} />
-              </View>
-
-              <View className="border-t border-gray-300 my-4" />
-              <View className="flex-row justify-between items-center">
-                <View>
-                  <Text className="text-sm font-lexend text-gray-500">
-                    Total Amount
-                  </Text>
-                  <Text className="text-xl font-lexend-bold text-gray-900 mt-1">
-                    ₹{totalAmount.toFixed(2)}
-                  </Text>
-                </View>
-
-                <TouchableOpacity className="bg-brand-primary/90 px-6 py-3 rounded-xl">
-                  <Text className="text-white text-base font-lexend-semibold">
-                    Proceed to Payment
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+            <CartPromoCodeInput
+              isApplied={isPromoApplied}
+              onToggle={() => setIsPromoApplied((v) => !v)}
+              promoCode={promoCode}
+              onChangeCode={setPromoCode}
+            />
+            <CartUrgentDeliveryToggle
+              urgentDelivery={urgentDelivery}
+              onToggle={() => setUrgentDelivery((v) => !v)}
+            />
+            <CartPaymentSummary
+              itemTotal={itemTotal}
+              promoDiscount={promoDiscount}
+              deliveryCharge={deliveryCharge}
+              totalAmount={totalAmount}
+              onCheckoutPress={() => {}}
+            />
           </>
         )}
       </ScrollView>
     </AppLayout>
   );
 }
-
-const SummaryRow = ({ label, value }) => (
-  <View className="flex-row justify-between">
-    <Text className="text-sm font-lexend text-gray-600">{label}</Text>
-    <Text className="text-sm font-lexend text-gray-600">
-      ₹{value >= 0 ? value.toFixed(2) : `-${Math.abs(value).toFixed(2)}`}
-    </Text>
-  </View>
-);
