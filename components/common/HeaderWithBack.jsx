@@ -65,7 +65,11 @@ export default function HeaderWithBack({
           <Text className="text-xl font-lexend-bold text-black">{title}</Text>
         ) : (
           <TouchableOpacity onPress={() => router.replace(ROUTE_PATH.APP.HOME)}>
-            <Image source={STATIC.IMAGES.APP.LOGO_H} resizeMode="contain" />
+            <Image
+              source={STATIC.IMAGES.APP.LOGO_FULL}
+              resizeMode="contain"
+              className="w-40 h-12"
+            />
           </TouchableOpacity>
         )}
       </View>

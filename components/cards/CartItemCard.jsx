@@ -2,7 +2,6 @@ import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function CartItemCard({
-  key,
   item,
   quantity,
   onRemove,

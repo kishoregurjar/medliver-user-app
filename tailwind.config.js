@@ -171,8 +171,8 @@ module.exports = {
         // Custom App colors - Color Palette
         // These colors are used in the app and should be consistent with the design
         brand: {
-          primary: "#E55150", // main red (formerly - red)
-          secondary: "#E2AD5F", // main brown (formerly - brown)
+          primary: "#B31F24", // main red (formerly - red)
+          secondary: "#ECC01D", // main brown (formerly - brown)
           background: "#FCDEC7", // light brown (formerly - lightbrown)
         },
         text: {
@@ -187,7 +187,7 @@ module.exports = {
           soft: "#E4DCDC", // warm grey light (formerly - warmgreylight)
         },
         status: {
-          success: "#3DF46E", // green (formerly - green)
+          success: "#4CAD73", // green (formerly - green)
           error: "#E55150", // same as brand.primary
           warning: "#FFA726", // (custom, you can adjust or ignore if not needed)
           info: "#4575EB", // mid blue (formerly - midblue)
@@ -205,8 +205,7 @@ module.exports = {
         },
       },
       backgroundImage: {
-        "- gradient":
-          "linear-gradient(90deg, #E75A55 0%, #F0B646 100%)",
+        "- gradient": "linear-gradient(90deg, #E75A55 0%, #F0B646 100%)",
       },
       fontFamily: {
         sans: ["LexendDeca_400Regular"],

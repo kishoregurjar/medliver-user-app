@@ -4,14 +4,14 @@
     "slug": "medliver-user-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logos/logo_s.png",
+    "icon": "./assets/logos/logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/logos/logo_s.png",
+      "image": "./assets/logos/logo_s_text.png",
       "resizeMode": "contain",
-      "backgroundColor": "#A32022"
+      "backgroundColor": "#FCDEC7"
     },
     "ios": {
       "infoPlist": {
@@ -21,7 +21,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logos/logo_s.png",
+        "foregroundImage": "./assets/logos/logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.medliveruserapp",
@@ -30,7 +30,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/logos/logo_s.png"
+      "favicon": "./assets/logos/logo.png"
     },
     "plugins": [
       "expo-router",
@@ -38,9 +38,9 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#A32022",
-          "image": "./assets/logos/logo_s.png",
+          "image": "./assets/logos/logo_s_text.png",
           "dark": {
-            "image": "./assets/logos/logo_s.png",
+            "image": "./assets/logos/logo_s_text.png",
             "backgroundColor": "#A32022"
           }
         }
