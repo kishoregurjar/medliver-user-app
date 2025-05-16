@@ -31,7 +31,7 @@ const GetQuotesScreen = () => {
             shadowOffset: { width: 0, height: 4 },
           }}
           onPress={() => {
-            router.push(ROUTE_PATH.INSURANCE.SUBMIT_ENQUIRY);
+            router.push(ROUTE_PATH.APP.INSURANCE.SUBMIT_ENQUIRY);
           }}
         >
           <Text className="text-white text-lg font-lexend">Get Quotes</Text>

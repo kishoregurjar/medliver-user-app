@@ -59,7 +59,7 @@ const BookAnAppointmentScreen = () => {
       />
       <View className="py-8">
         <Text className="text-2xl font-lexend-bold text-text-primary mb-2">
-          Book an Appointment with a Doctor
+          Book an Appointment with our Nursing Care Experts
         </Text>
         <Text className="text-base font-lexend text-text-muted mb-6 leading-relaxed">
           Schedule a visit with a medical expert
