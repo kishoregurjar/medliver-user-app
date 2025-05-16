@@ -1,20 +1,13 @@
 import { useRouter } from "expo-router";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Platform,
-  Dimensions,
-  Image,
-} from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ROUTE_PATH from "@/routes/route.constants";
 import STATIC from "@/utils/constants";
 
-const { width } = Dimensions.get("window");
-
 export default function NavigationTiles() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const tiles = [
     {
@@ -44,51 +37,52 @@ export default function NavigationTiles() {
   ];
 
   return (
-    <View className="my-5">
-      <View>
-        <Image
-          source={STATIC.IMAGES.APP.LOGO_FULL}
-          resizeMode="contain"
-          className="h-28 w-full mb-5"
-        />
+    <View
+      className="my-5 px-4"
+      style={{ paddingBottom: insets.bottom + 86 }} // Ensures it's not hidden under tab bar
+    >
+      <Image
+        source={STATIC.IMAGES.APP.LOGO_FULL}
+        resizeMode="contain"
+        className="h-28 w-full mb-5"
+      />
 
-        <View className="mb-5">
-          <Text className="text-2xl font-lexend-semibold text-black">
-            Quick Links
-          </Text>
-          <Text className="text-xl font-lexend text-brand-primary">
-            Explore our services
-          </Text>
-        </View>
+      <View className="mb-5">
+        <Text className="text-2xl font-lexend-semibold text-black">
+          Quick Links
+        </Text>
+        <Text className="text-xl font-lexend text-brand-primary">
+          Explore our services
+        </Text>
+      </View>
 
-        <View className="flex-row flex-wrap justify-between gap-4">
-          {tiles.map((tile, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => router.push(tile.path)}
-              activeOpacity={0.85}
-              className="bg-white rounded-2xl p-5 w-[48%]"
-            >
-              <View className="items-center justify-center mb-4">
-                <View className="w-16 h-16 rounded-full bg-brand-primary/10 items-center justify-center">
-                  <MaterialCommunityIcons
-                    name={tile.icon}
-                    size={36}
-                    color="#007AFF"
-                  />
-                </View>
+      <View className="flex-row flex-wrap justify-between">
+        {tiles.map((tile, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => router.push(tile.path)}
+            activeOpacity={0.85}
+            className="bg-white rounded-2xl p-5 mb-4"
+            style={{ flexBasis: "48%" }}
+          >
+            <View className="items-center justify-center mb-4">
+              <View className="w-16 h-16 rounded-full bg-brand-primary/10 items-center justify-center">
+                <MaterialCommunityIcons
+                  name={tile.icon}
+                  size={36}
+                  color="#007AFF"
+                />
               </View>
+            </View>
 
-              <Text className="text-center text-[15px] font-lexend-semibold text-black mb-1">
-                {tile.label}
-              </Text>
-
-              <Text className="text-center text-xs font-lexend text-brand-primary">
-                {tile.cta}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+            <Text className="text-center text-[15px] font-lexend-semibold text-black mb-1">
+              {tile.label}
+            </Text>
+            <Text className="text-center text-xs font-lexend text-brand-primary">
+              {tile.cta}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
     </View>
   );
