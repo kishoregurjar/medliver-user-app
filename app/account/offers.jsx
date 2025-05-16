@@ -29,8 +29,8 @@ const OffersScreen = () => {
   return (
     <AppLayout>
       {/* Header */}
-      <HeaderWithBack title="Offers" />
-      
+      <HeaderWithBack showBackButton title="Offers" />
+
       <View className="flex-1">
         {/* Scrollable Content */}
         <ScrollView

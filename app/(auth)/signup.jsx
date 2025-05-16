@@ -7,9 +7,7 @@ import Checkbox from "expo-checkbox";
 import { useRouter } from "expo-router";
 import { Button, ButtonText } from "@/components/ui/button";
 import { socialButtons } from "@/utils/constants";
-import { useAuthUser } from "@/contexts/AuthContext";
 import useAxios from "@/hooks/useAxios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TouchableOpacity } from "react-native";
 import FORM_VALIDATIONS from "@/libs/form-validations";
 import FormError from "@/components/inputs/FormError";
@@ -22,7 +20,6 @@ import AuthLayout from "@/components/layouts/AuthLayout";
 
 export default function SignupScreen() {
   const router = useRouter();
-  const { authUser } = useAuthUser();
 
   const {
     request: registerUser,
@@ -33,6 +30,8 @@ export default function SignupScreen() {
   const { showToast } = useAppToast();
 
   const [location, setLocation] = useState(null);
+  const [locationPermissionStatus, setLocationPermissionStatus] =
+    useState(null);
 
   const {
     control,
@@ -52,11 +51,26 @@ export default function SignupScreen() {
   });
 
   const onSubmit = async (payload) => {
+    // Ensure location permission is granted
+    let userLocation = location;
+
+    if (locationPermissionStatus !== "granted") {
+      userLocation = await requestLocation();
+      if (!userLocation) {
+        showToast(
+          "error",
+          "Location permission is required to continue. please allow location access."
+        );
+        return;
+      }
+    }
+
     delete payload.confirmPassword;
     delete payload.agree;
+
     const payloadToSend = {
       ...payload,
-      userCoordinates: location || { lat: 0, long: 0 },
+      userCoordinates: userLocation || { lat: 0, long: 0 },
     };
 
     const { data, error } = await registerUser({
@@ -65,11 +79,8 @@ export default function SignupScreen() {
       payload: payloadToSend,
     });
 
-    console.log("Signup response:", data, error);
-
     if (!error) {
       showToast("success", data.message || "User registered successfully.");
-
       if (data?.data?.isVerified === false) {
         router.push(
           generateDynamicRoute(
@@ -82,29 +93,31 @@ export default function SignupScreen() {
           )
         );
       }
-      // No navigation if already verified
     } else {
       showToast("error", error || "Something went wrong");
-      console.log(error || "Something went wrong");
     }
   };
 
+  const requestLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    setLocationPermissionStatus(status);
+
+    if (status !== "granted") {
+      console.warn("Permission to access location was denied");
+      return null;
+    }
+
+    const loc = await Location.getCurrentPositionAsync({});
+    const coords = {
+      lat: loc.coords.latitude,
+      long: loc.coords.longitude,
+    };
+    setLocation(coords);
+    return coords;
+  };
+
   useEffect(() => {
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.warn("Permission to access location was denied");
-        return;
-      }
-
-      console.log("registerUser", await AsyncStorage.getAllKeys());
-
-      const loc = await Location.getCurrentPositionAsync({});
-      setLocation({
-        lat: loc.coords.latitude,
-        long: loc.coords.longitude,
-      });
-    })();
+    requestLocation();
   }, []);
 
   return (

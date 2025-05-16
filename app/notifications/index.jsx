@@ -31,7 +31,7 @@ const notifications = [
 
 const tabs = ["All", "Unread", "Read"];
 
-export default function NotificationScreen() {
+export default function NotificationsScreen() {
   const [activeTab, setActiveTab] = useState("Unread");
 
   const counts = {

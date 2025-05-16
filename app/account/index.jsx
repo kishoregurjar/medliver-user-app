@@ -20,7 +20,7 @@ const accountOptions = [
   {
     label: "Notifications",
     icon: "notifications-outline",
-    path: "/account/notifications",
+    path: "/notifications",
   },
   { label: "Help", icon: "help-circle-outline", path: "/account/help" },
   {
