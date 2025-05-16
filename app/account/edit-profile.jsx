@@ -33,18 +33,6 @@ const fields = [
     placeholder: "Enter phone number",
     keyboardType: "numeric",
   },
-  {
-    name: "password",
-    label: "Password",
-    placeholder: "Enter new password",
-    type: "password",
-  },
-  {
-    name: "address",
-    label: "Address",
-    placeholder: "Enter address",
-    type: "textarea",
-  },
   { name: "height", label: "Height", placeholder: "e.g. 170 cm" },
   { name: "weight", label: "Weight", placeholder: "e.g. 70 kg" },
   {
@@ -83,7 +71,7 @@ export default function EditProfileScreen() {
   const onSubmit = async (payload) => {
     console.log("Payload:", payload);
     
-    const { error } = await editProfile({
+    const { data, error } = await editProfile({
       url: "/user/update-user-profile",
       method: "PATCH",
       authRequired: true,
@@ -107,7 +95,7 @@ export default function EditProfileScreen() {
 
       if (error) {
         console.error("Error fetching user profile:", error);
-        showToast("error", "Failed to load profile");
+        showToast("error", error || "Failed to load profile");
         return;
       }
 
@@ -119,7 +107,6 @@ export default function EditProfileScreen() {
           fullName: user.fullName || null,
           email: user.email || null,
           phoneNumber: user.phoneNumber || null,
-          address: user.address || null,
           height: user.height || null,
           weight: user.weight || null,
           bloodGroup: user.bloodGroup || null,
