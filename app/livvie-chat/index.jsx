@@ -1,5 +1,3 @@
-// app/livvie-chat.tsx
-
 import {
   View,
   Text,
@@ -33,7 +31,7 @@ export default function LivvieChatScreen() {
     const botReply = {
       id: (Date.now() + 1).toString(),
       sender: "bot",
-      text: "Thanks! I’ll get back to you shortly 🧠",
+      text: "Thanks! I’ll get back to you shortly 🧠. We're Working on it. Stay Tuned.",
     };
 
     setMessages((prev) => [...prev, userMsg, botReply]);
@@ -55,6 +53,7 @@ export default function LivvieChatScreen() {
                   ? "bg-brand-primary self-end"
                   : "bg-background-soft self-start"
               }`}
+              key={item._id}
             >
               <Text
                 className={`text-base ${

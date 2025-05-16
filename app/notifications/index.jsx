@@ -47,7 +47,7 @@ export default function NotificationsScreen() {
   });
 
   return (
-    <AppLayout>
+    <AppLayout scroll={false}>
       {/* Header */}
       <HeaderWithBack
         showBackButton
