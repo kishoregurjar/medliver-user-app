@@ -16,7 +16,7 @@ const specialOffers = [
     buttonText: "Book Now",
     image: STATIC.IMAGES.COMPONENTS.PROMO_PATHOLOGY,
     className:
-      "p-5 bg-brand-primary rounded-2xl flex-row justify-between items-center",
+      "p-5 bg-brand-primary/80 rounded-2xl flex-row justify-between items-center",
   },
   {
     title: "Liver Function Test (LFT)",

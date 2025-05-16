@@ -45,7 +45,7 @@ const SpecialOfferPharmacy = () => {
   };
 
   const bgColors = [
-    "bg-brand-primary",
+    "bg-brand-primary/80",
     "bg-accent-royalBlue",
     "bg-accent-maroon",
     "bg-brand-secondary",
