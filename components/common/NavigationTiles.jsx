@@ -39,7 +39,7 @@ export default function NavigationTiles() {
   return (
     <View
       className="my-5 px-4"
-      style={{ paddingBottom: insets.bottom + 86 }} // Ensures it's not hidden under tab bar
+      // style={{ paddingBottom: insets.bottom + 86 }} // Ensures it's not hidden under tab bar
     >
       <Image
         source={STATIC.IMAGES.APP.LOGO_FULL}
