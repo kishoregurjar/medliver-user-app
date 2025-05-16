@@ -106,7 +106,7 @@ const CustomTabBar = () => {
   );
 };
 
-export default function TabsLayout() {
+export default function HomeLayout() {
   return (
     <>
       <Tabs
