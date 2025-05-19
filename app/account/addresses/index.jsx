@@ -11,15 +11,18 @@ import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import { MaterialIcons } from "@expo/vector-icons";
 import useAxios from "@/hooks/useAxios";
-import { Swipeable } from "react-native-gesture-handler";
 import { useRouter } from "expo-router";
 
 export default function MyAddressesScreen() {
   const [addresses, setAddresses] = useState([]);
   const [defaultAddressId, setDefaultAddressId] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   const { request: getAllAddresses, loading: loadingAddresses } = useAxios();
+  const { request: deleteAddress } = useAxios();
+  const { request: setDefaultAddress } = useAxios();
 
   const fetchUserAddresses = async () => {
     const { data, error } = await getAllAddresses({
@@ -40,9 +43,24 @@ export default function MyAddressesScreen() {
     }
   };
 
-  const handleSetDefault = (id) => {
+  const handleSetDefault = async (id) => {
+    if (id === defaultAddressId) return;
+
+    setLoading(true);
+    const { error } = await setDefaultAddress({
+      url: `/user/set-default-address/${id}`,
+      method: "PUT",
+      authRequired: true,
+    });
+    setLoading(false);
+
+    if (error) {
+      Alert.alert("Failed", "Could not set default address.");
+      return;
+    }
+
     setDefaultAddressId(id);
-    // Call API to update default address here
+    fetchUserAddresses();
   };
 
   const handleDelete = (id) => {
@@ -54,9 +72,22 @@ export default function MyAddressesScreen() {
         {
           text: "Delete",
           style: "destructive",
-          onPress: () => {
+          onPress: async () => {
+            const original = [...addresses];
             setAddresses((prev) => prev.filter((addr) => addr.id !== id));
-            // Call API to delete address here
+
+            const { error } = await deleteAddress({
+              url: `/user/delete-address/${id}`,
+              method: "DELETE",
+              authRequired: true,
+            });
+
+            if (error) {
+              setAddresses(original); // rollback
+              Alert.alert("Failed", "Could not delete address.");
+            } else {
+              fetchUserAddresses();
+            }
           },
         },
       ]
@@ -66,15 +97,6 @@ export default function MyAddressesScreen() {
   useEffect(() => {
     fetchUserAddresses();
   }, []);
-
-  const renderRightActions = (id) => (
-    <TouchableOpacity
-      onPress={() => handleDelete(id)}
-      className="bg-red-500 justify-center items-center w-20 rounded-r-3xl"
-    >
-      <MaterialIcons name="delete" size={24} color="white" />
-    </TouchableOpacity>
-  );
 
   return (
     <AppLayout>
@@ -96,52 +118,57 @@ export default function MyAddressesScreen() {
       ) : (
         <ScrollView className="px-4 pt-4 pb-20 space-y-4">
           {addresses.map((addr) => (
-            <Swipeable
-              key={addr.id}
-              renderRightActions={() => renderRightActions(addr.id)}
+            <View
+              key={addr._id}
+              className="bg-white rounded-3xl p-5 shadow-sm border border-gray-200 space-y-2"
             >
-              <View className="bg-white rounded-3xl p-5 shadow-sm border border-gray-200 space-y-2">
-                <View className="flex-row items-center space-x-2 mb-2">
-                  <MaterialIcons name="location-on" size={20} color="#5C59FF" />
-                  <Text className="text-base font-semibold text-gray-800">
-                    {addr.label}
-                  </Text>
-                  {defaultAddressId === addr.id && (
-                    <View className="ml-2 bg-indigo-100 px-2 py-0.5 rounded-full">
-                      <Text className="text-xs text-indigo-600 font-medium">
-                        Default
-                      </Text>
-                    </View>
-                  )}
-                </View>
-                <Text className="text-sm text-gray-700">
-                  {addr.addressLine}
+              <View className="flex-row items-center space-x-2 mb-2">
+                <MaterialIcons name="location-on" size={20} color="#5C59FF" />
+                <Text className="text-base font-semibold text-gray-800">
+                  {addr.label}
                 </Text>
-                <Text className="text-sm text-gray-700">
-                  {addr.city}, {addr.state} - {addr.pincode}
-                </Text>
-                <Text className="text-sm text-gray-700">📞 {addr.phone}</Text>
-
-                <View className="flex-row justify-end pt-2 space-x-3">
-                  <TouchableOpacity
-                    className="px-4 py-1 rounded-xl bg-gray-100"
-                    onPress={() => router.push(`/edit-address/${addr.id}`)}
-                  >
-                    <Text className="text-sm text-gray-600">Edit</Text>
-                  </TouchableOpacity>
-                  {defaultAddressId !== addr.id && (
-                    <TouchableOpacity
-                      className="px-4 py-1 rounded-xl bg-indigo-100"
-                      onPress={() => handleSetDefault(addr.id)}
-                    >
-                      <Text className="text-sm text-indigo-600">
-                        Set Default
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
+                {defaultAddressId === addr._id && (
+                  <View className="ml-2 bg-indigo-100 px-2 py-0.5 rounded-full">
+                    <Text className="text-xs text-indigo-600 font-medium">
+                      Default
+                    </Text>
+                  </View>
+                )}
               </View>
-            </Swipeable>
+              <Text className="text-sm text-gray-700">{addr.addressLine}</Text>
+              <Text className="text-sm text-gray-700">
+                {addr.city}, {addr.state} - {addr.pincode}
+              </Text>
+              <Text className="text-sm text-gray-700">📞 {addr.phone}</Text>
+
+              <View className="flex-row justify-end pt-2 space-x-3">
+                <TouchableOpacity
+                  className="px-4 py-1 rounded-xl bg-gray-100"
+                  onPress={() => router.push(`/edit-address/${addr._id}`)}
+                >
+                  <Text className="text-sm text-gray-600">Edit</Text>
+                </TouchableOpacity>
+
+                {defaultAddressId !== addr._id && (
+                  <TouchableOpacity
+                    className="px-4 py-1 rounded-xl bg-indigo-100"
+                    onPress={() => handleSetDefault(addr._id)}
+                    disabled={loading}
+                  >
+                    <Text className="text-sm text-indigo-600">
+                      {loading ? "Setting..." : "Set Default"}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity
+                  className="px-3 py-1 rounded-xl bg-red-100"
+                  onPress={() => handleDelete(addr._id)}
+                >
+                  <MaterialIcons name="delete" size={18} color="#dc2626" />
+                </TouchableOpacity>
+              </View>
+            </View>
           ))}
         </ScrollView>
       )}

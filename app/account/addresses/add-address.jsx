@@ -78,6 +78,9 @@ export default function AddAddressScreen() {
     reset,
     formState: { errors },
   } = useForm({
+    defaultValues: {
+      is_default: false,
+    },
     resolver: yupResolver(schema),
     mode: "onChange",
   });
@@ -88,7 +91,7 @@ export default function AddAddressScreen() {
       ...formData,
       location: {
         lat: 22.69992214152458,
-        lng: 75.83582576647855,
+        long: 75.83582576647855,
       },
     };
 
@@ -96,7 +99,7 @@ export default function AddAddressScreen() {
       url: "/user/add-address",
       method: "POST",
       authRequired: true,
-      data: payload,
+      payload: payload,
     });
 
     if (error) {
