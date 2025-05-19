@@ -44,6 +44,7 @@ export default function LoginScreen() {
   });
 
   const onSubmit = async (payload) => {
+    delete payload.remember;
     const { data, error } = await loginUser({
       url: "/user/user-login",
       method: "POST",
@@ -86,7 +87,11 @@ export default function LoginScreen() {
             control={control}
             name="remember"
             render={({ field: { value, onChange } }) => (
-              <Checkbox value={value} onValueChange={onChange} />
+              <Checkbox
+                value={value}
+                onValueChange={onChange}
+                color={value ? "#B31F24" : undefined}
+              />
             )}
           />
           <Text className="ml-2 text-sm text-gray-700">Remember me</Text>

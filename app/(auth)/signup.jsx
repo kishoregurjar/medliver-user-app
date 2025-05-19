@@ -141,7 +141,7 @@ export default function SignupScreen() {
               <Checkbox
                 value={value}
                 onValueChange={onChange}
-                color={value ? "#E55150" : undefined}
+                color={value ? "#B31F24" : undefined}
                 className="mr-4"
               />
             )}

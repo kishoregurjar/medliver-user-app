@@ -1,6 +1,6 @@
 import React from "react";
-import { ScrollView, View, Text, TouchableOpacity, Switch } from "react-native";
-import { useForm, Controller } from "react-hook-form";
+import { ScrollView, Text, TouchableOpacity } from "react-native";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import AppLayout from "@/components/layouts/AppLayout";
@@ -29,7 +29,7 @@ const addressFields = [
     label: "Address Type",
     name: "address_type",
     placeholder: "Select address type",
-    type: "select",
+    type: "radio",
     options: [
       { label: "Home", value: "home" },
       { label: "Work", value: "work" },
@@ -58,18 +58,24 @@ const addressFields = [
     name: "country",
     placeholder: "Enter country",
   },
+  {
+    label: "Default Address",
+    name: "is_default",
+    type: "checkbox",
+  },
 ];
 
 export default function AddAddressScreen() {
   const router = useRouter();
   const { showToast } = useAppToast();
-  const { request: addAddress, loading } = useAxios();
+  const { request: addAddress, loading: isLoading } = useAxios();
 
   const {
     control,
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -77,6 +83,7 @@ export default function AddAddressScreen() {
   });
 
   const onSubmit = async (formData) => {
+    console.log("Payload:", formData);
     const payload = {
       ...formData,
       location: {
@@ -95,7 +102,7 @@ export default function AddAddressScreen() {
     if (error) {
       showToast("error", error || "Failed to add address");
     } else {
-      showToast("success", "Address added successfully!");
+      showToast("success", data.message || "Address added successfully!");
       router.back();
     }
   };
@@ -110,29 +117,15 @@ export default function AddAddressScreen() {
           fields={addressFields}
         />
 
-        {/* Default Address Toggle */}
-        <Controller
-          control={control}
-          name="is_default"
-          render={({ field: { value, onChange } }) => (
-            <View className="flex-row items-center justify-between my-4">
-              <Text className="text-sm font-medium text-gray-700">
-                Set as Default Address
-              </Text>
-              <Switch value={value} onValueChange={onChange} />
-            </View>
-          )}
-        />
-
         <TouchableOpacity
-          disabled={loading}
+          disabled={isLoading}
           onPress={handleSubmit(onSubmit)}
           className={`bg-brand-primary mt-4 py-3 rounded-xl ${
-            loading ? "opacity-50" : ""
+            isLoading ? "opacity-50" : ""
           }`}
         >
           <Text className="text-white text-center font-semibold">
-            {loading ? "Saving..." : "Save Address"}
+            {isLoading ? "Saving..." : "Save Address"}
           </Text>
         </TouchableOpacity>
       </ScrollView>
