@@ -1,56 +1,14 @@
 import React, { useEffect } from "react";
 import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import AppLayout from "@/components/layouts/AppLayout";
 import { useAppToast } from "@/hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import useAxios from "@/hooks/useAxios";
-
-// ✅ Validation schema
-const schema = yup.object().shape({
-  fullName: yup.string().required("Full name is required"),
-  email: yup.string().email("Invalid email").required("Email is required"),
-  phoneNumber: yup
-    .string()
-    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
-    .required("Phone number is required"),
-});
-
-const fields = [
-  { name: "fullName", label: "Full Name", placeholder: "Enter full name" },
-  {
-    name: "email",
-    label: "Email",
-    placeholder: "Enter email",
-    keyboardType: "email-address",
-  },
-  {
-    name: "phoneNumber",
-    label: "Phone Number",
-    placeholder: "Enter phone number",
-    keyboardType: "numeric",
-  },
-  { name: "height", label: "Height", placeholder: "e.g. 170 cm" },
-  { name: "weight", label: "Weight", placeholder: "e.g. 70 kg" },
-  {
-    name: "bloodGroup",
-    label: "Blood Group",
-    type: "select",
-    options: [
-      { label: "A+", value: "A+" },
-      { label: "A-", value: "A-" },
-      { label: "B+", value: "B+" },
-      { label: "B-", value: "B-" },
-      { label: "O+", value: "O+" },
-      { label: "O-", value: "O-" },
-      { label: "AB+", value: "AB+" },
-      { label: "AB-", value: "AB-" },
-    ],
-  },
-];
+import FORM_VALIDATIONS from "@/libs/form-validations";
+import FORM_FIELD_TYPES from "@/libs/form-field-types";
 
 export default function EditProfileScreen() {
   const { showToast } = useAppToast();
@@ -61,7 +19,7 @@ export default function EditProfileScreen() {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(FORM_VALIDATIONS.EDIT_PROFILE),
     mode: "onChange",
   });
 
@@ -70,7 +28,7 @@ export default function EditProfileScreen() {
 
   const onSubmit = async (payload) => {
     console.log("Payload:", payload);
-    
+
     const { data, error } = await editProfile({
       url: "/user/update-user-profile",
       method: "PATCH",
@@ -102,7 +60,7 @@ export default function EditProfileScreen() {
       if (data?.data) {
         const user = data.data;
         console.log("User Profile:", user);
-        
+
         reset({
           fullName: user.fullName || null,
           email: user.email || null,
@@ -129,7 +87,7 @@ export default function EditProfileScreen() {
           <>
             {/* skeleton with nativewind */}
             <View className="animate-pulse">
-              {fields.map((_, index) => (
+              {FORM_FIELD_TYPES.EDIT_PROFILE.map((_, index) => (
                 <View key={index} className="my-2">
                   <View className="h-4 bg-gray-300 rounded w-32 mb-2" />
                   <View className="h-12 bg-gray-200 rounded" />
@@ -142,7 +100,7 @@ export default function EditProfileScreen() {
             <FormFieldRenderer
               control={control}
               errors={errors}
-              fields={fields}
+              fields={FORM_FIELD_TYPES.EDIT_PROFILE}
             />
 
             <TouchableOpacity

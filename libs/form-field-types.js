@@ -79,6 +79,64 @@ const FORM_FIELD_TYPES = {
       placeholder: "Confirm Your Password",
     },
   ],
+  CHANGE_PASSWORD: [
+    {
+      name: "oldPassword",
+      type: "password",
+      label: "Old Password",
+      placeholder: "Enter Old password",
+      keyboardType: "default",
+      secureTextEntry: true,
+    },
+    {
+      name: "newPassword",
+      type: "password",
+      label: "New Password",
+      placeholder: "Enter new password",
+      keyboardType: "default",
+      secureTextEntry: true,
+    },
+    {
+      name: "confirmPassword",
+      type: "password",
+      label: "Confirm New Password",
+      placeholder: "Re-enter new password",
+      keyboardType: "default",
+      secureTextEntry: true,
+    },
+  ],
+  EDIT_PROFILE: [
+    { name: "fullName", label: "Full Name", placeholder: "Enter full name" },
+    {
+      name: "email",
+      label: "Email",
+      placeholder: "Enter email",
+      keyboardType: "email-address",
+    },
+    {
+      name: "phoneNumber",
+      label: "Phone Number",
+      placeholder: "Enter phone number",
+      keyboardType: "numeric",
+    },
+    { name: "height", label: "Height", placeholder: "e.g. 170 cm" },
+    { name: "weight", label: "Weight", placeholder: "e.g. 70 kg" },
+    {
+      name: "bloodGroup",
+      label: "Blood Group",
+      type: "select",
+      options: [
+        { label: "A+", value: "A+" },
+        { label: "A-", value: "A-" },
+        { label: "B+", value: "B+" },
+        { label: "B-", value: "B-" },
+        { label: "O+", value: "O+" },
+        { label: "O-", value: "O-" },
+        { label: "AB+", value: "AB+" },
+        { label: "AB-", value: "AB-" },
+      ],
+    },
+  ],
   INSURANCE_ENQUIRY: [
     {
       name: "full_name",
@@ -253,7 +311,7 @@ const FORM_FIELD_TYPES = {
       placeholder: "Describe your health problem",
       type: "text",
     },
-  ]
+  ],
 };
 
 export default FORM_FIELD_TYPES;

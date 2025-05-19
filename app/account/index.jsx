@@ -75,17 +75,27 @@ const AccountScreen = () => {
           </Text>
 
           {authUser && authUser.isAuthenticated ? (
-            <TouchableOpacity
-              className="px-5 py-2 mt-4 bg-indigo-100 rounded-lg"
-              activeOpacity={0.8}
-              onPress={() => {
-                router.push("/account/edit-profile");
-              }}
-            >
-              <Text className="text-sm font-medium text-indigo-600">
-                Edit Profile
-              </Text>
-            </TouchableOpacity>
+            <View className="flex-row justify-between mt-4 gap-x-4 px-5">
+              <TouchableOpacity
+                className="flex-1 py-3 bg-indigo-100 rounded-xl items-center"
+                activeOpacity={0.85}
+                onPress={() => router.push("/account/edit-profile")}
+              >
+                <Text className="text-sm font-semibold text-indigo-600">
+                  Edit Profile
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-1 py-3 bg-indigo-600 rounded-xl items-center"
+                activeOpacity={0.85}
+                onPress={() => router.push("/account/change-password")}
+              >
+                <Text className="text-sm font-semibold text-white">
+                  Change Password
+                </Text>
+              </TouchableOpacity>
+            </View>
           ) : (
             <TouchableOpacity
               className="px-5 py-2 mt-4 bg-indigo-100 rounded-lg"
@@ -142,7 +152,7 @@ const AccountScreen = () => {
           <>
             <View className="h-px bg-gray-200 mt-4" />
 
-            <View className="w-full mt-0 rounded-3xl bg-brand-primary/90 absolute bottom-0">
+            <View className="w-full mt-0 rounded-2xl bg-brand-primary/90 absolute bottom-0">
               <TouchableOpacity
                 className="flex-row items-center justify-between p-3 rounded-xl"
                 activeOpacity={0.7}

@@ -43,7 +43,7 @@ const Header = () => {
           search: { to: ROUTE_PATH.APP.SEARCH.INDEX, clearStack: false },
           cart: { to: ROUTE_PATH.APP.CART.INDEX, clearStack: false },
           notification: {
-            to: ROUTE_PATH.APP.NOTIFICATION.INDEX,
+            to: ROUTE_PATH.APP.NOTIFICATIONS.INDEX,
             clearStack: false,
           },
         }}
