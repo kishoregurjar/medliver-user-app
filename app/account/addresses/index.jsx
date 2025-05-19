@@ -124,10 +124,10 @@ export default function MyAddressesScreen() {
             >
               <View className="flex-row items-center space-x-2 mb-2">
                 <MaterialIcons name="location-on" size={20} color="#5C59FF" />
-                <Text className="text-base font-semibold text-gray-800">
-                  {addr.label}
+                <Text className="text-base font-semibold text-gray-800 capitalize">
+                  {addr.address_type}
                 </Text>
-                {defaultAddressId === addr._id && (
+                {addr.is_default && (
                   <View className="ml-2 bg-indigo-100 px-2 py-0.5 rounded-full">
                     <Text className="text-xs text-indigo-600 font-medium">
                       Default
@@ -135,11 +135,14 @@ export default function MyAddressesScreen() {
                   </View>
                 )}
               </View>
-              <Text className="text-sm text-gray-700">{addr.addressLine}</Text>
+
+              <Text className="text-sm text-gray-700">
+                {addr.house_number}, {addr.street}, {addr.landmark}
+              </Text>
               <Text className="text-sm text-gray-700">
                 {addr.city}, {addr.state} - {addr.pincode}
               </Text>
-              <Text className="text-sm text-gray-700">📞 {addr.phone}</Text>
+              <Text className="text-sm text-gray-700">{addr.country}</Text>
 
               <View className="flex-row justify-end pt-2 space-x-3">
                 <TouchableOpacity
@@ -149,7 +152,7 @@ export default function MyAddressesScreen() {
                   <Text className="text-sm text-gray-600">Edit</Text>
                 </TouchableOpacity>
 
-                {defaultAddressId !== addr._id && (
+                {!addr.is_default && (
                   <TouchableOpacity
                     className="px-4 py-1 rounded-xl bg-indigo-100"
                     onPress={() => handleSetDefault(addr._id)}
