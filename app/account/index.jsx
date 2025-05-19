@@ -17,6 +17,7 @@ const accountOptions = [
     icon: "medkit-outline",
     path: "/account/prescriptions",
   },
+  { label: "My Addresses", icon: "home-outline", path: "/account/addresses" },
   {
     label: "Notifications",
     icon: "notifications-outline",

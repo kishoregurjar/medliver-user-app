@@ -45,7 +45,7 @@ const CustomTabBar = () => {
       name: "account",
       icon: "person-outline",
       label: "Account",
-      badge: notificationCount,
+      // badge: notificationCount,
       path: ROUTE_PATH.APP.ACCOUNT.INDEX,
     },
   ];

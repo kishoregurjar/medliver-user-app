@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
   ScrollView,
-  Linking,
+  TextInput,
+  TouchableOpacity,
   LayoutAnimation,
   Platform,
   UIManager,
+  Linking,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { FontAwesome, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
 // Enable LayoutAnimation for Android
 if (
@@ -24,27 +26,37 @@ if (
 const faqs = [
   {
     question: "How do I reset my password?",
-    answer:
-      "Go to 'Settings' > 'Change Password' and follow the steps to reset your password.",
+    answer: "Go to 'Settings' > 'Change Password' and follow the steps.",
   },
   {
     question: "How can I track my order?",
-    answer:
-      "Go to 'My Orders' from the main menu to view real-time updates on your orders.",
+    answer: "Go to 'My Orders' to view real-time updates.",
   },
   {
-    question: "How do I contact customer support?",
-    answer:
-      "Visit the Help section and click 'Contact Support' to start a chat or send an email.",
-  },
-  {
-    question: "Where can I view my prescriptions?",
-    answer:
-      "Navigate to 'My Prescriptions' from your dashboard to access all prescriptions.",
+    question: "How do I contact support?",
+    answer: "Tap 'Contact Support' below to start a chat or email.",
   },
 ];
 
-const HelpScreen = () => {
+const otherTopics = [
+  {
+    title: "Payment & Transfers",
+    icon: "credit-card",
+    onPress: () => console.log("Payment help tapped"),
+  },
+  {
+    title: "Cards & Account",
+    icon: "account-balance",
+    onPress: () => console.log("Cards help tapped"),
+  },
+  {
+    title: "Call Support",
+    icon: "phone-in-talk",
+    onPress: () => Linking.openURL("tel:+1234567890"),
+  },
+];
+
+export default function HelpScreen() {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   const toggleExpand = (index) => {
@@ -56,26 +68,54 @@ const HelpScreen = () => {
     <AppLayout>
       <HeaderWithBack showBackButton title="Help & Support" />
 
-      <ScrollView className="flex-1 pt-6 pb-10 space-y-2">
-        {/* Help Center (FAQ) */}
-        <View className="bg-white p-5 rounded-2xl space-y-4">
-          <Text className="text-xl font-semibold text-gray-900">
-            Help Center
+      <ScrollView className="flex-1 pt-4 pb-10 gap-4">
+        {/* Greeting */}
+        <View className="px-4 mb-4">
+          <Text className="text-2xl font-lexend-bold text-gray-900">
+            Hi there 👋
           </Text>
-          <Text className="text-sm text-gray-600 mb-1">
-            Frequently asked questions to get you started.
+          <Text className="text-base font-lexend text-gray-600">
+            How can we help you today?
           </Text>
+        </View>
 
+        {/* Search Bar */}
+        <View className="bg-white px-4 py-3 mb-4 rounded-2xl flex-row items-center">
+          <Ionicons name="search" size={20} color="#6B7280" />
+          <TextInput
+            placeholder="Search help articles..."
+            placeholderTextColor="#6B7280"
+            className="ml-2 flex-1 text-base text-gray-800"
+          />
+        </View>
+
+        {/* Priority Support Banner */}
+        <TouchableOpacity activeOpacity={0.7} className="mb-4">
+          <LinearGradient
+            colors={["#6B73FF", "#000DFF"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            className="rounded-2xl p-5"
+          >
+            <Text className="text-white text-lg font-semibold">
+              🎯 Priority Support
+            </Text>
+            <Text className="text-white text-sm mt-1">
+              Get instant help from our support experts.
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+
+        {/* Popular Questions */}
+        <View className="bg-white p-5 mb-4 rounded-3xl shadow-sm gap-4">
+          <Text className="text-lg font-bold text-gray-900">
+            Popular Questions
+          </Text>
           {faqs.map((faq, index) => (
-            <View
-              key={index}
-              className="border border-gray-200 rounded-xl overflow-hidden"
-            >
+            <View key={index} className="border border-gray-200 rounded-2xl">
               <TouchableOpacity
                 onPress={() => toggleExpand(index)}
-                className="flex-row justify-between items-center px-4 py-3 bg-gray-50"
-                accessibilityRole="button"
-                accessibilityLabel={faq.question}
+                className="flex-row justify-between items-center px-4 py-4 bg-gray-50 rounded-2xl"
               >
                 <Text className="text-base font-medium text-gray-800 flex-1 pr-3">
                   {faq.question}
@@ -83,11 +123,11 @@ const HelpScreen = () => {
                 <MaterialIcons
                   name={expandedIndex === index ? "expand-less" : "expand-more"}
                   size={24}
-                  color="#6E6A7C"
+                  color="#6B7280"
                 />
               </TouchableOpacity>
               {expandedIndex === index && (
-                <View className="px-4 pb-4 pt-1 bg-white">
+                <View className="px-4 pb-4 pt-1 bg-white rounded-b-2xl">
                   <Text className="text-sm text-gray-600 leading-relaxed">
                     {faq.answer}
                   </Text>
@@ -97,59 +137,25 @@ const HelpScreen = () => {
           ))}
         </View>
 
-        {/* Contact Us */}
-        <View className="bg-white p-5 rounded-2xl space-y-5">
-          <Text className="text-xl font-semibold text-gray-900">
-            Contact Us
-          </Text>
-          <Text className="text-sm text-gray-600">
-            Need more help? Reach out via the options below:
-          </Text>
-
-          <TouchableOpacity
-            onPress={() => Linking.openURL("tel:+1234567890")}
-            className="flex-row items-center space-x-3 bg-indigo-50 p-3 rounded-xl"
-          >
-            <MaterialIcons name="phone" size={20} color="#5C59FF" />
-            <Text className="text-base text-gray-800">+1 234 567 890</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => Linking.openURL("mailto:support@healthapp.com")}
-            className="flex-row items-center space-x-3 bg-indigo-50 p-3 rounded-xl"
-          >
-            <MaterialIcons name="email" size={20} color="#5C59FF" />
-            <Text className="text-base text-gray-800">
-              support@healthapp.com
-            </Text>
-          </TouchableOpacity>
-
-          <View className="flex-row items-center space-x-4">
-            <TouchableOpacity
-              onPress={() => Linking.openURL("https://facebook.com")}
-            >
-              <FontAwesome name="facebook-square" size={28} color="#1877F2" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => Linking.openURL("https://twitter.com")}
-            >
-              <FontAwesome name="twitter-square" size={28} color="#1DA1F2" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => Linking.openURL("https://instagram.com")}
-            >
-              <FontAwesome name="instagram" size={28} color="#E1306C" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => Linking.openURL("https://linkedin.com")}
-            >
-              <FontAwesome name="linkedin-square" size={28} color="#0A66C2" />
-            </TouchableOpacity>
+        {/* Other Topics */}
+        <View className="bg-white p-5 mb-4 rounded-3xl shadow-sm">
+          <Text className="text-lg font-bold text-gray-900">Other Topics</Text>
+          <View className="flex-row flex-wrap justify-between">
+            {otherTopics.map((topic, idx) => (
+              <TouchableOpacity
+                key={idx}
+                onPress={topic.onPress}
+                className="w-[48%] bg-white p-4 mb-3 rounded-2xl shadow-sm items-start"
+              >
+                <MaterialIcons name={topic.icon} size={24} color="#5C59FF" />
+                <Text className="mt-3 text-base font-medium text-gray-800">
+                  {topic.title}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
       </ScrollView>
     </AppLayout>
   );
-};
-
-export default HelpScreen;
+}

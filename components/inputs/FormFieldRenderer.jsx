@@ -56,7 +56,7 @@ const FormFieldRenderer = ({ control, errors, fields }) => {
                     </View>
                   ) : field.type === "select" ||
                     field.type === "multiselect" ? (
-                    <View className="border border-background-soft rounded-lg">
+                    <View className="bg-white border border-background-soft rounded-lg">
                       <Picker
                         selectedValue={value}
                         onValueChange={(val) => {
