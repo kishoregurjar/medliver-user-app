@@ -8,6 +8,7 @@ import { useRouter } from "expo-router";
 import { useAuthUser } from "@/contexts/AuthContext";
 import { useAppToast } from "@/hooks/useAppToast";
 import ROUTE_PATH from "@/routes/route.constants";
+import { Avatar, AvatarFallbackText, AvatarImage } from "@/components/ui/avatar";
 
 const accountOptions = [
   { label: "My Wallet", icon: "wallet-outline", path: "/account/wallet" },
@@ -45,7 +46,7 @@ const AccountScreen = () => {
   const { authUser } = useAuthUser();
 
   const user = authUser?.user;
-  const userImage = user?.profilePicture || "https://i.pravatar.cc/150?img=12";
+  const userProfilePicture = user?.profilePicture || null;
   const userName = user?.fullName || "Guest User";
 
   const handleLogout = async () => {
@@ -67,10 +68,15 @@ const AccountScreen = () => {
       <View className="flex-1 relative pb-20">
         {/* User Info */}
         <View className="items-center mt-8 mb-4 space-y-3">
-          <Image
-            source={{ uri: userImage }}
-            className="w-24 h-24 rounded-full border-4 border-white shadow-md"
-          />
+          <Avatar size='xl' className="mr-3">
+            {userProfilePicture ? (
+              <AvatarImage source={{ uri: userProfilePicture }} />
+            ) : (
+              <AvatarFallbackText className="text-2xl font-lexend-bold text-white">
+                {userName.charAt(0).toUpperCase()}
+              </AvatarFallbackText>
+            )}
+          </Avatar>
           <Text className="text-xl font-semibold text-gray-900">
             {userName}
           </Text>

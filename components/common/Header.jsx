@@ -26,8 +26,8 @@ const Header = () => {
 
   const user = authUser?.user;
   const isGuest = !user;
-  const name = user?.fullName || "Guest";
-  const profileImage = user?.profilePicture;
+  const userName = user?.fullName || "Guest";
+  const userProfilePicture = user?.profilePicture;
 
   useEffect(() => {
     if (returnedAddress) setSelectedAddress(returnedAddress);
@@ -96,18 +96,18 @@ const Header = () => {
       {/* Greeting */}
       <View className="flex-row items-center mb-5">
         <Avatar size="md" className="mr-3">
-          {profileImage ? (
-            <AvatarImage source={{ uri: profileImage }} />
+          {userProfilePicture ? (
+            <AvatarImage source={{ uri: userProfilePicture }} />
           ) : (
             <AvatarFallbackText className="text-2xl font-lexend-bold text-white">
-              {name.charAt(0).toUpperCase()}
+              {userName.charAt(0).toUpperCase()}
             </AvatarFallbackText>
           )}
         </Avatar>
 
         <View>
           <Text className="text-lg font-lexend-bold text-black">
-            {isGuest ? "Hi Guest!" : `Hi ${name.split(" ")[0]}!`}
+            {isGuest ? "Hi Guest!" : `Hi ${userName.split(" ")[0]}!`}
           </Text>
           <Text className="text-sm font-lexend text-gray-500">
             How can I help you today?
