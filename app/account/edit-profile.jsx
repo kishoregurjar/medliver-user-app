@@ -9,6 +9,7 @@ import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import useAxios from "@/hooks/useAxios";
 import FORM_VALIDATIONS from "@/libs/form-validations";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
+import SkeletonFormField from "@/components/skeletons/SkeletonFormField";
 
 export default function EditProfileScreen() {
   const { showToast } = useAppToast();
@@ -85,15 +86,9 @@ export default function EditProfileScreen() {
       >
         {isLoading ? (
           <>
-            {/* skeleton with nativewind */}
-            <View className="animate-pulse">
-              {FORM_FIELD_TYPES.EDIT_PROFILE.map((_, index) => (
-                <View key={index} className="my-2">
-                  <View className="h-4 bg-gray-300 rounded w-32 mb-2" />
-                  <View className="h-12 bg-gray-200 rounded" />
-                </View>
-              ))}
-            </View>{" "}
+            {FORM_FIELD_TYPES.EDIT_PROFILE.map((_, index) => (
+              <SkeletonFormField key={index} />
+            ))}
           </>
         ) : (
           <>

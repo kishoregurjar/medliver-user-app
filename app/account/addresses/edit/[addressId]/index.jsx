@@ -15,6 +15,7 @@ import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import useAxios from "@/hooks/useAxios";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useAppToast } from "@/hooks/useAppToast";
+import SkeletonFormField from "@/components/skeletons/SkeletonFormField";
 
 const schema = yup.object().shape({
   address_type: yup.string().required("Address type is required"),
@@ -151,12 +152,11 @@ export default function EditAddressScreen() {
       <HeaderWithBack showBackButton title="Edit Address" />
 
       {fetching ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#5C59FF" />
-          <Text className="text-sm text-gray-600 mt-2">
-            Fetching address...
-          </Text>
-        </View>
+        <>
+          {addressFields.map((_, index) => (
+            <SkeletonFormField key={index} />
+          ))}
+        </>
       ) : (
         <ScrollView className="px-4 py-6" keyboardShouldPersistTaps="handled">
           <FormFieldRenderer
