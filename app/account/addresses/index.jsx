@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
@@ -17,10 +18,6 @@ export default function MyAddressesScreen() {
   const { request: deleteAddress, loading: deleting } = useAxios();
   const { request: setDefaultAddress, loading: settingDefaultLoading } =
     useAxios();
-
-  useEffect(() => {
-    fetchUserAddresses();
-  }, []);
 
   const fetchUserAddresses = async () => {
     const { data, error } = await getAllAddresses({
@@ -103,6 +100,12 @@ export default function MyAddressesScreen() {
       ]
     );
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserAddresses(); // Refetch on screen focus
+    }, [])
+  );
 
   return (
     <AppLayout>
