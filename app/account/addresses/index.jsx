@@ -48,9 +48,10 @@ export default function MyAddressesScreen() {
 
     setLoading(true);
     const { error } = await setDefaultAddress({
-      url: `/user/set-default-address/${id}`,
+      url: `/user/set-default-address`,
       method: "PUT",
       authRequired: true,
+      payload: { addressId: id },
     });
     setLoading(false);
 
@@ -77,9 +78,10 @@ export default function MyAddressesScreen() {
             setAddresses((prev) => prev.filter((addr) => addr.id !== id));
 
             const { error } = await deleteAddress({
-              url: `/user/delete-address/${id}`,
+              url: `/user/delete-address`,
               method: "DELETE",
               authRequired: true,
+              params: { addressId: id },
             });
 
             if (error) {
@@ -116,11 +118,11 @@ export default function MyAddressesScreen() {
           </Text>
         </View>
       ) : (
-        <ScrollView className="px-4 pt-4 pb-20 space-y-4">
+        <ScrollView className="py-4 pb-20">
           {addresses.map((addr) => (
             <View
               key={addr._id}
-              className="bg-white rounded-3xl p-5 shadow-sm border border-gray-200 space-y-2"
+              className="bg-white rounded-3xl p-5 shadow-sm border border-gray-200 my-2"
             >
               <View className="flex-row items-center space-x-2 mb-2">
                 <MaterialIcons name="location-on" size={20} color="#5C59FF" />
