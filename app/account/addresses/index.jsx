@@ -12,6 +12,7 @@ import HeaderWithBack from "@/components/common/HeaderWithBack";
 import { MaterialIcons } from "@expo/vector-icons";
 import useAxios from "@/hooks/useAxios";
 import { useRouter } from "expo-router";
+import SkeletonAddressCard from "@/components/skeletons/SkeletonAddressCard";
 
 export default function MyAddressesScreen() {
   const [addresses, setAddresses] = useState([]);
@@ -113,12 +114,9 @@ export default function MyAddressesScreen() {
       <HeaderWithBack showBackButton title="My Addresses" />
 
       {loadingAddresses ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#5C59FF" />
-          <Text className="text-sm text-gray-600 mt-2">
-            Loading your addresses...
-          </Text>
-        </View>
+        Array.from({ length: 3 }, (_, index) => (
+          <SkeletonAddressCard key={`skeleton-${index}`} />
+        ))
       ) : addresses.length === 0 ? (
         <View className="flex-1 items-center justify-center">
           <Text className="text-xl font-semibold text-gray-700">
@@ -157,7 +155,9 @@ export default function MyAddressesScreen() {
               <View className="flex-row justify-end pt-2 gap-2">
                 <TouchableOpacity
                   className="px-4 py-1 rounded-xl bg-gray-100"
-                  onPress={() => router.push(`/account/addresses/edit/${addr._id}`)}
+                  onPress={() =>
+                    router.push(`/account/addresses/edit/${addr._id}`)
+                  }
                 >
                   <Text className="text-sm text-gray-600">Edit</Text>
                 </TouchableOpacity>
