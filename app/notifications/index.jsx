@@ -1,38 +1,50 @@
-import React, { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import React, { useCallback, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import { formatDistanceToNow } from "date-fns";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
-
-// Sample notifications
-const notifications = [
-  {
-    id: 1,
-    title: "Order Shipped",
-    subtitle: "Your order #1234 has been shipped.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3), // 3 hours ago
-    isRead: false,
-  },
-  {
-    id: 2,
-    title: "New Message",
-    subtitle: "You received a message from the pharmacy.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-    isRead: false,
-  },
-  {
-    id: 3,
-    title: "Reminder",
-    subtitle: "Your medicine refill is due tomorrow.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-    isRead: true,
-  },
-];
+import { useFocusEffect, useRouter } from "expo-router";
+import { useAuthUser } from "@/contexts/AuthContext";
+import useAxios from "@/hooks/useAxios";
 
 const tabs = ["All", "Unread", "Read"];
 
 export default function NotificationsScreen() {
   const [activeTab, setActiveTab] = useState("Unread");
+  const [notifications, setNotifications] = useState([]);
+
+  const router = useRouter();
+  const { authUser } = useAuthUser();
+  const { request: getNotifications, loading: loadingNotifications } =
+    useAxios();
+
+  const fetchNotifications = async () => {
+    const { data, error } = await getNotifications({
+      method: "GET",
+      url: `/user/get-notification-by-recipientId`,
+      authRequired: true,
+    });
+
+    console.log(data);
+
+    if (data.data) {
+      setNotifications(data.data);
+    } else {
+      setNotifications([]);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchNotifications();
+    }, [])
+  );
 
   const counts = {
     All: notifications.length,
@@ -87,38 +99,46 @@ export default function NotificationsScreen() {
         })}
       </View>
 
-      {/* Notification List */}
-      <FlatList
-        data={filteredNotifications}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View
-            className={`p-4 border-b border-gray-100 flex-row justify-between items-start ${
-              !item.isRead ? "bg-gray-50" : ""
-            }`}
-          >
-            <View className="flex-1 pr-2">
-              <Text className="font-lexend-semibold text-black">{item.title}</Text>
-              <Text className="text-sm font-lexend text-gray-600 mt-1">
-                {item.subtitle}
-              </Text>
-              <Text className="text-xs font-lexend text-text-muted mt-1">
-                {formatDistanceToNow(new Date(item.timestamp), {
-                  addSuffix: true,
-                })}
-              </Text>
+      {/* Loading Spinner */}
+      {loadingNotifications ? (
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="#5C59FF" />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredNotifications}
+          keyExtractor={(item) => item._id?.toString() || item.id?.toString()}
+          renderItem={({ item }) => (
+            <View
+              className={`p-4 border-b border-gray-100 flex-row justify-between items-start ${
+                !item.isRead ? "bg-gray-50" : ""
+              }`}
+            >
+              <View className="flex-1 pr-2">
+                <Text className="font-lexend-semibold text-black">
+                  {item.title}
+                </Text>
+                <Text className="text-sm font-lexend text-gray-600 mt-1">
+                  {item.subtitle}
+                </Text>
+                <Text className="text-xs font-lexend text-text-muted mt-1">
+                  {formatDistanceToNow(new Date(item.timestamp), {
+                    addSuffix: true,
+                  })}
+                </Text>
+              </View>
+              {!item.isRead && (
+                <View className="w-2 h-2 rounded-full bg-brand-primary mt-1" />
+              )}
             </View>
-            {!item.isRead && (
-              <View className="w-2 h-2 rounded-full bg-brand-primary mt-1" />
-            )}
-          </View>
-        )}
-        ListEmptyComponent={
-          <Text className="text-center text-text-muted font-lexend mt-10">
-            No {activeTab.toLowerCase()} notifications.
-          </Text>
-        }
-      />
+          )}
+          ListEmptyComponent={
+            <Text className="text-center text-text-muted font-lexend mt-10">
+              No {activeTab.toLowerCase()} notifications.
+            </Text>
+          }
+        />
+      )}
     </AppLayout>
   );
 }
