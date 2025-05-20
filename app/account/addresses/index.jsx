@@ -10,12 +10,13 @@ import SkeletonAddressCard from "@/components/skeletons/SkeletonAddressCard";
 export default function MyAddressesScreen() {
   const [addresses, setAddresses] = useState([]);
   const [defaultAddressId, setDefaultAddressId] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [activeSetId, setActiveSetId] = useState(null);
 
   const router = useRouter();
   const { request: getAllAddresses, loading: loadingAddresses } = useAxios();
-  const { request: deleteAddress } = useAxios();
-  const { request: setDefaultAddress } = useAxios();
+  const { request: deleteAddress, loading: deleting } = useAxios();
+  const { request: setDefaultAddress, loading: settingDefaultLoading } =
+    useAxios();
 
   useEffect(() => {
     fetchUserAddresses();
@@ -41,23 +42,24 @@ export default function MyAddressesScreen() {
   };
 
   const handleSetDefault = async (id) => {
-    if (id === defaultAddressId) return;
+    if (id === defaultAddressId || settingDefaultLoading) return;
 
-    setLoading(true);
+    setActiveSetId(id);
+
     const { error } = await setDefaultAddress({
       url: `/user/set-default-address`,
       method: "PUT",
       authRequired: true,
       payload: { addressId: id },
     });
-    setLoading(false);
+
+    setActiveSetId(null);
 
     if (error) {
       Alert.alert("Failed", "Could not set default address.");
       return;
     }
 
-    // Optimistically update UI
     setDefaultAddressId(id);
     setAddresses((prev) =>
       prev.map((addr) => ({
@@ -159,10 +161,12 @@ export default function MyAddressesScreen() {
                   <TouchableOpacity
                     className="px-4 py-1 rounded-xl bg-indigo-100"
                     onPress={() => handleSetDefault(addr._id)}
-                    disabled={loading}
+                    disabled={settingDefaultLoading}
                   >
                     <Text className="text-sm text-indigo-600">
-                      {loading ? "Setting..." : "Set Default"}
+                      {settingDefaultLoading && activeSetId === addr._id
+                        ? "Setting..."
+                        : "Set Default"}
                     </Text>
                   </TouchableOpacity>
                 )}
