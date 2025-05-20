@@ -4,7 +4,6 @@ import { useForm, Controller } from "react-hook-form";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { OtpInput } from "react-native-otp-entry";
 import STATIC from "@/utils/constants";
-import { generateRoute } from "@/routes/route.utils";
 import customTheme from "@/themes/customTheme";
 import useAxios from "@/hooks/useAxios";
 import ROUTE_PATH from "@/routes/route.constants";
