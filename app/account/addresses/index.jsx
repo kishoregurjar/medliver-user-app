@@ -122,7 +122,7 @@ export default function MyAddressesScreen() {
           {addresses.map((addr) => (
             <View
               key={addr._id}
-              className="bg-white rounded-3xl p-5 shadow-sm border border-gray-200 my-2"
+              className="bg-white rounded-3xl p-5 border border-background-soft my-2"
             >
               <View className="flex-row items-center space-x-2 mb-2">
                 <MaterialIcons name="location-on" size={20} color="#5C59FF" />
