@@ -18,6 +18,7 @@ import useAxios from "@/hooks/useAxios";
 import SkeletonPharmacyProductDetails from "@/components/skeletons/SkeletonPharmacyProductDetails";
 import { Ionicons } from "@expo/vector-icons";
 import AddToCartModalButton from "@/components/modals/AddToCartModalButton";
+import { useAuthUser } from "@/contexts/AuthContext";
 
 const { width } = Dimensions.get("window");
 
@@ -61,17 +62,13 @@ const tabs = [
 export default function PharmacyProductDetailsScreen() {
   const { productId } = useLocalSearchParams();
 
-  const {
-    request: getProductDetails,
-    loading: isLoading,
-    error: hasError,
-  } = useAxios();
+  const { authUser } = useAuthUser();
 
-  const {
-    request: fetchProductsWithManufacturer,
-    loading: isFeaturedLoading,
-    error: hasFeaturedError,
-  } = useAxios();
+  const { request: getProductDetails, loading: isLoading } = useAxios();
+  const { request: getProductsbyManufacturer, loading: isFeaturedLoading } =
+    useAxios();
+  const { request: logUserEventMedicineClick, loading: isEventLoading } =
+    useAxios();
 
   const [productDetails, setProductDetails] = useState({});
   const [productsWithManufaturer, setProductsWithManufacturer] = useState([]);
@@ -146,7 +143,7 @@ export default function PharmacyProductDetailsScreen() {
     };
 
     const fetchProductsByManufacturer = async () => {
-      const { data, error } = await fetchProductsWithManufacturer({
+      const { data, error } = await getProductsbyManufacturer({
         url: `/user/medicines-by-manufacturer`,
         method: "GET",
         params: {
@@ -163,9 +160,27 @@ export default function PharmacyProductDetailsScreen() {
       }
     };
 
-    fetchProductsByManufacturer();
+    const logUserEventProduct = async () => {
+      if (!authUser) return; // Only log if user is authenticated
+
+      const { data, error } = await logUserEventMedicineClick({
+        url: `/user/log-medicine-click`,
+        method: "POST",
+        authRequired: true,
+        payload: {
+          medicineId: productId,
+        },
+      });
+
+      if (error) {
+        console.error("Error logging product click event:", error);
+      }
+    };
+
     fetchProductDetails();
-  }, [productId]);
+    fetchProductsByManufacturer();
+    logUserEventProduct();
+  }, [productId, authUser]);
 
   return (
     <AppLayout>
