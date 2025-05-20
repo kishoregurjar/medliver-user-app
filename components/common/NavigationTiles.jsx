@@ -41,11 +41,11 @@ export default function NavigationTiles() {
       className="my-5 px-4"
       // style={{ paddingBottom: insets.bottom + 86 }} // Ensures it's not hidden under tab bar
     >
-      <Image
+      {/* <Image
         source={STATIC.IMAGES.APP.LOGO_FULL}
         resizeMode="contain"
         className="h-28 w-full mb-5"
-      />
+      /> */}
 
       <View className="mb-5">
         <Text className="text-2xl font-lexend-semibold text-black">

@@ -27,8 +27,6 @@ export default function ChangePasswordScreen() {
 
   const onSubmit = async (payload) => {
     delete payload.confirmPassword;
-    console.log("Payload:", payload);
-
     const { data, error } = await changePassword({
       url: "/user/change-password",
       method: "POST",

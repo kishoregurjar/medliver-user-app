@@ -86,7 +86,6 @@ export default function AddAddressScreen() {
   });
 
   const onSubmit = async (formData) => {
-    console.log("Payload:", formData);
     const payload = {
       ...formData,
       location: {

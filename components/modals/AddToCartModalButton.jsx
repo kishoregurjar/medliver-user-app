@@ -51,8 +51,7 @@ export default function AddToCartModalButton({ product }) {
       console.error("Error adding to cart:", error);
       showToast("error", "Failed to add item to cart");
     } else {
-      console.log("Item added to cart:", data);
-      showToast("success", data || "Item added to cart");
+      showToast("success", data.message || "Item added to cart");
       onClose();
     }
   };

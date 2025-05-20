@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { formatNumber, formatPrice } from "@/utils/format";
+import STATIC from "@/utils/constants";
 
 const PharmacyProductCard = ({
   item,
@@ -27,10 +28,12 @@ const PharmacyProductCard = ({
     images = null,
   } = product;
 
-  const imageSource =
-    images && Array.isArray(images) && images.length > 0
-      ? { uri: images[0] }
-      : null;
+  // const imageSource =
+  //   images && Array.isArray(images) && images.length > 0
+  //     ? { uri: images[0] }
+  //     : null;
+
+  const imageSource = STATIC.IMAGES.COMPONENTS.MEDICINE_2
 
   const subtitle = `${short_composition1?.trim() || ""} ${
     short_composition2?.trim() || ""

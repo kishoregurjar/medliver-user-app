@@ -28,7 +28,7 @@ export default function MyAddressesScreen() {
     });
 
     if (error) {
-      console.log("Error fetching user addresses:", error);
+      console.error("Error fetching user addresses:", error);
       return;
     }
 
