@@ -24,6 +24,9 @@ export default function NotificationsScreen() {
   const { request: getNotifications, loading: loadingNotifications } =
     useAxios();
 
+  // For updating notification status
+  const { request: updateNotificationStatus } = useAxios();
+
   const fetchNotifications = async () => {
     const { data, error } = await getNotifications({
       method: "GET",
@@ -32,7 +35,6 @@ export default function NotificationsScreen() {
     });
 
     if (data?.data) {
-      // Map API data to expected format for UI
       const mappedNotifications = data.data.map((n) => ({
         ...n,
         isRead: n.status === "read",
@@ -62,6 +64,37 @@ export default function NotificationsScreen() {
     if (activeTab === "Read") return n.isRead;
     return true;
   });
+
+  // Handle notification click: mark as read and navigate
+  const handleNotificationPress = async (notification) => {
+    // If already read, just navigate
+    if (!notification.isRead) {
+      const { data, error } = await updateNotificationStatus({
+        method: "PUT", // or PATCH, depending on your API
+        url: `/user/update-notification-status`, // replace with your actual endpoint
+        data: { notificationId: notification._id },
+        authRequired: true,
+      });
+
+      if (error) {
+        console.error("Error updating notification status:", error);
+        return;
+      }
+
+      // Update local state immediately for responsiveness
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n._id === notification._id
+            ? { ...n, isRead: true, status: "read" }
+            : n
+        )
+      );
+    }
+
+    // Navigate to a page related to the notification
+    // Example: route to `/notification-details/[id]`
+    router.push(`/notification-details/${notification._id}`);
+  };
 
   return (
     <AppLayout scroll={false}>
@@ -114,7 +147,8 @@ export default function NotificationsScreen() {
           data={filteredNotifications}
           keyExtractor={(item) => item._id?.toString() || item.id?.toString()}
           renderItem={({ item }) => (
-            <View
+            <TouchableOpacity
+              onPress={() => handleNotificationPress(item)}
               className={`p-4 border-b border-gray-100 flex-row justify-between items-start ${
                 !item.isRead ? "bg-gray-50" : ""
               }`}
@@ -135,7 +169,7 @@ export default function NotificationsScreen() {
               {!item.isRead && (
                 <View className="w-2 h-2 rounded-full bg-brand-primary mt-1" />
               )}
-            </View>
+            </TouchableOpacity>
           )}
           ListEmptyComponent={
             <Text className="text-center text-text-muted font-lexend mt-10">
