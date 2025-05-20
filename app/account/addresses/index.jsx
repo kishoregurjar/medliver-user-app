@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  ActivityIndicator,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import { MaterialIcons } from "@expo/vector-icons";
