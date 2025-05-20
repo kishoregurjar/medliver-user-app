@@ -178,12 +178,13 @@ export default function MyAddressesScreen() {
         </ScrollView>
       )}
 
-      {/* Floating Add Address Button */}
+      {/* add address button  */}
       <TouchableOpacity
+        className="bg-brand-primary rounded-xl p-3 flex-row items-center justify-center"
         onPress={() => router.push("/account/addresses/add-address")}
-        className="absolute bottom-6 right-6 bg-indigo-600 p-4 rounded-full shadow-lg"
       >
-        <MaterialIcons name="add-location-alt" size={28} color="white" />
+        <MaterialIcons name="add" size={24} color="white" />
+        <Text className="text-sm text-white font-semibold">Add Address</Text>
       </TouchableOpacity>
     </AppLayout>
   );
