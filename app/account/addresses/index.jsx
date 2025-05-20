@@ -19,10 +19,13 @@ export default function MyAddressesScreen() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-
   const { request: getAllAddresses, loading: loadingAddresses } = useAxios();
   const { request: deleteAddress } = useAxios();
   const { request: setDefaultAddress } = useAxios();
+
+  useEffect(() => {
+    fetchUserAddresses();
+  }, []);
 
   const fetchUserAddresses = async () => {
     const { data, error } = await getAllAddresses({
@@ -38,8 +41,8 @@ export default function MyAddressesScreen() {
 
     if (data?.data) {
       setAddresses(data.data);
-      const defaultAddr = data.data.find((addr) => addr.isDefault);
-      if (defaultAddr) setDefaultAddressId(defaultAddr.id);
+      const defaultAddr = data.data.find((addr) => addr.is_default);
+      if (defaultAddr) setDefaultAddressId(defaultAddr._id);
     }
   };
 
@@ -60,8 +63,14 @@ export default function MyAddressesScreen() {
       return;
     }
 
+    // Optimistically update UI
     setDefaultAddressId(id);
-    fetchUserAddresses();
+    setAddresses((prev) =>
+      prev.map((addr) => ({
+        ...addr,
+        is_default: addr._id === id,
+      }))
+    );
   };
 
   const handleDelete = (id) => {
@@ -74,9 +83,6 @@ export default function MyAddressesScreen() {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            const original = [...addresses];
-            setAddresses((prev) => prev.filter((addr) => addr.id !== id));
-
             const { error } = await deleteAddress({
               url: `/user/delete-address`,
               method: "DELETE",
@@ -85,20 +91,22 @@ export default function MyAddressesScreen() {
             });
 
             if (error) {
-              setAddresses(original); // rollback
               Alert.alert("Failed", "Could not delete address.");
-            } else {
-              fetchUserAddresses();
+              return;
+            }
+
+            // Remove from UI
+            setAddresses((prev) => prev.filter((addr) => addr._id !== id));
+
+            // If deleted address was default, unset it
+            if (defaultAddressId === id) {
+              setDefaultAddressId(null);
             }
           },
         },
       ]
     );
   };
-
-  useEffect(() => {
-    fetchUserAddresses();
-  }, []);
 
   return (
     <AppLayout>
@@ -146,7 +154,7 @@ export default function MyAddressesScreen() {
               </Text>
               <Text className="text-sm text-gray-700">{addr.country}</Text>
 
-              <View className="flex-row justify-end pt-2 space-x-3">
+              <View className="flex-row justify-end pt-2 gap-2">
                 <TouchableOpacity
                   className="px-4 py-1 rounded-xl bg-gray-100"
                   onPress={() => router.push(`/edit-address/${addr._id}`)}
@@ -178,13 +186,13 @@ export default function MyAddressesScreen() {
         </ScrollView>
       )}
 
-      {/* add address button  */}
+      {/* Add Address Floating Button */}
       <TouchableOpacity
-        className="bg-brand-primary rounded-xl p-3 flex-row items-center justify-center"
+        className="absolute bottom-6 right-6 bg-brand-primary p-4 rounded-full shadow-lg flex-row items-center justify-center space-x-1"
         onPress={() => router.push("/account/addresses/add-address")}
       >
-        <MaterialIcons name="add" size={24} color="white" />
-        <Text className="text-sm text-white font-semibold">Add Address</Text>
+        <MaterialIcons name="add-location-alt" size={24} color="white" />
+        <Text className="text-white font-medium text-sm">Add Address</Text>
       </TouchableOpacity>
     </AppLayout>
   );
