@@ -7,11 +7,11 @@ import {
   ActivityIndicator,
 } from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
-import { formatDistanceToNow } from "date-fns";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useAuthUser } from "@/contexts/AuthContext";
 import useAxios from "@/hooks/useAxios";
+import { formatDistanceToNow } from "date-fns";
 
 const tabs = ["All", "Unread", "Read"];
 
@@ -31,10 +31,15 @@ export default function NotificationsScreen() {
       authRequired: true,
     });
 
-    console.log(data);
-
-    if (data.data) {
-      setNotifications(data.data);
+    if (data?.data) {
+      // Map API data to expected format for UI
+      const mappedNotifications = data.data.map((n) => ({
+        ...n,
+        isRead: n.status === "read",
+        timestamp: n.sentAt,
+        subtitle: n.message,
+      }));
+      setNotifications(mappedNotifications);
     } else {
       setNotifications([]);
     }
