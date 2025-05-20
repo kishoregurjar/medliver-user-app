@@ -7,6 +7,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import useAxios from "@/hooks/useAxios";
 import { useRouter } from "expo-router";
 import SkeletonAddressCard from "@/components/skeletons/SkeletonAddressCard";
+import UserAddressCard from "@/components/cards/UserAddressCard";
 
 export default function MyAddressesScreen() {
   const [addresses, setAddresses] = useState([]);
@@ -124,64 +125,15 @@ export default function MyAddressesScreen() {
       ) : (
         <ScrollView className="py-4 pb-20">
           {addresses.map((addr) => (
-            <View
+            <UserAddressCard
               key={addr._id}
-              className="bg-white rounded-3xl p-5 border border-background-soft my-2"
-            >
-              <View className="flex-row items-center space-x-2 mb-2">
-                <MaterialIcons name="location-on" size={20} color="#5C59FF" />
-                <Text className="text-base font-semibold text-gray-800 capitalize">
-                  {addr.address_type}
-                </Text>
-                {addr.is_default && (
-                  <View className="ml-2 bg-indigo-100 px-2 py-0.5 rounded-full">
-                    <Text className="text-xs text-indigo-600 font-medium">
-                      Default
-                    </Text>
-                  </View>
-                )}
-              </View>
-
-              <Text className="text-sm text-gray-700">
-                {addr.house_number}, {addr.street}, {addr.landmark}
-              </Text>
-              <Text className="text-sm text-gray-700">
-                {addr.city}, {addr.state} - {addr.pincode}
-              </Text>
-              <Text className="text-sm text-gray-700">{addr.country}</Text>
-
-              <View className="flex-row justify-end pt-2 gap-2">
-                <TouchableOpacity
-                  className="px-4 py-1 rounded-xl bg-gray-100"
-                  onPress={() =>
-                    router.push(`/account/addresses/edit/${addr._id}`)
-                  }
-                >
-                  <Text className="text-sm text-gray-600">Edit</Text>
-                </TouchableOpacity>
-
-                {!addr.is_default && (
-                  <TouchableOpacity
-                    className="px-4 py-1 rounded-xl bg-indigo-100"
-                    onPress={() => handleSetDefault(addr._id)}
-                    disabled={settingDefaultLoading}
-                  >
-                    <Text className="text-sm text-indigo-600">
-                      {settingDefaultLoading && activeSetId === addr._id
-                        ? "Setting..."
-                        : "Set Default"}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-
-                <TouchableOpacity
-                  className="px-3 py-1 rounded-xl bg-red-100"
-                  onPress={() => handleDelete(addr._id)}
-                >
-                  <MaterialIcons name="delete" size={18} color="#dc2626" />
-                </TouchableOpacity>
-              </View>
-            </View>
+              address={addr}
+              onEdit={(id) => router.push(`/account/addresses/edit/${id}`)}
+              onSetDefault={handleSetDefault}
+              onDelete={handleDelete}
+              settingDefault={settingDefaultLoading}
+              activeSetId={activeSetId}
+            />
           ))}
         </ScrollView>
       )}
