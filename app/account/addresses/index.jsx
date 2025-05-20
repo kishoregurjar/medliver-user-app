@@ -157,7 +157,7 @@ export default function MyAddressesScreen() {
               <View className="flex-row justify-end pt-2 gap-2">
                 <TouchableOpacity
                   className="px-4 py-1 rounded-xl bg-gray-100"
-                  onPress={() => router.push(`/edit-address/${addr._id}`)}
+                  onPress={() => router.push(`/account/addresses/edit/${addr._id}`)}
                 >
                   <Text className="text-sm text-gray-600">Edit</Text>
                 </TouchableOpacity>
