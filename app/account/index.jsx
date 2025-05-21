@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React from "react";
 import AppLayout from "@/components/layouts/AppLayout";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,46 +8,73 @@ import { useRouter } from "expo-router";
 import { useAuthUser } from "@/contexts/AuthContext";
 import { useAppToast } from "@/hooks/useAppToast";
 import ROUTE_PATH from "@/routes/route.constants";
-import { Avatar, AvatarFallbackText, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallbackText,
+  AvatarImage,
+} from "@/components/ui/avatar";
 
 const accountOptions = [
-  { label: "My Wallet", icon: "wallet-outline", path: "/account/wallet" },
-  { label: "Offers", icon: "pricetags-outline", path: "/account/offers" },
+  {
+    label: "My Wallet",
+    icon: "wallet-outline",
+    path: "/account/wallet",
+    guest: false,
+  },
+  {
+    label: "Offers",
+    icon: "pricetags-outline",
+    path: "/account/offers",
+    guest: true,
+  },
   {
     label: "My Prescriptions",
     icon: "medkit-outline",
     path: "/account/prescriptions",
+    guest: false,
   },
-  { label: "My Addresses", icon: "home-outline", path: "/account/addresses" },
+  {
+    label: "My Addresses",
+    icon: "home-outline",
+    path: "/account/addresses",
+    guest: false,
+  },
   {
     label: "Notifications",
     icon: "notifications-outline",
     path: "/notifications",
+    guest: true,
   },
-  { label: "Help", icon: "help-circle-outline", path: "/account/help" },
+  {
+    label: "Help",
+    icon: "help-circle-outline",
+    path: "/account/help",
+    guest: true,
+  },
   {
     label: "Privacy Policy",
     icon: "shield-checkmark-outline",
     path: "/account/privacy-policy",
+    guest: true,
   },
   {
     label: "Terms of Use",
     icon: "document-text-outline",
     path: "/account/terms-of-use",
+    guest: true,
   },
 ];
 
 const AccountScreen = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { logout } = useAuthUser();
+  const { logout, authUser } = useAuthUser();
   const { showToast } = useAppToast();
 
-  const { authUser } = useAuthUser();
-
   const user = authUser?.user;
-  const userProfilePicture = user?.profilePicture || null;
+  const isGuest = !authUser?.isAuthenticated;
   const userName = user?.fullName || "Guest User";
+  const userProfilePicture = user?.profilePicture || null;
 
   const handleLogout = async () => {
     try {
@@ -62,26 +89,38 @@ const AccountScreen = () => {
 
   return (
     <AppLayout scroll={false}>
-      {/* Header */}
       <HeaderWithBack showBackButton title="My Account" backTo="/home" />
 
       <View className="flex-1 relative pb-20">
         {/* User Info */}
         <View className="items-center mt-8 mb-4 space-y-3">
-          <Avatar size='xl' className="mr-3">
+          <Avatar size="xl">
             {userProfilePicture ? (
               <AvatarImage source={{ uri: userProfilePicture }} />
             ) : (
-              <AvatarFallbackText className="text-2xl font-lexend-bold text-white">
-                {userName.charAt(0).toUpperCase()}
+              <AvatarFallbackText>
+                <Text className="text-2xl font-lexend-bold text-white">
+                  {userName.charAt(0).toUpperCase()}
+                </Text>
               </AvatarFallbackText>
             )}
           </Avatar>
+
           <Text className="text-xl font-semibold text-gray-900">
             {userName}
           </Text>
 
-          {authUser && authUser.isAuthenticated ? (
+          {isGuest ? (
+            <TouchableOpacity
+              className="px-5 py-2 mt-4 bg-indigo-100 rounded-lg"
+              activeOpacity={0.8}
+              onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}
+            >
+              <Text className="text-sm font-medium text-indigo-600">
+                Sign In
+              </Text>
+            </TouchableOpacity>
+          ) : (
             <View className="flex-row justify-between mt-4 gap-x-4 px-5">
               <TouchableOpacity
                 className="flex-1 py-3 bg-indigo-100 rounded-xl items-center"
@@ -103,22 +142,9 @@ const AccountScreen = () => {
                 </Text>
               </TouchableOpacity>
             </View>
-          ) : (
-            <TouchableOpacity
-              className="px-5 py-2 mt-4 bg-indigo-100 rounded-lg"
-              activeOpacity={0.8}
-              onPress={() => {
-                router.push(ROUTE_PATH.AUTH.LOGIN);
-              }}
-            >
-              <Text className="text-sm font-medium text-indigo-600">
-                Sign In
-              </Text>
-            </TouchableOpacity>
           )}
         </View>
 
-        {/* Divider */}
         <View className="h-px bg-gray-200 my-4" />
 
         {/* Account Options */}
@@ -127,56 +153,54 @@ const AccountScreen = () => {
             contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
             showsVerticalScrollIndicator={false}
           >
-            {accountOptions.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                className="flex-row items-center justify-between p-2 rounded-xl"
-                activeOpacity={0.7}
-                onPress={() => {
-                  if (item.path) {
-                    router.push(item.path);
-                  }
-                }}
-              >
-                <View className="flex-row items-center space-x-4">
-                  <View className="w-10 h-10 bg-brand-primary/30 rounded-full items-center justify-center flex mr-5">
-                    <Ionicons name={item.icon} size={22} color="#E55150" />
+            {accountOptions
+              .filter((item) => (isGuest ? item.guest : true))
+              .map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  className="flex-row items-center justify-between p-2 rounded-xl"
+                  activeOpacity={0.7}
+                  onPress={() => router.push(item.path)}
+                >
+                  <View className="flex-row items-center space-x-4">
+                    <View className="w-10 h-10 bg-brand-primary/30 rounded-full items-center justify-center flex mr-5">
+                      <Ionicons name={item.icon} size={22} color="#E55150" />
+                    </View>
+                    <Text className="text-xs font-lexend-medium text-gray-800">
+                      {item.label}
+                    </Text>
                   </View>
-                  <Text className="text-xs font-lexend-medium text-gray-800">
-                    {item.label}
-                  </Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-              </TouchableOpacity>
-            ))}
+                  <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+                </TouchableOpacity>
+              ))}
           </ScrollView>
         </View>
 
-        {/* Divider */}
+        {/* Bottom Action */}
+        <View className="h-px bg-gray-200 mt-4" />
 
-        {/* Fixed Logout Button */}
-        {authUser && authUser.isAuthenticated && (
-          <>
-            <View className="h-px bg-gray-200 mt-4" />
-
-            <View className="w-full mt-0 rounded-2xl bg-brand-primary/90 absolute bottom-0">
-              <TouchableOpacity
-                className="flex-row items-center justify-between p-3 rounded-xl"
-                activeOpacity={0.7}
-                onPress={handleLogout}
-              >
-                <View className="flex-row items-center space-x-3">
-                  <View className="w-8 h-8 bg-t rounded-xl items-center justify-center flex">
-                    <Ionicons name="log-out-outline" size={24} color="white" />
-                  </View>
-                  <Text className="text-base font-lexend-bold text-white">
-                    Logout
-                  </Text>
-                </View>
-              </TouchableOpacity>
+        <View className="w-full mt-0 rounded-2xl bg-brand-primary/90 absolute bottom-0">
+          <TouchableOpacity
+            className="flex-row items-center justify-between p-3 rounded-xl"
+            activeOpacity={0.7}
+            onPress={
+              isGuest ? () => router.push(ROUTE_PATH.AUTH.LOGIN) : handleLogout
+            }
+          >
+            <View className="flex-row items-center space-x-3">
+              <View className="w-8 h-8 bg-white/20 rounded-xl items-center justify-center flex">
+                <Ionicons
+                  name={isGuest ? "log-in-outline" : "log-out-outline"}
+                  size={24}
+                  color="white"
+                />
+              </View>
+              <Text className="text-base font-lexend-bold text-white">
+                {isGuest ? "Sign In" : "Logout"}
+              </Text>
             </View>
-          </>
-        )}
+          </TouchableOpacity>
+        </View>
       </View>
     </AppLayout>
   );

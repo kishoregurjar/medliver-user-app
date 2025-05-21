@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -17,12 +17,12 @@ const { width } = Dimensions.get("window");
 
 const Header = () => {
   const router = useRouter();
+  const { selectedAddress: returnedAddress } = useLocalSearchParams();
+  const { authUser } = useAuthUser();
+
   const [selectedAddress, setSelectedAddress] = useState(
     "Indore, Madhya Pradesh"
   );
-  const { selectedAddress: returnedAddress, searchQuery } =
-    useLocalSearchParams();
-  const { authUser } = useAuthUser();
 
   const user = authUser?.user;
   const isGuest = !user;
@@ -35,7 +35,7 @@ const Header = () => {
 
   return (
     <View>
-      {/* Top Header */}
+      {/* Top Header with Icons */}
       <HeaderWithBack
         showCart
         showNotification
@@ -49,9 +49,8 @@ const Header = () => {
         }}
       />
 
-      {/* Location + Login */}
+      {/* Location & Login Row */}
       <View className="flex-row justify-between items-center mb-5 mt-1">
-        {/* Location Selector */}
         <TouchableOpacity
           activeOpacity={0.7}
           className="flex-row items-center flex-shrink pr-2"
@@ -64,10 +63,7 @@ const Header = () => {
         >
           <Ionicons name="location" size={20} color="#6E6A7C" />
           <View className="ml-2 flex-row items-center flex-shrink">
-            <Text
-              className="text-sm text-gray-500 font-lexend"
-              numberOfLines={1}
-            >
+            <Text className="text-sm text-gray-500 font-lexend">
               Deliver to
             </Text>
             <Text
@@ -80,7 +76,6 @@ const Header = () => {
           </View>
         </TouchableOpacity>
 
-        {/* Login Button (only if guest) */}
         {isGuest && (
           <TouchableOpacity
             activeOpacity={0.7}
@@ -93,14 +88,16 @@ const Header = () => {
         )}
       </View>
 
-      {/* Greeting */}
+      {/* Greeting Section */}
       <View className="flex-row items-center mb-5">
         <Avatar size="md" className="mr-3">
           {userProfilePicture ? (
             <AvatarImage source={{ uri: userProfilePicture }} />
           ) : (
-            <AvatarFallbackText className="text-2xl font-lexend-bold text-white">
-              {userName.charAt(0).toUpperCase()}
+            <AvatarFallbackText>
+              <Text className="text-2xl font-lexend-bold text-white">
+                {userName.charAt(0).toUpperCase()}
+              </Text>
             </AvatarFallbackText>
           )}
         </Avatar>
@@ -115,7 +112,7 @@ const Header = () => {
         </View>
       </View>
 
-      {/* Search Area (Clickable only) */}
+      {/* Search Input (Navigates to Search Page) */}
       <Pressable
         onPress={() => router.push(ROUTE_PATH.APP.SEARCH.INDEX)}
         className="flex-row items-center bg-white border border-background-soft rounded-xl px-4 py-4 mb-4"

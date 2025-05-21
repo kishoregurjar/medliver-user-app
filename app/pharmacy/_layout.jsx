@@ -38,7 +38,7 @@ const CustomTabBar = () => {
       name: "cart",
       icon: "cart-outline",
       label: "Cart",
-      badge: cartCount,
+      // badge: cartCount,
       path: ROUTE_PATH.APP.CART.INDEX,
     },
     {
