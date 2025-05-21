@@ -1,8 +1,14 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { View, Text } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
+import { Text, View } from "react-native";
 import { useRouter } from "expo-router";
-import ROUTE_PATH from "@/routes/route.constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { AppSpinner } from "@/components/common/AppSpinner";
 
 const AuthContext = createContext();
@@ -18,6 +24,8 @@ export const AuthProvider = ({ children }) => {
     const loadAuthUser = async () => {
       try {
         const storedUser = await AsyncStorage.getItem("authUser");
+        console.log(await AsyncStorage.getItem("authUser"), "authUser data");
+
         if (storedUser) {
           setAuthUser(JSON.parse(storedUser));
         }
@@ -41,7 +49,6 @@ export const AuthProvider = ({ children }) => {
     setAuthUser(userData);
     try {
       await AsyncStorage.setItem("authUser", JSON.stringify(userData));
-      
     } catch (error) {
       console.error("Failed to save auth user:", error);
       router.replace(ROUTE_PATH.AUTH.LOGIN);
@@ -58,9 +65,29 @@ export const AuthProvider = ({ children }) => {
     router.replace(ROUTE_PATH.AUTH.LOGIN);
   };
 
-  const updateUser = (user) => {
-    setAuthUser((prev) => ({ ...prev, user }));
+  const updateUser = async (newUserData) => {
+    if (!newUserData) return;
+
+    setAuthUser((prev) => {
+      if (!prev) return null;
+
+      const updatedUser = {
+        ...prev,
+        user: newUserData,
+      };
+
+      AsyncStorage.setItem("authUser", JSON.stringify(updatedUser)).catch(
+        (err) => console.error("Failed to update user in storage:", err)
+      );
+
+      return updatedUser;
+    });
   };
+
+  const value = useMemo(
+    () => ({ authUser, login, logout, updateUser }),
+    [authUser]
+  );
 
   if (!isAuthLoaded) {
     return (
@@ -73,9 +100,5 @@ export const AuthProvider = ({ children }) => {
     );
   }
 
-  return (
-    <AuthContext.Provider value={{ authUser, login, logout, updateUser }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
