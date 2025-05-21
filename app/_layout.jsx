@@ -33,6 +33,7 @@ import {
   LexendDeca_800ExtraBold,
   LexendDeca_900Black,
 } from "@expo-google-fonts/lexend-deca";
+import { CartProvider } from "@/contexts/CartContext";
 
 SplashScreen.preventAutoHideAsync(); // Show splash screen until fonts load
 
@@ -62,19 +63,23 @@ export default function RootLayout() {
   return (
     <GluestackUIProvider>
       <AuthProvider>
-        <ToastProvider>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <ActionSheetProvider>
-              <SafeAreaProvider>
-                <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-                {/* No need for View wrapper — Stack will take up full screen */}
-                <Stack screenOptions={{ headerShown: false }} />
-              </SafeAreaProvider>
-            </ActionSheetProvider>
-          </ThemeProvider>
-        </ToastProvider>
+        <CartProvider>
+          <ToastProvider>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <ActionSheetProvider>
+                <SafeAreaProvider>
+                  <StatusBar
+                    style={colorScheme === "dark" ? "light" : "dark"}
+                  />
+                  {/* No need for View wrapper — Stack will take up full screen */}
+                  <Stack screenOptions={{ headerShown: false }} />
+                </SafeAreaProvider>
+              </ActionSheetProvider>
+            </ThemeProvider>
+          </ToastProvider>
+        </CartProvider>
       </AuthProvider>
     </GluestackUIProvider>
   );

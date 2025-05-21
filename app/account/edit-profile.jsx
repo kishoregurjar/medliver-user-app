@@ -257,8 +257,7 @@ export default function EditProfileScreen() {
 
     if (error) {
       showToast("error", error || "Failed to update profile");
-    } else if (data.status === 200) {
-      console.log(data.data);
+    } else if (data.status === 200 && data?.data) {
       showToast("success", data.message || "Profile updated successfully!");
       updateUserCallback(data.data);
       setInitialData(data.data);
