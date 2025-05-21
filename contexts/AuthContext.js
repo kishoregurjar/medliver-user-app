@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }) => {
         <Text className="text-xl font-lexend-bold text-gray-600 mb-5">
           Please Wait...
         </Text>
-        <AppSpinner size="large" color="red" />
+        <AppSpinner size="large" color="#B31F24" />
       </View>
     );
   }
