@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import useAxios from "@/hooks/useAxios";
 import { useAuthUser } from "@/contexts/AuthContext";
 import { useAppToast } from "@/hooks/useAppToast";
+import { useCart } from "@/contexts/CartContext";
 
 export default function AddToCartModalButton({ product }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +31,7 @@ export default function AddToCartModalButton({ product }) {
   } = useAxios();
   const { authUser } = useAuthUser();
   const { showToast } = useAppToast();
+  const { addToCartItem } = useCart();
 
   const onClose = () => {
     setIsOpen(false);
@@ -37,20 +39,11 @@ export default function AddToCartModalButton({ product }) {
   };
 
   const handleAddToCart = async () => {
-    const { data, error } = await addToCart({
-      method: "POST",
-      url: "/user/add-to-cart",
-      payload: {
-        productId: product._id,
-        quantity,
-        type: "Medicine",
-      },
-      authRequired: true,
-    });
+    const { data, error } = await addToCartItem(product._id, quantity);
     if (error) {
       console.error("Error adding to cart:", error);
       showToast("error", "Failed to add item to cart");
-    } else {      
+    } else {
       showToast("success", data.message || "Item added to cart");
       onClose();
     }

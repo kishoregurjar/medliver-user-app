@@ -4,10 +4,21 @@ import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import STATIC from "@/utils/constants";
 import ROUTE_PATH from "@/routes/route.constants";
+import { useCart } from "@/contexts/CartContext";
+import { useNotification } from "@/contexts/NotificationContext";
 
-const IconButton = ({ icon, onPress }) => (
+const IconButton = ({ icon, onPress, badgeCount = 0 }) => (
   <TouchableOpacity onPress={onPress} activeOpacity={0.7} className="p-2">
-    {icon}
+    <View className="relative">
+      {icon}
+      {badgeCount > 0 && (
+        <View className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 justify-center items-center">
+          <Text className="text-white text-xs font-bold">
+            {badgeCount > 99 ? "99+" : badgeCount}
+          </Text>
+        </View>
+      )}
+    </View>
   </TouchableOpacity>
 );
 
@@ -26,6 +37,8 @@ export default function HeaderWithBack({
   },
 }) {
   const router = useRouter();
+  const { itemCount } = useCart();
+  const { unreadCount, notifications, loading, markAsRead } = useNotification();
 
   const handleBack = () => {
     if (backTo) {
@@ -94,6 +107,7 @@ export default function HeaderWithBack({
                 color="#000"
               />
             }
+            badgeCount={itemCount}
           />
         )}
         {showNotification && (
@@ -106,6 +120,7 @@ export default function HeaderWithBack({
                 color="#000"
               />
             }
+            badgeCount={unreadCount}
           />
         )}
       </View>

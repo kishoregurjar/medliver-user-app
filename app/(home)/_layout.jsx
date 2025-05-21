@@ -9,14 +9,14 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import ROUTE_PATH from "@/routes/route.constants";
+import { useCart } from "@/contexts/CartContext";
 
 const CustomTabBar = () => {
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
   const router = useRouter();
 
-  const [cartCount] = useState(2);
-  const [notificationCount] = useState(5);
+  const { itemTotal, itemCount } = useCart();
 
   const translateY = useSharedValue(100);
   const opacity = useSharedValue(0);
@@ -38,7 +38,7 @@ const CustomTabBar = () => {
       name: "cart",
       icon: "cart-outline",
       label: "Cart",
-      // badge: cartCount,
+      badge: itemCount,
       path: ROUTE_PATH.APP.CART.INDEX,
     },
     {
