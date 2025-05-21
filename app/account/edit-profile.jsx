@@ -146,14 +146,22 @@ export default function EditProfileScreen() {
           try {
             const result = await ImagePicker.launchCameraAsync({
               mediaTypes: ImagePicker.MediaTypeOptions.Images,
-              quality: 0.5, // Reduce image size
+              quality: 0.5,
               allowsEditing: true,
               aspect: [1, 1],
-              base64: false, // ⚠️ Avoid base64 if not needed — consumes memory
+              base64: false,
             });
 
-            if (!result.canceled && result.assets?.[0]?.uri) {
+            if (
+              !result.canceled &&
+              result.assets &&
+              Array.isArray(result.assets) &&
+              result.assets.length > 0 &&
+              result.assets[0].uri
+            ) {
               await uploadProfileImage(result.assets[0].uri);
+            } else {
+              console.log("Camera canceled or invalid result", result);
             }
           } catch (err) {
             console.error("Camera error", err);
@@ -180,8 +188,16 @@ export default function EditProfileScreen() {
               base64: false,
             });
 
-            if (!result.canceled && result.assets?.[0]?.uri) {
+            if (
+              !result.canceled &&
+              result.assets &&
+              Array.isArray(result.assets) &&
+              result.assets.length > 0 &&
+              result.assets[0].uri
+            ) {
               await uploadProfileImage(result.assets[0].uri);
+            } else {
+              console.log("Gallery canceled or invalid result", result);
             }
           } catch (err) {
             console.error("Gallery error", err);
