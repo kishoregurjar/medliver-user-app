@@ -137,43 +137,55 @@ export default function EditProfileScreen() {
       {
         text: "Camera",
         onPress: async () => {
-          const camPerm = await ImagePicker.requestCameraPermissionsAsync();
-          if (!camPerm.granted) {
+          const { status } = await ImagePicker.requestCameraPermissionsAsync();
+          if (status !== "granted") {
             showToast("error", "Camera permission required");
             return;
           }
 
-          const result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 0.7,
-            allowsEditing: true,
-            aspect: [1, 1],
-          });
+          try {
+            const result = await ImagePicker.launchCameraAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              quality: 0.5, // Reduce image size
+              allowsEditing: true,
+              aspect: [1, 1],
+              base64: false, // ⚠️ Avoid base64 if not needed — consumes memory
+            });
 
-          if (!result.canceled) {
-            await uploadProfileImage(result.assets[0].uri);
+            if (!result.canceled && result.assets?.[0]?.uri) {
+              await uploadProfileImage(result.assets[0].uri);
+            }
+          } catch (err) {
+            console.error("Camera error", err);
+            showToast("error", "Failed to open camera");
           }
         },
       },
       {
         text: "Gallery",
         onPress: async () => {
-          const galPerm =
+          const { status } =
             await ImagePicker.requestMediaLibraryPermissionsAsync();
-          if (!galPerm.granted) {
+          if (status !== "granted") {
             showToast("error", "Gallery permission required");
             return;
           }
 
-          const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 0.7,
-            allowsEditing: true,
-            aspect: [1, 1],
-          });
+          try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              quality: 0.5,
+              allowsEditing: true,
+              aspect: [1, 1],
+              base64: false,
+            });
 
-          if (!result.canceled) {
-            await uploadProfileImage(result.assets[0].uri);
+            if (!result.canceled && result.assets?.[0]?.uri) {
+              await uploadProfileImage(result.assets[0].uri);
+            }
+          } catch (err) {
+            console.error("Gallery error", err);
+            showToast("error", "Failed to open gallery");
           }
         },
       },
