@@ -36,8 +36,8 @@ export default function AddToCartModalButton({ product }) {
     setQuantity(1);
   };
 
-  const handleAddToCart = () => {
-    const { data, error } = addToCart({
+  const handleAddToCart = async () => {
+    const { data, error } = await addToCart({
       method: "POST",
       url: "/user/add-to-cart",
       payload: {
@@ -50,7 +50,7 @@ export default function AddToCartModalButton({ product }) {
     if (error) {
       console.error("Error adding to cart:", error);
       showToast("error", "Failed to add item to cart");
-    } else {
+    } else {      
       showToast("success", data.message || "Item added to cart");
       onClose();
     }
