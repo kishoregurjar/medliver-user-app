@@ -1,5 +1,9 @@
 // app/_layout.tsx
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -7,11 +11,15 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native"; // Use RN's native hook
+import {
+  useActionSheet,
+  ActionSheetProvider,
+} from "@expo/react-native-action-sheet";
 
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { ToastProvider } from "@gluestack-ui/toast";
 import { AuthProvider } from "@/contexts/AuthContext";
-import './global.css'
+import "./global.css";
 
 // Load fonts
 import {
@@ -55,12 +63,16 @@ export default function RootLayout() {
     <GluestackUIProvider>
       <AuthProvider>
         <ToastProvider>
-          <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-            <SafeAreaProvider>
-              <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-              {/* No need for View wrapper — Stack will take up full screen */}
-              <Stack screenOptions={{ headerShown: false }} />
-            </SafeAreaProvider>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <ActionSheetProvider>
+              <SafeAreaProvider>
+                <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+                {/* No need for View wrapper — Stack will take up full screen */}
+                <Stack screenOptions={{ headerShown: false }} />
+              </SafeAreaProvider>
+            </ActionSheetProvider>
           </ThemeProvider>
         </ToastProvider>
       </AuthProvider>
