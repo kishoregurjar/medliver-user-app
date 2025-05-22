@@ -49,8 +49,10 @@ export default function NotificationsScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchNotifications();
-    }, [])
+      if (authUser && authUser.isAuthenticated) {
+        fetchNotifications();
+      }
+    }, [authUser])
   );
 
   const counts = {
@@ -67,11 +69,12 @@ export default function NotificationsScreen() {
 
   // Handle notification click: mark as read and navigate
   const handleNotificationPress = async (notification) => {
-    // If already read, just navigate
+    if (!authUser || !authUser.isAuthenticated) return;
+
     if (!notification.isRead) {
-      const { data, error } = await updateNotificationStatus({
-        method: "PUT", // or PATCH, depending on your API
-        url: `/user/update-notification-status`, // replace with your actual endpoint
+      const { error } = await updateNotificationStatus({
+        method: "PUT",
+        url: `/user/update-notification-status`,
         data: { notificationId: notification._id },
         authRequired: true,
       });
@@ -81,7 +84,6 @@ export default function NotificationsScreen() {
         return;
       }
 
-      // Update local state immediately for responsiveness
       setNotifications((prev) =>
         prev.map((n) =>
           n._id === notification._id
@@ -91,8 +93,6 @@ export default function NotificationsScreen() {
       );
     }
 
-    // Navigate to a page related to the notification
-    // Example: route to `/notification-details/[id]`
     router.push(`/notification-details/${notification._id}`);
   };
 
