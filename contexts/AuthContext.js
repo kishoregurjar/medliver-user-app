@@ -11,13 +11,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { AppSpinner } from "@/components/common/AppSpinner";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const useAuthUser = () => useContext(AuthContext);
 
+// ✅ Define default auth state
+const defaultAuthUser = {
+  isAuthenticated: false,
+  user: null,
+  token: null,
+};
+
 export const AuthProvider = ({ children }) => {
   const router = useRouter();
-  const [authUser, setAuthUser] = useState(null);
+  const [authUser, setAuthUser] = useState(defaultAuthUser);
   const [isAuthLoaded, setIsAuthLoaded] = useState(false);
 
   useEffect(() => {
@@ -38,36 +45,39 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (response) => {
-    const { token, role } = response;
+    const { token } = response;
+
     const userData = {
       user: response,
       isAuthenticated: true,
       token,
     };
+
     setAuthUser(userData);
+
     try {
       await AsyncStorage.setItem("authUser", JSON.stringify(userData));
     } catch (error) {
       console.error("Failed to save auth user:", error);
-      router.replace(ROUTE_PATH.AUTH.LOGIN);
+      router.replace("/auth/login"); // use your actual route
     }
   };
 
   const logout = async () => {
-    setAuthUser(null);
+    setAuthUser(defaultAuthUser);
     try {
       await AsyncStorage.removeItem("authUser");
     } catch (error) {
       console.error("Failed to remove auth user:", error);
     }
-    router.replace(ROUTE_PATH.AUTH.LOGIN);
+    router.replace("/auth/login"); // use your actual route
   };
 
   const updateUser = async (newUserData) => {
     if (!newUserData) return;
 
     setAuthUser((prev) => {
-      if (!prev) return null;
+      if (!prev) return defaultAuthUser;
 
       const updatedUser = {
         ...prev,
@@ -83,7 +93,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const value = useMemo(
-    () => ({ authUser, login, logout, updateUser }),
+    () => ({
+      authUser,
+      login,
+      logout,
+      updateUser,
+    }),
     [authUser]
   );
 

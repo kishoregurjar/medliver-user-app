@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import ROUTE_PATH from "@/routes/route.constants";
 import { useCart } from "@/contexts/CartContext";
+import { useAuthUser } from "@/contexts/AuthContext";
 
 const CustomTabBar = () => {
   const insets = useSafeAreaInsets();
@@ -17,6 +18,11 @@ const CustomTabBar = () => {
   const router = useRouter();
 
   const { itemTotal, itemCount } = useCart();
+  const { authUser } = useAuthUser();
+
+  console.log("authUser:", authUser);
+  
+
 
   const translateY = useSharedValue(100);
   const opacity = useSharedValue(0);
