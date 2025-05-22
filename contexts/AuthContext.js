@@ -10,6 +10,7 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { AppSpinner } from "@/components/common/AppSpinner";
+import ROUTE_PATH from "@/routes/route.constants";
 
 const AuthContext = createContext(null);
 
@@ -48,8 +49,8 @@ export const AuthProvider = ({ children }) => {
     const { token } = response;
 
     const userData = {
-      user: response,
       isAuthenticated: true,
+      user: response,
       token,
     };
 
@@ -59,7 +60,7 @@ export const AuthProvider = ({ children }) => {
       await AsyncStorage.setItem("authUser", JSON.stringify(userData));
     } catch (error) {
       console.error("Failed to save auth user:", error);
-      router.replace("/auth/login"); // use your actual route
+      router.replace(ROUTE_PATH.AUTH.LOGIN); // use your actual route
     }
   };
 
@@ -70,7 +71,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Failed to remove auth user:", error);
     }
-    router.replace("/auth/login"); // use your actual route
+    router.replace(ROUTE_PATH.AUTH.LOGIN); // use your actual route
   };
 
   const updateUser = async (newUserData) => {
