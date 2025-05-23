@@ -20,10 +20,8 @@ const CustomTabBar = () => {
   const { itemTotal, itemCount } = useCart();
   const { authUser } = useAuthUser();
 
-  console.log("authUser:", authUser);
+  // console.log("authUser log in tabbar:", authUser);
   
-
-
   const translateY = useSharedValue(100);
   const opacity = useSharedValue(0);
 
