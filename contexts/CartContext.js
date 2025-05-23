@@ -20,29 +20,34 @@ export const CartProvider = ({ children }) => {
   const { request: fetchCart } = useAxios();
   const { request: updateQty } = useAxios();
   const { request: removeItemApi } = useAxios();
-  const { request: addItemApi } = useAxios(); // ✅ New request hook for adding
+  const { request: addItemApi } = useAxios();
 
   const [cartItems, setCartItems] = useState([]);
-  const [lastQuantities, setLastQuantities] = useState({});
   const [localQuantities, setLocalQuantities] = useState({});
+  const [lastQuantities, setLastQuantities] = useState({});
+
   const timers = useRef({});
 
-  // ✅ Load cart on login or refresh
+  // 🚀 Load Cart on Login
   const loadCart = async () => {
     if (!authUser?.token) return;
+
     const { data, error } = await fetchCart({
       url: "/user/get-cart",
       method: "GET",
       authRequired: true,
     });
+
     if (!error) {
       const items = data?.data?.items || [];
-      setCartItems(items);
-      setLocalQuantities(
-        Object.fromEntries(
-          items.map((item) => [item.item_id._id, item.quantity])
-        )
+
+      // 🧼 Clean stale quantities
+      const cleanedQuantities = Object.fromEntries(
+        items.map((item) => [item.item_id._id, item.quantity])
       );
+
+      setCartItems(items);
+      setLocalQuantities(cleanedQuantities);
     }
   };
 
@@ -50,11 +55,10 @@ export const CartProvider = ({ children }) => {
     loadCart();
   }, [authUser]);
 
-  // ✅ Add to Cart (used in AddToCartModalButton)
   const addToCartItem = async (productId, quantity) => {
     const { data, error } = await addItemApi({
-      method: "POST",
       url: "/user/add-to-cart",
+      method: "POST",
       payload: {
         productId,
         quantity,
@@ -68,7 +72,7 @@ export const CartProvider = ({ children }) => {
       if (existing) {
         updateQuantity(productId, existing.quantity + quantity);
       } else {
-        const newItem = data?.data?.item; // if backend returns item
+        const newItem = data?.data?.item;
         if (newItem) {
           setCartItems((prev) => [...prev, newItem]);
           setLocalQuantities((prev) => ({
@@ -76,15 +80,17 @@ export const CartProvider = ({ children }) => {
             [productId]: quantity,
           }));
         } else {
-          await loadCart(); // fallback
+          await loadCart();
         }
       }
+
+      // 🎯 Persist last quantity
+      setLastQuantities((prev) => ({ ...prev, [productId]: quantity }));
     }
 
     return { data, error };
   };
 
-  // ✅ Debounced Quantity Update
   const updateQuantity = (productId, newQty) => {
     setLocalQuantities((prev) => ({ ...prev, [productId]: newQty }));
 
@@ -94,13 +100,13 @@ export const CartProvider = ({ children }) => {
       const item = cartItems.find((i) => i.item_id._id === productId);
       if (!item || item.quantity === newQty || newQty < 1) return;
 
-      setCartItems((prev) =>
-        prev.map((i) =>
-          i.item_id._id === productId ? { ...i, quantity: newQty } : i
-        )
+      const updatedCart = cartItems.map((i) =>
+        i.item_id._id === productId ? { ...i, quantity: newQty } : i
       );
 
-      const { data, error } = await updateQty({
+      setCartItems(updatedCart);
+
+      const { error } = await updateQty({
         url: "/user/change-cart-product-quantity",
         method: "PUT",
         payload: { itemId: productId, quantity: newQty, type: "Medicine" },
@@ -108,39 +114,47 @@ export const CartProvider = ({ children }) => {
       });
 
       if (!error) {
-        setLocalQuantities((prev) => ({ ...prev, [productId]: newQty }));
+        setLocalQuantities((prev) => ({
+          ...prev,
+          [productId]: newQty,
+        }));
       }
 
       delete timers.current[productId];
-
-      return { data, error };
     }, 600);
   };
 
-  // ✅ Remove Item
-  const removeCartItem = async (itemId) => {
+  const removeCartItem = async (productId) => {
     const { data, error } = await removeItemApi({
       url: "/user/remove-item-from-cart",
       method: "PUT",
-      payload: { itemId, type: "Medicine" },
+      payload: { itemId: productId, type: "Medicine" },
       authRequired: true,
     });
 
     if (!error) {
       setCartItems((prev) =>
-        prev.filter((item) => item.item_id._id !== itemId)
+        prev.filter((item) => item.item_id._id !== productId)
       );
+
+      // 🧼 Clean up both local and last quantity
       setLocalQuantities((prev) => {
-        const copy = { ...prev };
-        delete copy[itemId];
-        return copy;
+        const updated = { ...prev };
+        delete updated[productId];
+        return updated;
+      });
+
+      setLastQuantities((prev) => {
+        const updated = { ...prev };
+        delete updated[productId];
+        return updated;
       });
     }
 
     return { data, error };
   };
 
-  // ✅ Cart Totals
+  // ✅ Totals
   const itemTotal = useMemo(
     () =>
       cartItems.reduce(
@@ -160,19 +174,18 @@ export const CartProvider = ({ children }) => {
     [cartItems, localQuantities]
   );
 
-  const setLastQuantityForProduct = (productId, qty) => {
+  // 🎯 Persistent Quantity Utility
+  const setLastQuantityForProduct = (productId, qty) =>
     setLastQuantities((prev) => ({ ...prev, [productId]: qty }));
-  };
 
-  const getLastQuantityForProduct = (productId) => {
-    return lastQuantities[productId] || 1;
-  };
+  const getLastQuantityForProduct = (productId) =>
+    lastQuantities[productId] || 1;
 
   const value = useMemo(
     () => ({
       cartItems,
       localQuantities,
-      addToCartItem, // ✅ Available to components
+      addToCartItem,
       updateQuantity,
       removeCartItem,
       itemTotal,
