@@ -7,7 +7,7 @@ import {
   ToastAndroid,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import useAxios from "@/hooks/useAxios";
@@ -95,39 +95,6 @@ export default function MyPrescriptionScreen() {
     );
   };
 
-  const renderPrescription = useCallback(
-    ({ item }) => (
-      <UserPrescriptionCard
-        item={item}
-        onPress={() => router.push(`/prescription/${item._id}`)}
-        onDelete={() => handleDelete(item._id)}
-      />
-    ),
-    []
-  );
-
-  const renderFooter = () => {
-    if (currentPage > totalPages || prescriptions.length === 0) return null;
-
-    return (
-      <TouchableOpacity
-        onPress={() => fetchMyPrescriptions()}
-        disabled={loading}
-        className={`mt-4 mb-6 px-4 py-2 rounded-full items-center ${
-          loading ? "bg-brand-primary/50" : "bg-brand-primary"
-        }`}
-      >
-        <Text
-          className={`font-lexend-medium ${
-            loading ? "text-gray-500" : "text-white"
-          }`}
-        >
-          {loading ? "Loading..." : "Load More"}
-        </Text>
-      </TouchableOpacity>
-    );
-  };
-
   return (
     <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="My Prescriptions" />
@@ -148,13 +115,39 @@ export default function MyPrescriptionScreen() {
           <FlatList
             data={prescriptions}
             keyExtractor={(item) => item._id}
-            renderItem={renderPrescription}
+            renderItem={({ item }) => (
+              <UserPrescriptionCard
+                item={item}
+                onPress={() =>
+                  router.push(`/account/prescriptions/${item._id}`)
+                }
+                onDelete={() => handleDelete(item._id)}
+              />
+            )}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
             showsVerticalScrollIndicator={false}
-            ListFooterComponent={renderFooter}
             contentContainerStyle={{ paddingBottom: 32 }}
+            ListFooterComponent={
+              currentPage <= totalPages && prescriptions.length > 0 ? (
+                <TouchableOpacity
+                  onPress={() => fetchMyPrescriptions()}
+                  disabled={loading}
+                  className={`mt-4 mb-6 px-4 py-2 rounded-full items-center ${
+                    loading ? "bg-brand-primary/50" : "bg-brand-primary"
+                  }`}
+                >
+                  <Text
+                    className={`font-lexend-medium ${
+                      loading ? "text-gray-500" : "text-white"
+                    }`}
+                  >
+                    {loading ? "Loading..." : "Load More"}
+                  </Text>
+                </TouchableOpacity>
+              ) : null
+            }
           />
         )}
       </View>

@@ -1,0 +1,131 @@
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  Linking,
+} from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import AppLayout from "@/components/layouts/AppLayout";
+import HeaderWithBack from "@/components/common/HeaderWithBack";
+import useAxios from "@/hooks/useAxios";
+
+export default function ViewPrescriptionScreen() {
+  const { prescriptionId } = useLocalSearchParams();
+  const { request, loading } = useAxios();
+  const [prescription, setPrescription] = useState(null);
+
+  console.log("prescriptionId", prescriptionId);
+
+  const fetchPrescription = async () => {
+    const { data, error } = await request({
+      method: "GET",
+      url: `/user/get-prescription-details-by-id`,
+      authRequired: true,
+      params: { prescriptionId },
+    });
+
+    if (error || data?.status !== 200) {
+      Alert.alert("Error", "Failed to fetch prescription.");
+      return;
+    }
+
+    setPrescription(data.data);
+  };
+
+  useEffect(() => {
+    fetchPrescription();
+  }, [prescriptionId]);
+
+  const openLink = (url) => {
+    Linking.openURL(url).catch(() =>
+      Alert.alert("Error", "Unable to open the link.")
+    );
+  };
+
+  if (loading || !prescription) {
+    return (
+      <AppLayout>
+        <HeaderWithBack showBackButton title="Prescription Details" />
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="#4F46E5" />
+        </View>
+      </AppLayout>
+    );
+  }
+
+  const {
+    status,
+    created_at,
+    bill_path,
+    prescriptions: images = [],
+    remarks,
+  } = prescription;
+
+  return (
+    <AppLayout>
+      <HeaderWithBack showBackButton title="Prescription Details" />
+
+      <ScrollView contentContainerStyle={{ padding: 16 }}>
+        <View className="bg-white p-4 rounded-2xl shadow-sm">
+          <Text className="text-lg font-lexend-semibold mb-2">Status:</Text>
+          <Text className="text-brand-primary font-lexend-medium capitalize">
+            {status}
+          </Text>
+
+          <Text className="text-lg font-lexend-semibold mt-4 mb-2">
+            Submitted At:
+          </Text>
+
+          {remarks && (
+            <>
+              <Text className="text-lg font-lexend-semibold mt-4 mb-2">
+                Remarks:
+              </Text>
+              <Text className="text-gray-700">{remarks}</Text>
+            </>
+          )}
+
+          {bill_path && (
+            <TouchableOpacity
+              onPress={() => openLink(bill_path)}
+              className="mt-6 flex-row items-center space-x-2"
+            >
+              <Ionicons
+                name="document-text-outline"
+                size={24}
+                color="#4F46E5"
+              />
+              <Text className="text-brand-primary underline font-lexend-medium">
+                View Bill
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        <View className="mt-6">
+          <Text className="text-lg font-lexend-semibold mb-3">
+            Prescription Images:
+          </Text>
+          {images.length === 0 ? (
+            <Text className="text-gray-500">No images uploaded</Text>
+          ) : (
+            images.map((img, index) => (
+              <Image
+                key={index}
+                source={{ uri: img.path }}
+                className="w-full h-64 mb-4 rounded-xl"
+                resizeMode="cover"
+              />
+            ))
+          )}
+        </View>
+      </ScrollView>
+    </AppLayout>
+  );
+}
