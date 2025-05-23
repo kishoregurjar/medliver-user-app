@@ -23,6 +23,7 @@ export const CartProvider = ({ children }) => {
   const { request: addItemApi } = useAxios(); // ✅ New request hook for adding
 
   const [cartItems, setCartItems] = useState([]);
+  const [lastQuantities, setLastQuantities] = useState({});
   const [localQuantities, setLocalQuantities] = useState({});
   const timers = useRef({});
 
@@ -159,6 +160,14 @@ export const CartProvider = ({ children }) => {
     [cartItems, localQuantities]
   );
 
+  const setLastQuantityForProduct = (productId, qty) => {
+    setLastQuantities((prev) => ({ ...prev, [productId]: qty }));
+  };
+
+  const getLastQuantityForProduct = (productId) => {
+    return lastQuantities[productId] || 1;
+  };
+
   const value = useMemo(
     () => ({
       cartItems,
@@ -169,6 +178,8 @@ export const CartProvider = ({ children }) => {
       itemTotal,
       itemCount,
       reloadCart: loadCart,
+      setLastQuantityForProduct,
+      getLastQuantityForProduct,
     }),
     [cartItems, localQuantities, itemTotal, itemCount]
   );

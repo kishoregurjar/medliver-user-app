@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { formatNumber, formatPrice } from "@/utils/format";
 import STATIC from "@/utils/constants";
+import AddToCartModalButton from "../modals/AddToCartModalButton";
 
 const PharmacyProductCard = ({
   item,
@@ -158,12 +159,7 @@ const PharmacyProductCard = ({
 
       {/* Add to Cart */}
       {showAddToCart && (
-        <TouchableOpacity className="flex-row items-center justify-center rounded-lg py-1">
-          <Ionicons name="add" size={16} color="#E2AD5F" />
-          <Text className="text-brand-secondary text-sm font-lexend-semibold ml-1">
-            Add to Cart
-          </Text>
-        </TouchableOpacity>
+        <AddToCartModalButton product={product} variant="icon" />
       )}
     </TouchableOpacity>
   );
