@@ -45,14 +45,12 @@
           }
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
     },
-    // "notifications":{
-    //    "vapidPublicKey": "BMlqa2AGc04Gwa8NCeTw9nsY9x0ZGTEPBGtCxpHTihLfxfyiqwqM3YDVAZRQ5WovUKGzM1kumMcS0v3KL2PR-Ks"
-    // },
     "extra": {
       "router": {
         "origin": false
