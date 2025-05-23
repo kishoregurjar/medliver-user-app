@@ -17,7 +17,6 @@ import useAxios from "@/hooks/useAxios";
 
 export default function ViewPrescriptionScreen() {
   const { prescriptionId } = useLocalSearchParams();
-  console.log("Prescription ID:", prescriptionId);
   const { request, loading } = useAxios();
   const [prescription, setPrescription] = useState(null);
 
@@ -29,12 +28,11 @@ export default function ViewPrescriptionScreen() {
       params: { prescriptionId },
     });
 
-    if (error || data?.status !== 200) {
+    if (data?.status === 200 && data?.data) {
+      setPrescription(data.data.prescription);
+    } else {
       Alert.alert("Error", "Failed to fetch prescription.");
-      return;
     }
-
-    setPrescription(data.data);
   };
 
   useEffect(() => {
@@ -47,13 +45,37 @@ export default function ViewPrescriptionScreen() {
     );
   };
 
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  };
+
   if (loading || !prescription) {
     return (
       <AppLayout>
         <HeaderWithBack showBackButton title="Prescription Details" />
-        <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#4F46E5" />
-        </View>
+        <ScrollView contentContainerStyle={{ padding: 16 }}>
+          <View className="bg-white p-4 rounded-2xl shadow-sm">
+            <View className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-2" />
+            <View className="h-4 w-32 bg-gray-200 rounded animate-pulse mb-4" />
+            <View className="h-4 w-36 bg-gray-200 rounded animate-pulse mb-2" />
+            <View className="h-4 w-48 bg-gray-200 rounded animate-pulse mb-4" />
+            <View className="h-4 w-40 bg-gray-200 rounded animate-pulse mb-2" />
+            <View className="h-4 w-28 bg-gray-200 rounded animate-pulse mb-4" />
+            <View className="h-4 w-36 bg-gray-200 rounded animate-pulse mb-2" />
+            <View className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-4" />
+          </View>
+
+          <View className="mt-6">
+            <View className="h-5 w-48 bg-gray-200 rounded animate-pulse mb-4" />
+            {[...Array(2)].map((_, i) => (
+              <View
+                key={i}
+                className="w-full h-64 mb-4 rounded-xl bg-gray-200 animate-pulse"
+              />
+            ))}
+          </View>
+        </ScrollView>
       </AppLayout>
     );
   }
@@ -64,6 +86,9 @@ export default function ViewPrescriptionScreen() {
     bill_path,
     prescriptions: images = [],
     remarks,
+    total_amount,
+    assigned_delivery_partner,
+    assigned_pharmacy,
   } = prescription;
 
   return (
@@ -74,11 +99,35 @@ export default function ViewPrescriptionScreen() {
         <View className="bg-white p-4 rounded-2xl shadow-sm">
           <Text className="text-lg font-lexend-semibold mb-2">Status:</Text>
           <Text className="text-brand-primary font-lexend-medium capitalize">
-            {status}
+            {status || "N/A"}
           </Text>
 
           <Text className="text-lg font-lexend-semibold mt-4 mb-2">
             Submitted At:
+          </Text>
+          <Text className="text-gray-700 font-lexend-medium">
+            {formatDate(created_at)}
+          </Text>
+
+          <Text className="text-lg font-lexend-semibold mt-4 mb-2">
+            Total Amount:
+          </Text>
+          <Text className="text-gray-700 font-lexend-medium">
+            ₹{total_amount?.toFixed(2) ?? "0.00"}
+          </Text>
+
+          <Text className="text-lg font-lexend-semibold mt-4 mb-2">
+            Assigned Pharmacy:
+          </Text>
+          <Text className="text-gray-700 font-lexend-medium">
+            {assigned_pharmacy?.name || "Not assigned"}
+          </Text>
+
+          <Text className="text-lg font-lexend-semibold mt-4 mb-2">
+            Assigned Delivery Partner:
+          </Text>
+          <Text className="text-gray-700 font-lexend-medium">
+            {assigned_delivery_partner?.name || "Not assigned"}
           </Text>
 
           {remarks && (
