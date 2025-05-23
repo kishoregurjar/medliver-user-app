@@ -18,8 +18,8 @@ import { useRouter } from "expo-router";
 
 export default function MyPrescriptionScreen() {
   const [prescriptions, setPrescriptions] = useState([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
 
@@ -28,11 +28,11 @@ export default function MyPrescriptionScreen() {
   const router = useRouter();
 
   const fetchMyPrescriptions = async (reset = false) => {
-    const currentPage = reset ? 1 : page;
+    const pageToFetch = reset ? 1 : currentPage;
 
     const { data, error } = await getMyPrescriptions({
       method: "GET",
-      url: `/user/get-all-prescriptions?page=${currentPage}`,
+      url: `/user/get-all-prescriptions?page=${pageToFetch}`,
       authRequired: true,
     });
 
@@ -42,16 +42,17 @@ export default function MyPrescriptionScreen() {
     }
 
     const fetched = data?.data?.prescriptions ?? [];
+    const totalPagesFromApi = data?.data?.totalPages ?? 1;
 
     if (reset) {
       setPrescriptions(fetched);
-      setPage(2);
+      setCurrentPage(2); // Start from next page
     } else {
       setPrescriptions((prev) => [...prev, ...fetched]);
-      setPage((prev) => prev + 1);
+      setCurrentPage((prev) => prev + 1);
     }
 
-    setHasMore(fetched.length > 0);
+    setTotalPages(totalPagesFromApi);
     if (initialLoading) setInitialLoading(false);
   };
 
@@ -106,13 +107,14 @@ export default function MyPrescriptionScreen() {
   );
 
   const renderFooter = () => {
-    if (!hasMore || prescriptions.length === 0) return null;
+    if (currentPage > totalPages || prescriptions.length === 0) return null;
+
     return (
       <TouchableOpacity
         onPress={() => fetchMyPrescriptions()}
         disabled={loading}
         className={`mt-4 mb-6 px-4 py-2 rounded-full items-center ${
-          loading ? "bg-brand-primary" : "bg-primary"
+          loading ? "bg-brand-primary/50" : "bg-brand-primary"
         }`}
       >
         <Text
@@ -127,7 +129,7 @@ export default function MyPrescriptionScreen() {
   };
 
   return (
-    <AppLayout>
+    <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="My Prescriptions" />
 
       <View className="p-4 flex-1">
