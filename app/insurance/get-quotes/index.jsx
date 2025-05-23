@@ -25,10 +25,6 @@ const GetQuotesScreen = () => {
           className="bg-brand-primary w-full py-4 rounded-lg items-center"
           style={{
             elevation: Platform.OS === "android" ? 4 : 0,
-            shadowColor: "#000",
-            shadowOpacity: 0.1,
-            shadowRadius: 8,
-            shadowOffset: { width: 0, height: 4 },
           }}
           onPress={() => {
             router.push(ROUTE_PATH.APP.INSURANCE.SUBMIT_ENQUIRY);

@@ -140,7 +140,7 @@ export default function MyAddressesScreen() {
 
       {/* Add Address Floating Button */}
       <TouchableOpacity
-        className="absolute bottom-6 right-6 bg-brand-primary p-4 rounded-full shadow-lg flex-row items-center justify-center space-x-1"
+        className="absolute bottom-6 right-6 bg-brand-primary p-4 rounded-full flex-row items-center justify-center space-x-1"
         onPress={() => router.push("/account/addresses/add-address")}
       >
         <MaterialIcons name="add-location-alt" size={24} color="white" />

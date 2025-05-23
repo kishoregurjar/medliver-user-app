@@ -74,7 +74,7 @@ const CustomTabBar = () => {
           bottom: insets.bottom > 0 ? insets.bottom : 16, // Pushes the whole bar up on iOS safely
         },
       ]}
-      className="absolute left-4 right-4 h-[70px] z-50 bg-brand-primary rounded-full flex-row justify-around items-center shadow-md shadow-black/10 overflow-hidden"
+      className="absolute left-4 right-4 h-[70px] z-50 bg-brand-primary rounded-full flex-row justify-around items-center overflow-hidden"
     >
       {tabs.map((tab) => {
         const isActive = pathname.includes(tab.name);

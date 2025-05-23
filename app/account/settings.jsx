@@ -30,7 +30,7 @@ const SettingsScreen = () => {
           showsVerticalScrollIndicator={false}
         >
           {/* Settings Options Section */}
-          <View className="bg-white p-4 rounded-3xl shadow-md">
+          <View className="bg-white p-4 rounded-3xl">
             {settingsOptions.map((item, index) => (
               <TouchableOpacity
                 key={index}

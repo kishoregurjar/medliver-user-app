@@ -19,7 +19,7 @@ export default function HomeScreen() {
       <View className="pb-36 px-4">
         <Pressable
           onPress={() => router.push("/livvie-chat")}
-          className="p-4 rounded-2xl bg-accent-softIndigo flex-row items-center justify-between shadow-lg"
+          className="p-4 rounded-2xl bg-accent-softIndigo flex-row items-center justify-between"
         >
           <View className="flex-1">
             <Text className="text-lg font-lexend-bold text-white mb-1">

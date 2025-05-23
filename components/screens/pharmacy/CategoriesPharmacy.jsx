@@ -31,7 +31,7 @@ const CategoriesPharmacy = () => {
           <TouchableOpacity
             key={i}
             activeOpacity={0.8}
-            className="bg-white rounded-2xl items-center justify-center p-4 w-28 mr-4 shadow-sm"
+            className="bg-white rounded-2xl items-center justify-center p-4 w-28 mr-4"
           >
             {/* Icon Circle */}
             <View className="bg-background-soft p-3 rounded-full mb-2">

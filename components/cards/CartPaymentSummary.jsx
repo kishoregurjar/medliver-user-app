@@ -17,7 +17,7 @@ export default function CartPaymentSummary({
   onCheckoutPress,
 }) {
   return (
-    <View className="bg-white border border-background-surface p-4 rounded-xl shadow-md mt-4">
+    <View className="bg-white border border-background-surface p-4 rounded-xl mt-4">
       <Text className="text-lg font-lexend-semibold text-text-muted">
         Payment Details
       </Text>

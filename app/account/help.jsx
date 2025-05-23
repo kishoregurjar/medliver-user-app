@@ -107,7 +107,7 @@ export default function HelpScreen() {
         </TouchableOpacity>
 
         {/* Popular Questions */}
-        <View className="bg-white p-5 mb-4 rounded-3xl shadow-sm gap-4">
+        <View className="bg-white p-5 mb-4 rounded-3xl gap-4">
           <Text className="text-lg font-bold text-gray-900">
             Popular Questions
           </Text>
@@ -138,14 +138,14 @@ export default function HelpScreen() {
         </View>
 
         {/* Other Topics */}
-        <View className="bg-white p-5 mb-4 rounded-3xl shadow-sm">
+        <View className="bg-white p-5 mb-4 rounded-3xl">
           <Text className="text-lg font-bold text-gray-900">Other Topics</Text>
           <View className="flex-row flex-wrap justify-between">
             {otherTopics.map((topic, idx) => (
               <TouchableOpacity
                 key={idx}
                 onPress={topic.onPress}
-                className="w-[48%] bg-white p-4 mb-3 rounded-2xl shadow-sm items-start"
+                className="w-[48%] bg-white p-4 mb-3 rounded-2xl items-start"
               >
                 <MaterialIcons name={topic.icon} size={24} color="#5C59FF" />
                 <Text className="mt-3 text-base font-medium text-gray-800">

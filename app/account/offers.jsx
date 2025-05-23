@@ -39,7 +39,7 @@ const OffersScreen = () => {
           showsVerticalScrollIndicator={false}
         >
           {/* Offers List Section */}
-          <View className="bg-white p-4 rounded-3xl shadow-md">
+          <View className="bg-white p-4 rounded-3xl">
             {offersData.map((offer, index) => (
               <View
                 key={index}

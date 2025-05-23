@@ -131,7 +131,7 @@ const InsuranceEnquiryScreen = () => {
           onPress={handleSubmit(onSubmit, (formErrors) =>
             console.log("Form Validation Errors:", formErrors)
           )}
-          className="mt-6 py-4 rounded-xl bg-brand-primary shadow-md active:opacity-80"
+          className="mt-6 py-4 rounded-xl bg-brand-primary active:opacity-80"
         >
           <Text className="text-white text-center text-base font-lexend-bold">
             Submit Enquiry

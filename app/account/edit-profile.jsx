@@ -297,7 +297,7 @@ export default function EditProfileScreen() {
 
               {/* Edit Button */}
               <TouchableOpacity
-                className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow"
+                className="absolute bottom-0 right-0 bg-white p-2 rounded-full"
                 onPress={openAvatarOptions}
                 disabled={uploading}
               >

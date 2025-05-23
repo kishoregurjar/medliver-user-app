@@ -26,7 +26,7 @@ const UserAddressCard = ({
   if (!_id) return null;
 
   return (
-    <View className="bg-white rounded-3xl p-5 border border-gray-200 shadow-sm my-3">
+    <View className="bg-white rounded-3xl p-5 border border-gray-200 my-3">
       {/* Header Row */}
       <View className="flex-row items-center justify-between mb-3">
         <View className="flex-row items-center space-x-2">

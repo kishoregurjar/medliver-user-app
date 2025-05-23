@@ -27,7 +27,7 @@ export default function CartPromoCodeInput({
           value={promoCode}
           onChangeText={onChangeCode}
           placeholder="Enter Promo Code"
-          className="bg-white p-5 rounded-xl font-lexend shadow-md mt-2"
+          className="bg-white p-5 rounded-xl font-lexend mt-2"
         />
       )}
     </View>

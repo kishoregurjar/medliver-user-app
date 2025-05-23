@@ -58,7 +58,7 @@ const PopularTestPathology = () => {
         {topTests.map((item, index) => (
           <View
             key={index}
-            className="w-48 bg-white rounded-2xl p-3 mr-4 border border-background-soft shadow-sm"
+            className="w-48 bg-white rounded-2xl p-3 mr-4 border border-background-soft"
           >
             <Image
               source={item.image}
