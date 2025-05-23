@@ -15,6 +15,7 @@ import HeaderWithBack from "@/components/common/HeaderWithBack";
 import useAxios from "@/hooks/useAxios";
 import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
 import SkeletonPharmacyProductCard from "@/components/skeletons/SkeletonPharmacyProductCard";
+import FileUploader from "@/components/common/FileUploader";
 
 export default function SearchMedicineScreen() {
   const [query, setQuery] = useState("");
@@ -134,6 +135,26 @@ export default function SearchMedicineScreen() {
             </View>
           )}
 
+          {/* Have a Prescription */}
+          <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
+            Have a Doctor's Prescription?
+          </Text>
+          <Text className="text-sm font-lexend-medium text-gray-600 mb-3">
+            Upload your prescription and get your medicines delivered to your
+            doorstep.
+          </Text>
+          <View className="p-2">
+            <FileUploader
+              url="/user/upload-prescription"
+              allowedTypes={["image/png", "image/jpeg", "application/pdf"]}
+              maxFileSize={5}
+              maxFiles={5}
+              onSuccess={(data) => {
+                console.log("File Upload Success:", data);
+              }}
+              onError={(err) => console.log("File Upload Error:", err)}
+            />
+          </View>
           {/* Products Section */}
           <View className="mb-6">
             {query?.length > 0 ? (
