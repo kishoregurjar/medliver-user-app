@@ -17,10 +17,9 @@ import useAxios from "@/hooks/useAxios";
 
 export default function ViewPrescriptionScreen() {
   const { prescriptionId } = useLocalSearchParams();
+  console.log("Prescription ID:", prescriptionId);
   const { request, loading } = useAxios();
   const [prescription, setPrescription] = useState(null);
-
-  console.log("prescriptionId", prescriptionId);
 
   const fetchPrescription = async () => {
     const { data, error } = await request({

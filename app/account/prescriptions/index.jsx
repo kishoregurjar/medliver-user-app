@@ -115,15 +115,17 @@ export default function MyPrescriptionScreen() {
           <FlatList
             data={prescriptions}
             keyExtractor={(item) => item._id}
-            renderItem={({ item }) => (
-              <UserPrescriptionCard
-                item={item}
-                onPress={() =>
-                  router.push(`/account/prescriptions/${item._id}`)
-                }
-                onDelete={() => handleDelete(item._id)}
-              />
-            )}
+            renderItem={({ item }) => {
+              return (
+                <UserPrescriptionCard
+                  item={item}
+                  onPress={() => {
+                    router.push(`/account/prescriptions/${item._id}`);
+                  }}
+                  onDelete={() => handleDelete(item._id)}
+                />
+              );
+            }}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
