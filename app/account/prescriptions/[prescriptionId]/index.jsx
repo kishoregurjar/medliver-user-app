@@ -54,28 +54,16 @@ export default function ViewPrescriptionScreen() {
     return (
       <AppLayout>
         <HeaderWithBack showBackButton title="Prescription Details" />
-        <ScrollView contentContainerStyle={{ padding: 16 }}>
-          <View className="bg-white p-4 rounded-2xl shadow-sm">
-            <View className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-2" />
-            <View className="h-4 w-32 bg-gray-200 rounded animate-pulse mb-4" />
-            <View className="h-4 w-36 bg-gray-200 rounded animate-pulse mb-2" />
-            <View className="h-4 w-48 bg-gray-200 rounded animate-pulse mb-4" />
-            <View className="h-4 w-40 bg-gray-200 rounded animate-pulse mb-2" />
-            <View className="h-4 w-28 bg-gray-200 rounded animate-pulse mb-4" />
-            <View className="h-4 w-36 bg-gray-200 rounded animate-pulse mb-2" />
-            <View className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-4" />
-          </View>
-
-          <View className="mt-6">
-            <View className="h-5 w-48 bg-gray-200 rounded animate-pulse mb-4" />
-            {[...Array(2)].map((_, i) => (
-              <View
-                key={i}
-                className="w-full h-64 mb-4 rounded-xl bg-gray-200 animate-pulse"
-              />
-            ))}
-          </View>
-        </ScrollView>
+        <View className="bg-white m-4 p-4 rounded-2xl flex gap-2">
+          <View className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-2" />
+          <View className="h-4 w-32 bg-gray-200 rounded animate-pulse mb-4" />
+          <View className="h-4 w-36 bg-gray-200 rounded animate-pulse mb-2" />
+          <View className="h-4 w-48 bg-gray-200 rounded animate-pulse mb-4" />
+          <View className="h-4 w-40 bg-gray-200 rounded animate-pulse mb-2" />
+          <View className="h-4 w-28 bg-gray-200 rounded animate-pulse mb-4" />
+          <View className="h-4 w-36 bg-gray-200 rounded animate-pulse mb-2" />
+          <View className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-4" />
+        </View>
       </AppLayout>
     );
   }
