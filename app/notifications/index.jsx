@@ -5,6 +5,7 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
@@ -12,19 +13,19 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useAuthUser } from "@/contexts/AuthContext";
 import useAxios from "@/hooks/useAxios";
 import { formatDistanceToNow } from "date-fns";
+import { Divider } from "@/components/ui/divider";
 
 const tabs = ["All", "Unread", "Read"];
 
 export default function NotificationsScreen() {
   const [activeTab, setActiveTab] = useState("Unread");
   const [notifications, setNotifications] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const router = useRouter();
   const { authUser } = useAuthUser();
   const { request: getNotifications, loading: loadingNotifications } =
     useAxios();
-
-  // For updating notification status
   const { request: updateNotificationStatus } = useAxios();
 
   const fetchNotifications = async () => {
@@ -55,6 +56,12 @@ export default function NotificationsScreen() {
     }, [authUser])
   );
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchNotifications();
+    setRefreshing(false);
+  };
+
   const counts = {
     All: notifications.length,
     Unread: notifications.filter((n) => !n.isRead).length,
@@ -67,7 +74,6 @@ export default function NotificationsScreen() {
     return true;
   });
 
-  // Handle notification click: mark as read and navigate
   const handleNotificationPress = async (notification) => {
     if (!authUser || !authUser.isAuthenticated) return;
 
@@ -96,9 +102,24 @@ export default function NotificationsScreen() {
     router.push(`/notification-details/${notification._id}`);
   };
 
+  const renderSkeletons = () => {
+    return Array.from({ length: 6 }).map((_, index) => (
+      <View
+        key={index}
+        className="p-4 border-b border-gray-100 flex-row justify-between items-start animate-pulse"
+      >
+        <View className="flex-1 pr-2">
+          <View className="w-3/4 h-4 bg-gray-200 rounded mb-2" />
+          <View className="w-full h-3 bg-gray-200 rounded mb-1.5" />
+          <View className="w-1/2 h-3 bg-gray-200 rounded" />
+        </View>
+        <View className="w-2 h-2 rounded-full bg-gray-300 mt-1" />
+      </View>
+    ));
+  };
+
   return (
     <AppLayout scroll={false}>
-      {/* Header */}
       <HeaderWithBack
         showBackButton
         title="Notifications"
@@ -106,7 +127,7 @@ export default function NotificationsScreen() {
         backTo="/home"
       />
 
-      {/* Tabs with badges */}
+      {/* Tabs */}
       <View className="flex-row bg-white justify-around py-2 mb-2 rounded-xl">
         {tabs.map((tab) => {
           const isActive = activeTab === tab;
@@ -137,15 +158,15 @@ export default function NotificationsScreen() {
         })}
       </View>
 
-      {/* Loading Spinner */}
       {loadingNotifications ? (
-        <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#5C59FF" />
-        </View>
+        renderSkeletons()
       ) : (
         <FlatList
           data={filteredNotifications}
           keyExtractor={(item) => item._id?.toString() || item.id?.toString()}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => handleNotificationPress(item)}
@@ -169,6 +190,8 @@ export default function NotificationsScreen() {
               {!item.isRead && (
                 <View className="w-2 h-2 rounded-full bg-brand-primary mt-1" />
               )}
+              {/* Diivider line */}
+              <View className="w-1 h-full bg-gray-200 ml-2" />
             </TouchableOpacity>
           )}
           ListEmptyComponent={

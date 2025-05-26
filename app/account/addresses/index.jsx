@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  RefreshControl,
+} from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -13,6 +20,7 @@ export default function MyAddressesScreen() {
   const [addresses, setAddresses] = useState([]);
   const [defaultAddressId, setDefaultAddressId] = useState(null);
   const [activeSetId, setActiveSetId] = useState(null);
+  const [refreshing, setRefreshing] = useState(false); // new
 
   const router = useRouter();
   const { request: getAllAddresses, loading: loadingAddresses } = useAxios();
@@ -38,6 +46,12 @@ export default function MyAddressesScreen() {
       if (defaultAddr) setDefaultAddressId(defaultAddr._id);
     }
   };
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchUserAddresses();
+    setRefreshing(false);
+  }, []);
 
   const handleSetDefault = async (id) => {
     if (id === defaultAddressId || settingDefaultLoading) return;
@@ -89,10 +103,8 @@ export default function MyAddressesScreen() {
               return;
             }
 
-            // Remove from UI
             setAddresses((prev) => prev.filter((addr) => addr._id !== id));
 
-            // If deleted address was default, unset it
             if (defaultAddressId === id) {
               setDefaultAddressId(null);
             }
@@ -104,7 +116,7 @@ export default function MyAddressesScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchUserAddresses(); // Refetch on screen focus
+      fetchUserAddresses();
     }, [])
   );
 
@@ -113,9 +125,11 @@ export default function MyAddressesScreen() {
       <HeaderWithBack showBackButton title="My Addresses" />
 
       {loadingAddresses ? (
-        Array.from({ length: 3 }, (_, index) => (
-          <SkeletonAddressCard key={`skeleton-${index}`} />
-        ))
+        <View className="flex gap-2 my-4">
+          {Array.from({ length: 3 }, (_, index) => (
+            <SkeletonAddressCard key={`skeleton-${index}`} />
+          ))}
+        </View>
       ) : addresses.length === 0 ? (
         <View className="flex-1 items-center justify-center">
           <Text className="text-xl font-semibold text-gray-700">
@@ -123,7 +137,12 @@ export default function MyAddressesScreen() {
           </Text>
         </View>
       ) : (
-        <ScrollView className="py-4 pb-20">
+        <ScrollView
+          className="py-4 pb-20"
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           {addresses.map((addr) => (
             <UserAddressCard
               key={addr._id}
@@ -138,7 +157,6 @@ export default function MyAddressesScreen() {
         </ScrollView>
       )}
 
-      {/* Add Address Floating Button */}
       <TouchableOpacity
         className="absolute bottom-6 right-6 bg-brand-primary p-4 rounded-full flex-row items-center justify-center space-x-1"
         onPress={() => router.push("/account/addresses/add-address")}

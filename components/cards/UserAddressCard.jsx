@@ -59,7 +59,7 @@ const UserAddressCard = ({
       </View>
 
       {/* Action Buttons */}
-      <View className="flex-row justify-between pt-1">
+      <View className="flex-row justify-end pt-1">
         {/* Left Side (Edit + Delete) */}
         <View className="flex-row gap-2">
           {typeof onEdit === "function" && (
@@ -81,10 +81,24 @@ const UserAddressCard = ({
               <Text className="ml-1 text-sm text-red-600">Remove</Text>
             </TouchableOpacity>
           )}
+          {!is_default && typeof onSetDefault === "function" && (
+            <TouchableOpacity
+              className="flex-row items-center px-3 py-1 rounded-lg bg-indigo-100"
+              onPress={() => onSetDefault(_id)}
+              disabled={settingDefault}
+            >
+              <MaterialIcons name="check-circle" size={16} color="#5C59FF" />
+              <Text className="ml-1 text-sm text-indigo-600">
+                {settingDefault && activeSetId === _id
+                  ? "Setting..."
+                  : "Set Default"}
+              </Text>
+            </TouchableOpacity>
+          )}  
         </View>
 
         {/* Right Side (Set Default) */}
-        {!is_default && typeof onSetDefault === "function" && (
+        {/* {!is_default && typeof onSetDefault === "function" && (
           <TouchableOpacity
             className="flex-row items-center px-3 py-1 rounded-lg bg-indigo-100"
             onPress={() => onSetDefault(_id)}
@@ -97,7 +111,7 @@ const UserAddressCard = ({
                 : "Set Default"}
             </Text>
           </TouchableOpacity>
-        )}
+        )} */}
       </View>
     </View>
   );
