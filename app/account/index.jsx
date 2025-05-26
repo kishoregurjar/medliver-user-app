@@ -191,26 +191,23 @@ const AccountScreen = () => {
         {/* Bottom Action */}
         <View className="h-px bg-gray-200 mt-4" />
 
-        <View className="w-full mt-0 rounded-2xl bg-brand-primary/90 absolute bottom-0">
+        <View className="w-full px-4 pb-6 absolute bottom-0">
           <TouchableOpacity
-            className="flex-row items-center justify-between p-3 rounded-xl"
-            activeOpacity={0.7}
+            activeOpacity={0.6}
             onPress={
               isGuest ? () => router.push(ROUTE_PATH.AUTH.LOGIN) : handleLogout
             }
+            className="rounded-2xl flex-row items-center justify-center px-4 py-3 space-x-3"
           >
-            <View className="flex-row items-center space-x-3">
-              <View className="w-8 h-8 bg-white/20 rounded-xl items-center justify-center flex">
-                <Ionicons
-                  name={isGuest ? "log-in-outline" : "log-out-outline"}
-                  size={24}
-                  color="white"
-                />
-              </View>
-              <Text className="text-base font-lexend-bold text-white">
-                {isGuest ? "Sign In" : "Logout"}
-              </Text>
-            </View>
+            <Ionicons
+              name={isGuest ? "log-in-outline" : "log-out-outline"}
+              size={28}
+              color="#B31F24"
+              className="mr-2"
+            />
+            <Text className="text-brand-primary text-lg font-lexend-semibold">
+              {isGuest ? "Sign In" : "Logout"}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
