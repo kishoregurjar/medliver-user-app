@@ -46,7 +46,7 @@ const TopPicksPharmacy = () => {
   }, []);
 
   return (
-    <View className="mb-6">
+    <View className="mb-24">
       {/* Header */}
       <View className="flex-row justify-between items-center mb-3 px-1">
         <Text className="text-lg font-lexend-bold text-text-primary">
