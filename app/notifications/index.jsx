@@ -14,6 +14,8 @@ import { useAuthUser } from "@/contexts/AuthContext";
 import useAxios from "@/hooks/useAxios";
 import { formatDistanceToNow } from "date-fns";
 import { Divider } from "@/components/ui/divider";
+import NotificationCard from "@/components/cards/NotificationCard";
+import SkeletonNotificationCard from "@/components/skeletons/SkeletonNotificationCard";
 
 const tabs = ["All", "Unread", "Read"];
 
@@ -104,17 +106,7 @@ export default function NotificationsScreen() {
 
   const renderSkeletons = () => {
     return Array.from({ length: 6 }).map((_, index) => (
-      <View
-        key={index}
-        className="p-4 border-b border-gray-100 flex-row justify-between items-start animate-pulse"
-      >
-        <View className="flex-1 pr-2">
-          <View className="w-3/4 h-4 bg-gray-200 rounded mb-2" />
-          <View className="w-full h-3 bg-gray-200 rounded mb-1.5" />
-          <View className="w-1/2 h-3 bg-gray-200 rounded" />
-        </View>
-        <View className="w-2 h-2 rounded-full bg-gray-300 mt-1" />
-      </View>
+      <SkeletonNotificationCard key={index} />
     ));
   };
 
@@ -168,31 +160,10 @@ export default function NotificationsScreen() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           renderItem={({ item }) => (
-            <TouchableOpacity
+            <NotificationCard
+              item={item}
               onPress={() => handleNotificationPress(item)}
-              className={`p-4 border-b border-gray-100 flex-row justify-between items-start ${
-                !item.isRead ? "bg-gray-50" : ""
-              }`}
-            >
-              <View className="flex-1 pr-2">
-                <Text className="font-lexend-semibold text-black">
-                  {item.title}
-                </Text>
-                <Text className="text-sm font-lexend text-gray-600 mt-1">
-                  {item.subtitle}
-                </Text>
-                <Text className="text-xs font-lexend text-text-muted mt-1">
-                  {formatDistanceToNow(new Date(item.timestamp), {
-                    addSuffix: true,
-                  })}
-                </Text>
-              </View>
-              {!item.isRead && (
-                <View className="w-2 h-2 rounded-full bg-brand-primary mt-1" />
-              )}
-              {/* Diivider line */}
-              <View className="w-1 h-full bg-gray-200 ml-2" />
-            </TouchableOpacity>
+            />
           )}
           ListEmptyComponent={
             <Text className="text-center text-text-muted font-lexend mt-10">
