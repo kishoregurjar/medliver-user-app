@@ -33,12 +33,12 @@ const accountOptions = [
     path: "/account/orders",
     guest: false,
   },
-  {
-    label: "My Bookings",
-    icon: "calendar-outline",
-    path: "/account/bookings",
-    guest: false,
-  },
+  // {
+  //   label: "My Bookings",
+  //   icon: "calendar-outline",
+  //   path: "/account/bookings",
+  //   guest: false,
+  // },
   {
     label: "My Prescriptions",
     icon: "medkit-outline",
