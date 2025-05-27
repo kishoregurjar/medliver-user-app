@@ -1,14 +1,24 @@
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { format } from "date-fns";
+import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
 export default function OrderCard({ order }) {
+  const router = useRouter();
   const address = order.deliveryAddress;
   const date = format(new Date(order.orderDate), "dd MMM yyyy, hh:mm a");
 
+  const handlePress = () => {
+    router.push(`/account/orders/${order._id}`);
+  };
+
   return (
-    <View className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-gray-100">
+    <Pressable
+      onPress={handlePress}
+      className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-gray-100 active:opacity-80"
+    >
       <View className="flex-row justify-between items-center mb-2">
         <Text className="text-base font-lexend-semibold text-black">
           Order #{order._id.slice(-6).toUpperCase()}
@@ -42,6 +52,6 @@ export default function OrderCard({ order }) {
           {order.orderStatus}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
