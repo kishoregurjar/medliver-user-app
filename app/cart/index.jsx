@@ -70,7 +70,7 @@ export default function CartScreen() {
     );
   }
 
-  const handlePlaceOrder = (details) => {
+  const handlePlaceOrder = async (details) => {
     let initiateOrder = {
       item_ids: cartItems.map((item) => item.item_id._id),
       deliveryAddressId: selectedAddress,
@@ -79,26 +79,27 @@ export default function CartScreen() {
 
     console.log("Placing order with details:", initiateOrder);
 
-    const { data, error } = initiateUserOrder({
+    const { data, error } = await initiateUserOrder({
       url: "/user/create-order",
       method: "POST",
       payload: initiateOrder,
       authRequired: true,
     });
-    
+
+    console.log("Order placement response:", data);
+
     if (error) {
       console.error("Order placement failed:", error);
       showToast("error", error || "Failed to place order. Please try again.");
       return;
     }
-    if (data?.status === 200 && data?.data) {
+    if (data?.status === 201 && data?.data) {
       showToast("success", data?.message || "Order placed successfully!");
       reloadCart();
       router.push(ROUTE_PATH.APP.ORDERS.INDEX);
     } else {
       showToast("error", data?.message || "Failed to place order.");
     }
-    console.log("Order placement response:", data);
   };
 
   return (
