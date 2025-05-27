@@ -43,7 +43,7 @@ export default function MyOrdersScreen() {
       return;
     }
 
-    const fetched = data?.data?.orders ?? [];
+    const fetched = data?.data?.orders ?? [];    
     const totalFromApi = data?.data?.totalPages ?? 1;
 
     if (reset) {
@@ -61,12 +61,12 @@ export default function MyOrdersScreen() {
   // 🔍 Fetch orders via search
   const fetchSearchResults = async (query) => {
     const { data, error } = await searchOrders({
-      url: `/search-order?value=${query}`,
+      url: `/user/search-order?value=${query}`,
       method: "GET",
       authRequired: true,
     });
 
-    if (!error) {
+    if (!error && data?.status === 200 && data?.data) {
       setOrders(data?.data?.orders ?? []);
     } else {
       console.error("Search error:", error);
