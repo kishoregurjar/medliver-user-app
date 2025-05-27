@@ -44,7 +44,7 @@ export default function CartPaymentSummary({
           className="bg-brand-primary/90 px-6 py-3 rounded-xl"
         >
           <Text className="text-white text-base font-lexend-semibold">
-            Proceed to Payment
+            Checkout
           </Text>
         </TouchableOpacity>
       </View>

@@ -103,13 +103,32 @@ export default function CartScreen() {
               promoDiscount={promoDiscount}
               deliveryCharge={deliveryCharge}
               totalAmount={totalAmount}
-              onCheckoutPress={() => {}}
+              onCheckoutPress={() => {
+                if (totalAmount <= 0) {
+                  showToast("error", "Total amount must be greater than zero");
+                  return;
+                }
+                router.push(ROUTE_PATH.APP.CHECKOUT.INDEX);
+              }}
             />
           </>
         ) : (
-          <Text className="text-center text-text-muted font-lexend mt-10">
-            No items in your cart.
-          </Text>
+          <View className="flex-1 justify-center items-center px-6 mt-28 ">
+            <Text className="text-lg font-lexend-medium text-center mb-4">
+              No items in your cart.
+            </Text>
+            <Text className="text-base text-text-muted mb-6 text-center">
+              Browse our collection and add items to your cart.
+            </Text>
+            <TouchableOpacity
+              onPress={() => router.push(ROUTE_PATH.APP.PHARMACY.INDEX)}
+              className="bg-brand-primary px-6 py-3 rounded-xl"
+            >
+              <Text className="text-white text-base font-lexend-medium">
+                Browse Medicines
+              </Text>
+            </TouchableOpacity>
+          </View>
         )}
       </ScrollView>
     </AppLayout>
