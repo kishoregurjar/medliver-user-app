@@ -12,6 +12,8 @@ import CartUrgentDeliveryToggle from "@/components/cards/CartUrgentDeliveryToggl
 import CartPaymentSummary from "@/components/cards/CartPaymentSummary";
 import SkeletonCartScreen from "@/components/skeletons/SkeletonCartScreen";
 import { useCart } from "@/contexts/CartContext";
+import CartAddressSelection from "@/components/cards/CartAddressSelection";
+import CartPaymentOptions from "@/components/cards/CartPaymentOptions";
 
 export default function CartScreen() {
   const { authUser } = useAuthUser();
@@ -73,6 +75,13 @@ export default function CartScreen() {
       <ScrollView className="flex-1 py-4">
         {cartItems.length > 0 ? (
           <>
+            <View className="bg-white border border-background-surface p-4 rounded-xl">
+              <Text className="text-lg font-lexend-semibold text-text-muted">
+                {cartItems.length} {cartItems.length > 1 ? "items" : "item"} in
+                your cart
+              </Text>
+            </View>
+            <View className="border-b border-gray-200 my-2" />
             {cartItems.map((item) => (
               <CartItemCard
                 key={item.item_id._id}
@@ -88,7 +97,7 @@ export default function CartScreen() {
               />
             ))}
 
-            <CartPromoCodeInput
+            {/* <CartPromoCodeInput
               isApplied={isPromoApplied}
               onToggle={() => setIsPromoApplied((v) => !v)}
               promoCode={promoCode}
@@ -97,7 +106,7 @@ export default function CartScreen() {
             <CartUrgentDeliveryToggle
               urgentDelivery={urgentDelivery}
               onToggle={() => setUrgentDelivery((v) => !v)}
-            />
+            /> */}
             <CartPaymentSummary
               itemTotal={itemTotal}
               promoDiscount={promoDiscount}
@@ -108,9 +117,18 @@ export default function CartScreen() {
                   showToast("error", "Total amount must be greater than zero");
                   return;
                 }
-                router.push(ROUTE_PATH.APP.CHECKOUT.INDEX);
+                router.push(`${ROUTE_PATH.APP.CHECKOUT.INDEX}?`);
               }}
             />
+
+            <CartAddressSelection
+              onSelectDeliveryAddress={(id) => {
+                console.log("Selected address ID:", id);
+                // you can set it in parent state for checkout or further processing
+              }}
+            />
+
+            <CartPaymentOptions />
           </>
         ) : (
           <View className="flex-1 justify-center items-center px-6 mt-28 ">

@@ -34,7 +34,7 @@ const PharmacyProductCard = ({
   //     ? { uri: images[0] }
   //     : null;
 
-  const imageSource = STATIC.IMAGES.COMPONENTS.MEDICINE_2
+  const imageSource = STATIC.IMAGES.COMPONENTS.MEDICINE_2;
 
   const subtitle = `${short_composition1?.trim() || ""} ${
     short_composition2?.trim() || ""
@@ -86,12 +86,7 @@ const PharmacyProductCard = ({
 
         {/* Add to Cart */}
         {showAddToCart && (
-          <TouchableOpacity className="bg-brand-background flex-row items-center justify-center rounded-lg py-1">
-            <Ionicons name="add" size={16} color="#E55150" />
-            <Text className="text-brand-primary text-sm font-lexend-semibold ml-1">
-              Add to Cart
-            </Text>
-          </TouchableOpacity>
+          <AddToCartModalButton product={product} variant="button" />
         )}
       </TouchableOpacity>
     );

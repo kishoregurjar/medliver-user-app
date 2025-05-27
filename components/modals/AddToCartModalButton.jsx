@@ -83,14 +83,16 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
   return (
     <>
       {variant === "button" ? (
-        <Button
+        <TouchableOpacity
           onPress={openModal}
-          className="bg-brand-primary rounded-lg px-5 py-3"
+          className="flex-row items-center justify-center bg-brand-primary rounded-lg py-2"
+          accessibilityLabel="Add to cart button"
+          activeOpacity={0.7}
         >
-          <ButtonText className="text-white font-lexend-semibold text-sm">
+          <Text className="text-text-inverse text-sm font-lexend-semibold ml-1">
             Add to Cart
-          </ButtonText>
-        </Button>
+          </Text>
+        </TouchableOpacity>
       ) : (
         <TouchableOpacity
           onPress={openModal}

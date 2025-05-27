@@ -7,7 +7,7 @@ export default function CheckoutScreen() {
   return (
     <AppLayout>
       {/* Header */}
-      <HeaderWithBack showBackButton title="My Wallet" />
+      <HeaderWithBack showBackButton title="Checkout" />
       <View className="flex-1 items-center justify-center">
         <Text className="text-2xl font-bold">Checkout</Text>
         <Text className="text-lg">Screen Work In Progress</Text>

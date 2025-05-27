@@ -19,7 +19,7 @@ export default function CartPaymentSummary({
   return (
     <View className="bg-white border border-background-surface p-4 rounded-xl mt-4">
       <Text className="text-lg font-lexend-semibold text-text-muted">
-        Payment Details
+        Payment Summary
       </Text>
 
       <View className="gap-3 mt-4">
@@ -39,14 +39,14 @@ export default function CartPaymentSummary({
           </Text>
         </View>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={onCheckoutPress}
           className="bg-brand-primary/90 px-6 py-3 rounded-xl"
         >
           <Text className="text-white text-base font-lexend-semibold">
             Checkout
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
