@@ -30,7 +30,7 @@ export const CartProvider = ({ children }) => {
 
   // 🚀 Load Cart on Login
   const loadCart = async () => {
-    if (!authUser?.token) return;
+    if (!authUser?.token || !authUser?.isAuthenticated) return;
 
     const { data, error } = await fetchCart({
       url: "/user/get-cart",

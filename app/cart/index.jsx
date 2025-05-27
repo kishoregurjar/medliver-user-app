@@ -14,6 +14,7 @@ import SkeletonCartScreen from "@/components/skeletons/SkeletonCartScreen";
 import { useCart } from "@/contexts/CartContext";
 import CartAddressSelection from "@/components/cards/CartAddressSelection";
 import CartPaymentOptions from "@/components/cards/CartPaymentOptions";
+import useAxios from "@/hooks/useAxios";
 
 export default function CartScreen() {
   const { authUser } = useAuthUser();
@@ -27,9 +28,14 @@ export default function CartScreen() {
     reloadCart,
   } = useCart();
 
+  const { request: initiateUserOrder, loading: initiateOrderLoading } =
+    useAxios();
+
   const [isPromoApplied, setIsPromoApplied] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [urgentDelivery, setUrgentDelivery] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [selectedAddress, setSelectedAddress] = useState(null);
 
   const promoDiscount = promoCode ? 5 : 0;
   const deliveryCharge = urgentDelivery ? 30 : 0;
@@ -63,6 +69,37 @@ export default function CartScreen() {
       </AppLayout>
     );
   }
+
+  const handlePlaceOrder = (details) => {
+    let initiateOrder = {
+      item_ids: cartItems.map((item) => item.item_id._id),
+      deliveryAddressId: selectedAddress,
+      paymentMethod: selectedPayment,
+    };
+
+    console.log("Placing order with details:", initiateOrder);
+
+    const { data, error } = initiateUserOrder({
+      url: "/user/create-order",
+      method: "POST",
+      payload: initiateOrder,
+      authRequired: true,
+    });
+    
+    if (error) {
+      console.error("Order placement failed:", error);
+      showToast("error", error || "Failed to place order. Please try again.");
+      return;
+    }
+    if (data?.status === 200 && data?.data) {
+      showToast("success", data?.message || "Order placed successfully!");
+      reloadCart();
+      router.push(ROUTE_PATH.APP.ORDERS.INDEX);
+    } else {
+      showToast("error", data?.message || "Failed to place order.");
+    }
+    console.log("Order placement response:", data);
+  };
 
   return (
     <AppLayout>
@@ -124,11 +161,14 @@ export default function CartScreen() {
             <CartAddressSelection
               onSelectDeliveryAddress={(id) => {
                 console.log("Selected address ID:", id);
-                // you can set it in parent state for checkout or further processing
+                setSelectedAddress(id);
               }}
             />
 
-            <CartPaymentOptions />
+            <CartPaymentOptions
+              onSelectPaymentMethod={(method) => setSelectedPayment(method)}
+              onPlaceOrder={handlePlaceOrder}
+            />
           </>
         ) : (
           <View className="flex-1 justify-center items-center px-6 mt-28 ">
