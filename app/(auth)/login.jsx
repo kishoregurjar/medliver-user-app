@@ -15,6 +15,7 @@ import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { useAuthUser } from "@/contexts/AuthContext";
+import CTAButton from "@/components/common/CTAButton";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -72,7 +73,7 @@ export default function LoginScreen() {
         />
       </View>
 
-      <Text className="text-3xl font-bold mb-6 text-black">Sign in</Text>
+      <Text className="text-3xl font-lexend-bold mb-6 text-black">Sign in</Text>
 
       <FormFieldRenderer
         control={control}
@@ -94,33 +95,30 @@ export default function LoginScreen() {
               />
             )}
           />
-          <Text className="ml-2 text-sm text-gray-700">Remember me</Text>
+          <Text className="ml-2 text-sm font-lexend text-gray-700">
+            Remember me
+          </Text>
         </View>
-        <Text
-          className="text-sm text-accent-softIndigo font-bold"
-          onPress={() => {
-            router.push(ROUTE_PATH.AUTH.FORGOT_PASSWORD);
-          }}
-        >
-          Forgot Password?
-        </Text>
+        <CTAButton
+          onPress={() => router.push(ROUTE_PATH.AUTH.FORGOT_PASSWORD)}
+          label="Forgot Password?"
+          variant="transparent"
+          textClassName="text-sm font-lexend-bold text-accent-softIndigo"
+        />
       </View>
 
-      {/* Sign In Button */}
-      <TouchableOpacity
+      <CTAButton
         onPress={handleSubmit(onSubmit)}
-        className={`bg-brand-primary rounded-xl py-4 mb-4 ${
-          isLoading ? "opacity-50" : ""
-        }`}
+        label="Sign In"
+        loaderText="Signing In..."
+        loading={isLoading}
         disabled={isLoading}
-      >
-        <Text className="text-white text-center font-semibold text-base">
-          {isLoading ? "Signing In..." : "Sign In"}
-        </Text>
-      </TouchableOpacity>
+      />
 
       {/* Divider */}
-      <Text className="text-center text-gray-500 mb-4">or Sign in with</Text>
+      <Text className="text-center font-lexend text-text-muted my-4">
+        or Sign in with
+      </Text>
 
       {/* Social Buttons */}
       <View>
@@ -134,17 +132,22 @@ export default function LoginScreen() {
             <View className="mr-3 w-6 items-center">
               <Icon name={iconName} size={20} color={color} />
             </View>
-            <ButtonText className="text-sm font-medium">{text}</ButtonText>
+            <ButtonText className="text-sm font-lexend-medium">
+              {text}
+            </ButtonText>
           </Button>
         ))}
       </View>
 
       {/* Signup Prompt */}
-      <View className="flex-row justify-center mt-6">
-        <Text className="text-text-muted font-bold">New User?</Text>
-        <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}>
-          <Text className="text-accent-softIndigo font-bold ml-2">Sign Up</Text>
-        </Pressable>
+      <View className="flex-row justify-center items-center mt-5">
+        <Text className="text-text-muted font-lexend-bold">New User?</Text>
+        <CTAButton
+          onPress={() => router.push(ROUTE_PATH.AUTH.SIGNUP)}
+          label="Sign Up"
+          variant="transparent"
+          textClassName={"text-accent-softIndigo font-lexend-bold"}
+        />
       </View>
     </AuthLayout>
   );

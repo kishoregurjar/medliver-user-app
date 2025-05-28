@@ -113,8 +113,12 @@ const ResetPasswordScreen = () => {
         {passwordValue?.length > 0 && (
           <View className="my-3 p-3 rounded-md bg-gray-200">
             <View className="flex-row justify-between items-center mb-2">
-              <Text className="font-medium">Your Password Must Include:</Text>
-              <Text className={`font-medium ${passwordStrength.strengthColor}`}>
+              <Text className="font-lexend-medium">
+                Your Password Must Include:
+              </Text>
+              <Text
+                className={`font-lexend-medium ${passwordStrength.strengthColor}`}
+              >
                 {passwordStrength.strengthText}
               </Text>
             </View>
@@ -141,7 +145,7 @@ const ResetPasswordScreen = () => {
                     color={item.check ? "#16A34A" : "#DC2626"}
                   />
                   <Text
-                    className={`text-sm ${
+                    className={`text-sm font-lexend ${
                       item.check ? "text-green-600" : "text-gray-500"
                     }`}
                   >
