@@ -252,7 +252,9 @@ export default function PharmacyProductDetailsScreen() {
                   MRP {formatPrice(productDetails.mrp || product.mrp)}
                 </Text>
               </View>
-              <AddToCartModalButton product={productDetails || product} />
+              <View className="w-1/3">
+                <AddToCartModalButton product={productDetails || product} />
+              </View>
             </View>
 
             <Text className="text-sm font-lexend text-green-600">

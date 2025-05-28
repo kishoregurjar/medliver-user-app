@@ -85,7 +85,7 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
       {variant === "button" ? (
         <TouchableOpacity
           onPress={openModal}
-          className="flex-row items-center justify-center bg-brand-primary rounded-lg py-2"
+          className="flex-row w-full items-center justify-center bg-brand-primary rounded-lg py-2"
           accessibilityLabel="Add to cart button"
           activeOpacity={0.7}
         >
@@ -98,6 +98,7 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
           onPress={openModal}
           className="flex-row items-center justify-center rounded-lg py-1"
           accessibilityLabel="Add to cart button"
+          activeOpacity={0.7}
         >
           <Ionicons name="add" size={16} color="#E2AD5F" />
           <Text className="text-brand-secondary text-sm font-lexend-semibold ml-1">
