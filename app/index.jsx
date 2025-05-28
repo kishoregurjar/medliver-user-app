@@ -4,13 +4,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import STATIC from "@/utils/constants";
-import AnimatedActionButton from "@/components/common/AnimatedActionButton";
 import {
   getFCMToken,
   registerForPushNotificationsAsync,
 } from "@/utils/notification";
 import ROUTE_PATH from "@/routes/route.constants";
 import { SafeAreaView } from "react-native-safe-area-context"; // ← More reliable SafeAreaView
+import CTAButton from "@/components/common/CTAButton";
 
 const LetsStartScreen = () => {
   const router = useRouter();
@@ -95,11 +95,13 @@ const LetsStartScreen = () => {
             diagnostic tests.
           </Text>
 
-          <AnimatedActionButton
-            text="Let's Start"
-            icon={<AntDesign name="arrowright" size={24} color="white" />}
-            onPress={() => router.replace(ROUTE_PATH.APP.HOME)}
-            textClassName="font-lexend-bold text-white mr-2"
+          <CTAButton
+            label={"Get Started"}
+            icon={<AntDesign name="arrowright" size={20} color="white" className="ml-4" />}
+            iconPosition="right"
+            onPress={() => router.push(ROUTE_PATH.APP.HOME)}
+            className={"w-full"}
+            size="lg"
           />
         </View>
       </LinearGradient>
