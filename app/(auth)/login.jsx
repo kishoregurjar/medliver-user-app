@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Image } from "react-native";
+import { View, Text, Image } from "react-native";
 import React from "react";
 import Checkbox from "expo-checkbox";
 import { Controller, useForm } from "react-hook-form";
@@ -7,7 +7,6 @@ import { useRouter } from "expo-router";
 import STATIC, { socialButtons } from "@/utils/constants";
 import { Button, ButtonText } from "@/components/ui/button";
 import useAxios from "@/hooks/useAxios";
-import { TouchableOpacity } from "react-native";
 import FORM_VALIDATIONS from "@/libs/form-validations";
 import ROUTE_PATH from "@/routes/route.constants";
 import { useAppToast } from "../../hooks/useAppToast";
@@ -20,14 +19,8 @@ import CTAButton from "@/components/common/CTAButton";
 export default function LoginScreen() {
   const router = useRouter();
 
-  const {
-    request: loginUser,
-    loading: isLoading,
-    error: hasError,
-  } = useAxios();
-
+  const { request: loginUser, loading: isLoading } = useAxios();
   const { login } = useAuthUser();
-
   const { showToast } = useAppToast();
 
   const {
@@ -65,7 +58,6 @@ export default function LoginScreen() {
 
   return (
     <AuthLayout>
-      {/* Illustration */}
       <View className="items-center my-4">
         <Image
           source={STATIC.IMAGES.PAGES.LOGIN}
@@ -115,12 +107,10 @@ export default function LoginScreen() {
         disabled={isLoading}
       />
 
-      {/* Divider */}
-      <Text className="text-center font-lexend text-text-muted my-4">
+      {/* <Text className="text-center font-lexend text-text-muted my-4">
         or Sign in with
       </Text>
 
-      {/* Social Buttons */}
       <View>
         {socialButtons.map(({ icon: Icon, iconName, color, text }, index) => (
           <Button
@@ -137,9 +127,8 @@ export default function LoginScreen() {
             </ButtonText>
           </Button>
         ))}
-      </View>
+      </View> */}
 
-      {/* Signup Prompt */}
       <View className="flex-row justify-center items-center mt-5">
         <Text className="text-text-muted font-lexend-bold">New User?</Text>
         <CTAButton

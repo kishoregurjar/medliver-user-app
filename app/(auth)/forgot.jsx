@@ -19,11 +19,7 @@ export default function ForgotPasswordScreen() {
   const router = useRouter();
   const { showToast } = useAppToast();
 
-  const {
-    request: forgotPasswordUser,
-    loading: isLoading,
-    error: hasError,
-  } = useAxios();
+  const { request: forgotPasswordUser, loading: isLoading } = useAxios();
 
   const {
     control,
@@ -87,7 +83,7 @@ export default function ForgotPasswordScreen() {
       />
 
       <CTAButton
-        label="Back to login"
+        label="Back to Login"
         variant="transparent"
         icon={
           <Ionicons

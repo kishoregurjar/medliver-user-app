@@ -73,7 +73,7 @@ const LetsStartScreen = () => {
           />
 
           <Text
-            className="text-center text-gray-900 mb-2 font-lexend-bold"
+            className="text-center text-text-primary mb-2 font-lexend-bold"
             style={{
               fontSize: Math.min(width * 0.06, 26),
               lineHeight: Math.min(width * 0.075, 32),
@@ -83,7 +83,7 @@ const LetsStartScreen = () => {
           </Text>
 
           <Text
-            className="text-center text-gray-500 mb-8 font-lexend"
+            className="text-center text-text-muted mb-8 font-lexend"
             style={{
               fontSize: Math.min(width * 0.04, 16),
               paddingHorizontal: 4,

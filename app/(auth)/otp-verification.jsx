@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, Image } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { OtpInput } from "react-native-otp-entry";
@@ -83,18 +83,18 @@ export default function OtpVerificationScreen() {
         />
       </View>
 
-      <Text className="text-2xl font-lexend-bold text-black text-center mb-2">
+      <Text className="text-2xl font-lexend-bold text-text-primary text-center mb-2">
         Enter OTP
       </Text>
 
       <View className="flex items-center justify-center mb-10">
-        <Text className="text-lg font-lexend text-gray-500 text-center">
+        <Text className="text-lg font-lexend text-text-muted text-center">
           We have sent you a code to{" "}
         </Text>
         <Text className="text-blue-600 font-lexend-semibold">{email}</Text>
       </View>
 
-      <View className="mb-10">
+      <View className="mb-5">
         <Controller
           control={control}
           name="otp"
@@ -137,20 +137,19 @@ export default function OtpVerificationScreen() {
           )}
         />
         {errors.otp && (
-          <Text className="text-red-500 text-xs font-lexend text-center mt-1 mb-2">
+          <Text className="text-red-500 text-xs font-lexend text-center my-4">
             {errors.otp.message}
           </Text>
         )}
       </View>
 
       <View className="flex-row justify-evenly items-center mb-4">
-        <Text className="text-sm font-lexend text-gray-400 text-center">
+        <Text className="text-sm font-lexend text-text-muted text-center">
           Didn’t receive the Code?
         </Text>
         <CTAButton
           label="Resend Code"
           onPress={() => {}}
-          // loading={isLoading}
           variant="transparent"
         />
       </View>
@@ -164,7 +163,7 @@ export default function OtpVerificationScreen() {
       />
 
       <CTAButton
-        label="Back to login"
+        label="Back to Forgot Password"
         variant="transparent"
         icon={
           <Ionicons
