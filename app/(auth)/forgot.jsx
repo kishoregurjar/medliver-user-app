@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image } from "react-native";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,6 +12,8 @@ import { useAppToast } from "@/hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import CTAButton from "@/components/common/CTAButton";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -66,7 +68,7 @@ export default function ForgotPasswordScreen() {
         />
       </View>
 
-      <Text className="text-3xl font-bold mb-6 text-black">
+      <Text className="text-3xl font-lexend-bold mb-6 text-black">
         Forgot Password
       </Text>
 
@@ -76,27 +78,28 @@ export default function ForgotPasswordScreen() {
         fields={FORM_FIELD_TYPES.FORGOT_PASSWORD}
       />
 
-      <TouchableOpacity
+      <CTAButton
+        label="Send OTP"
         onPress={handleSubmit(onSubmit)}
-        className={`bg-brand-primary rounded-xl py-4 mb-4 ${
-          isLoading ? "opacity-50" : ""
-        }`}
+        loading={isLoading}
+        loaderText="Sending OTP..."
         disabled={isLoading}
-      >
-        <Text className="text-white text-center font-semibold text-base">
-          {isLoading ? "Sending..." : "Send OTP"}
-        </Text>
-      </TouchableOpacity>
+      />
 
-      <View className="flex-row justify-center mt-6">
-        <Text className="text-text-muted font-bold">Back to login?</Text>
-        <Text
-          onPress={() => router.back()}
-          className="text-accent-softIndigo font-bold ml-2"
-        >
-          Sign In
-        </Text>
-      </View>
+      <CTAButton
+        label="Back to login"
+        variant="transparent"
+        icon={
+          <Ionicons
+            name="arrow-back"
+            size={20}
+            color="black"
+            className="mr-4"
+          />
+        }
+        onPress={() => router.back()}
+        className={"mt-5"}
+      />
     </AuthLayout>
   );
 }

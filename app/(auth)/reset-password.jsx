@@ -10,6 +10,7 @@ import ROUTE_PATH from "@/routes/route.constants";
 import { useAppToast } from "../../hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import CTAButton from "@/components/common/CTAButton";
 
 const ResetPasswordScreen = () => {
   const router = useRouter();
@@ -152,17 +153,13 @@ const ResetPasswordScreen = () => {
           </View>
         )}
 
-        <TouchableOpacity
+        <CTAButton
           onPress={handleSubmit(onSubmit)}
           disabled={isLoading}
-          className={`bg-brand-primary rounded-xl py-4 mb-4 ${
-            isLoading ? "opacity-50" : ""
-          }`}
-        >
-          <Text className="text-white text-center font-semibold text-base">
-            {isLoading ? "Resetting..." : "Reset Password"}
-          </Text>
-        </TouchableOpacity>
+          loading={isLoading}
+          label="Reset Password"
+          loaderText="Resetting..."
+        />
       </View>
     </AuthLayout>
   );

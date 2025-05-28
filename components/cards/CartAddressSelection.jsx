@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { MaterialIcons, Feather } from "@expo/vector-icons";
 import useAxios from "@/hooks/useAxios";
 import SkeletonAddressCard from "@/components/skeletons/SkeletonAddressCard";
 import { useRouter } from "expo-router";
+import CTAButton from "../common/CTAButton";
 
 export default function CartAddressSelection({
   onSelectDeliveryAddress,
@@ -112,13 +113,20 @@ export default function CartAddressSelection({
         <Text className="text-lg font-lexend-semibold text-text-muted">
           Delivery Address
         </Text>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={fetchUserAddresses}
           className="p-1 rounded-full"
           hitSlop={8}
         >
           <Feather name="refresh-cw" size={20} color="#6B7280" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <CTAButton
+          iconOnly
+          icon={<Feather name="refresh-cw" size={20} color="#6B7280" />}
+          variant="default"
+          onPress={fetchUserAddresses}
+          size="sm"
+        />
       </View>
 
       {loadingAddresses ? (

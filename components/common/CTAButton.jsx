@@ -50,12 +50,16 @@ export default function CTAButton({
     default: {
       base: "bg-gray-400 border-gray-400 text-black",
     },
+    transparent: {
+      base: "bg-transparent border-transparent text-black",
+    },
   };
 
   const modeStyles = {
     solid: "",
     outlined: "bg-transparent border",
     ghost: "bg-transparent border-transparent",
+    link: "bg-transparent border-transparent",
   };
 
   const shapeStyles = {
@@ -120,12 +124,18 @@ export default function CTAButton({
     <TouchableOpacity
       onPress={onPress}
       disabled={isDisabled}
-      activeOpacity={0.8}
+      activeOpacity={0.7}
       className={clsx(
-        `items-center justify-center shadow-md border ${currentSize.button}`,
-        currentMode,
+        "items-center justify-center",
+        currentSize.button,
         currentShape,
+        currentMode,
         currentVariant.base,
+        variant !== "transparent" && "shadow-md",
+        mode !== "ghost" &&
+          mode !== "link" &&
+          variant !== "transparent" &&
+          "border",
         isDisabled && "opacity-60",
         className
       )}
