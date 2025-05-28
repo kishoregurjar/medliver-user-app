@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -8,7 +8,6 @@ import { useRouter } from "expo-router";
 import { Button, ButtonText } from "@/components/ui/button";
 import { socialButtons } from "@/utils/constants";
 import useAxios from "@/hooks/useAxios";
-import { TouchableOpacity } from "react-native";
 import FORM_VALIDATIONS from "@/libs/form-validations";
 import FormError from "@/components/inputs/FormError";
 import { generateDynamicRoute } from "@/utils/generateDynamicRoute";
@@ -17,6 +16,7 @@ import { useAppToast } from "../../hooks/useAppToast";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import CTAButton from "@/components/common/CTAButton";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -150,21 +150,17 @@ export default function SignupScreen() {
             By continuing, you agree to our Terms of Services, Privacy Policy.
           </Text>
         </View>
-        <FormError error={errors.agree?.message} className="mt-2" />
+        <FormError error={errors.agree?.message} className="mt-2 font-lexend" />
 
-        <TouchableOpacity
+        <CTAButton
+          label={"Sign up"}
           onPress={handleSubmit(onSubmit)}
-          className={`bg-brand-primary rounded-xl py-4 mb-4 ${
-            isLoading ? "opacity-50" : ""
-          }`}
+          loaderText="Signing up..."
+          loading={isLoading}
           disabled={isLoading}
-        >
-          <Text className="text-white text-center font-semibold text-base">
-            {isLoading ? "Signing up..." : "Sign up"}
-          </Text>
-        </TouchableOpacity>
+        />
 
-        <Text className="text-center text-text-muted font-lexend mb-4">
+        {/* <Text className="text-center text-text-muted font-lexend mb-4">
           or Sign up with
         </Text>
 
@@ -180,17 +176,18 @@ export default function SignupScreen() {
             </View>
             <ButtonText className="text-sm font-lexend">{text}</ButtonText>
           </Button>
-        ))}
+        ))} */}
 
         <View className="flex-row items-center justify-center mt-6">
           <Text className="text-text-muted font-lexend-bold">
             Already have an account?
           </Text>
-          <Pressable onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}>
-            <Text className="text-accent-softIndigo font-lexend-bold ml-2">
-              Login
-            </Text>
-          </Pressable>
+          <CTAButton
+            label={"Sign in"}
+            onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}
+            variant="transparent"
+            textClassName={"text-accent-softIndigo font-lexend-bold"}
+          />
         </View>
       </View>
     </AuthLayout>

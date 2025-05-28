@@ -56,7 +56,6 @@ export default function ForgotPasswordScreen() {
 
   return (
     <AuthLayout>
-      {/* Illustration */}
       <View className="items-center my-4">
         <Image
           source={STATIC.IMAGES.PAGES.FORGOT}
