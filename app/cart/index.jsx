@@ -103,14 +103,14 @@ export default function CartScreen() {
   };
 
   return (
-    <AppLayout>
+    <AppLayout scroll={false}>
       <HeaderWithBack
         title="My Cart"
         showBackButton
         clearStack
         backTo="/home"
       />
-      <ScrollView className="flex-1 py-4">
+      <ScrollView className="flex-1 py-4" showsVerticalScrollIndicator={false}>
         {cartItems.length > 0 ? (
           <>
             <View className="bg-white border border-background-surface p-4 rounded-xl">
