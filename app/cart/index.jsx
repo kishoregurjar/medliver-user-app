@@ -169,6 +169,7 @@ export default function CartScreen() {
             <CartPaymentOptions
               onSelectPaymentMethod={(method) => setSelectedPayment(method)}
               onPlaceOrder={handlePlaceOrder}
+              isInitiatingOrder={initiateOrderLoading}
             />
           </>
         ) : (

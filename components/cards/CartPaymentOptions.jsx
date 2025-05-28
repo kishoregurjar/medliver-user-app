@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import CTAButton from "../common/CTAButton";
 
 const paymentMethods = [
   {
@@ -28,6 +29,7 @@ const paymentMethods = [
 export default function CartPaymentOptions({
   onSelectPaymentMethod,
   onPlaceOrder,
+  isInitiatingOrder,
 }) {
   const [selectedMethod, setSelectedMethod] = useState(null);
 
@@ -56,7 +58,9 @@ export default function CartPaymentOptions({
             onPress={() => handleSelect(method.id)}
             activeOpacity={0.85}
             className={`flex-row items-start justify-between gap-3 p-4 border rounded-xl mb-3 ${
-              isSelected ? "border-brand-primary bg-brand-primary/10" : "border-background-soft"
+              isSelected
+                ? "border-brand-primary bg-brand-primary/10"
+                : "border-background-soft"
             }`}
           >
             <View className="flex-1">
@@ -86,15 +90,13 @@ export default function CartPaymentOptions({
       })}
 
       {selectedMethod && (
-        <TouchableOpacity
+        <CTAButton
+          label={"Place Order"}
           onPress={handlePlaceOrder}
-          className="mt-2 bg-brand-primary rounded-xl py-3 items-center"
-          activeOpacity={0.7}
-        >
-          <Text className="text-white font-lexend-semibold text-base">
-            Place Order
-          </Text>
-        </TouchableOpacity>
+          loaderText="Placing Order..."
+          loading={isInitiatingOrder}
+          disabled={isInitiatingOrder}
+        />
       )}
     </View>
   );
