@@ -72,7 +72,7 @@ const UserAddressCard = ({
             </TouchableOpacity>
           )}
 
-          {typeof onDelete === "function" && (
+          {!is_default && typeof onDelete === "function" && (
             <TouchableOpacity
               className="flex-row items-center px-3 py-1 rounded-lg bg-red-100"
               onPress={() => onDelete(_id)}

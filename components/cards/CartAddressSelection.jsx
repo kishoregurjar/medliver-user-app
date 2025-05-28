@@ -1,14 +1,19 @@
 import React, { useCallback, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { MaterialIcons, Feather } from "@expo/vector-icons";
 import useAxios from "@/hooks/useAxios";
 import SkeletonAddressCard from "@/components/skeletons/SkeletonAddressCard";
+import { useRouter } from "expo-router";
 
-export default function CartAddressSelection({ onSelectDeliveryAddress }) {
+export default function CartAddressSelection({
+  onSelectDeliveryAddress,
+  onAddAddressPress, // Optional: to navigate to Add Address screen
+}) {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
 
+  const router = useRouter();
   const { request: getAllAddresses, loading: loadingAddresses } = useAxios();
 
   const fetchUserAddresses = async () => {
@@ -97,11 +102,24 @@ export default function CartAddressSelection({ onSelectDeliveryAddress }) {
     );
   };
 
+  const handleAddNewAddress = () => {
+    router.push("/account/addresses/add-address");
+  };
+
   return (
     <View className="bg-white rounded-2xl p-4 my-4">
-      <Text className="text-lg font-lexend-semibold text-text-muted mb-3">
-        Delivery Address
-      </Text>
+      <View className="flex-row justify-between items-center mb-3">
+        <Text className="text-lg font-lexend-semibold text-text-muted">
+          Delivery Address
+        </Text>
+        <TouchableOpacity
+          onPress={fetchUserAddresses}
+          className="p-1 rounded-full"
+          hitSlop={8}
+        >
+          <Feather name="refresh-cw" size={20} color="#6B7280" />
+        </TouchableOpacity>
+      </View>
 
       {loadingAddresses ? (
         <View className="gap-2 mt-2">
@@ -116,10 +134,18 @@ export default function CartAddressSelection({ onSelectDeliveryAddress }) {
           </Text>
         </View>
       ) : (
-        <View className="gap-3">
-          {addresses.map((addr) => renderAddressItem(addr))}
-        </View>
+        <View className="gap-3">{addresses.map(renderAddressItem)}</View>
       )}
+
+      <TouchableOpacity
+        onPress={handleAddNewAddress}
+        className="mt-4 py-3 rounded-xl bg-brand-primary items-center"
+        activeOpacity={0.8}
+      >
+        <Text className="font-lexend-medium text-base text-white">
+          Add New Address
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
