@@ -1,4 +1,3 @@
-// components/CustomTabBar.tsx
 import { usePathname, useRouter } from "expo-router";
 import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,26 +23,26 @@ const AppTabBar = () => {
   const tabs = [
     {
       name: "home",
-      icon: "home-outline",
+      icon: "home",
       label: "Home",
       path: ROUTE_PATH.APP.HOME,
     },
     {
       name: "explore",
-      icon: "search-outline",
-      label: "Explore",
+      icon: "search",
+      label: "Search",
       path: ROUTE_PATH.APP.SEARCH.INDEX,
     },
     {
       name: "cart",
-      icon: "cart-outline",
+      icon: "cart",
       label: "Cart",
       badge: itemCount,
       path: ROUTE_PATH.APP.CART.INDEX,
     },
     {
       name: "account",
-      icon: "person-outline",
+      icon: "person",
       label: "Account",
       path: ROUTE_PATH.APP.ACCOUNT.INDEX,
     },
@@ -66,34 +65,38 @@ const AppTabBar = () => {
       style={[
         animatedStyle,
         {
-          bottom: insets.bottom > 0 ? insets.bottom : 16,
+          paddingBottom: insets.bottom,
         },
       ]}
-      className="absolute left-4 right-4 h-[70px] z-50 bg-brand-primary rounded-full flex-row justify-around items-center overflow-hidden"
+      className="absolute left-0 right-0 bottom-0 h-[64px] bg-white dark:bg-neutral-900 flex-row justify-around items-center border-t border-gray-200 dark:border-neutral-700 z-50"
     >
       {tabs.map((tab) => {
         const isActive = pathname.includes(tab.name);
+        const iconName = isActive ? `${tab.icon}` : `${tab.icon}-outline`;
+
         return (
           <TouchableOpacity
             key={tab.name}
             onPress={() => router.push(tab.path)}
-            className="items-center justify-center relative"
+            className={`flex-1 items-center justify-center relative`}
+            activeOpacity={0.8}
           >
             <Ionicons
-              name={tab.icon}
-              size={22}
-              color={isActive ? "#FCDEC7" : "#D2FFDE"}
+              name={iconName}
+              size={24}
+              color={isActive ? "#B31F24" : "#6E6A7C"}
             />
             <Text
-              className={`text-[12px] mt-1 font-lexend-bold ${
-                isActive ? "text-brand-background" : "text-accent-mint"
+              className={`text-[11px] mt-1 font-lexend-medium ${
+                isActive ? "text-brand-primary" : "text-text-muted"
               }`}
             >
               {tab.label}
             </Text>
-            {!!tab.badge && tab.badge > 0 && (
-              <View className="absolute top-0 right-0 -translate-y-1 translate-x-1 bg-brand-background rounded-full px-1.5 py-0.5">
-                <Text className="text-text-primary text-[10px] font-lexend">
+
+            {tab.name === "cart" && tab.badge > 0 && (
+              <View className="absolute top-0 right-6 bg-brand-primary rounded-full px-1.5 py-[1px] min-w-[16px] items-center justify-center">
+                <Text className="text-white text-[10px] font-lexend-semibold">
                   {tab.badge}
                 </Text>
               </View>
