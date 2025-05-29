@@ -5,9 +5,9 @@ import {
   Alert,
   RefreshControl,
   ToastAndroid,
-  TouchableOpacity,
+  TextInput,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import useAxios from "@/hooks/useAxios";
@@ -15,6 +15,8 @@ import { Ionicons } from "@expo/vector-icons";
 import SkeletonPrescriptionCard from "@/components/skeletons/SkeletonPrescriptionCard";
 import UserPrescriptionCard from "@/components/cards/UserPrescriptionCard";
 import { useRouter } from "expo-router";
+import debounce from "lodash.debounce";
+import CTAButton from "@/components/common/CTAButton";
 
 export default function MyPrescriptionScreen() {
   const [prescriptions, setPrescriptions] = useState([]);
@@ -22,10 +24,21 @@ export default function MyPrescriptionScreen() {
   const [totalPages, setTotalPages] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  const debouncedSearch = useCallback(
+    debounce((text) => fetchMyPrescriptions(true), 500),
+    []
+  );
 
   const { request: getMyPrescriptions, loading } = useAxios();
   const { request: deletePrescriptionRequest } = useAxios();
   const router = useRouter();
+
+  const handleSearchChange = (text) => {
+    setSearch(text);
+    debouncedSearch(text);
+  };
 
   const fetchMyPrescriptions = async (reset = false) => {
     const pageToFetch = reset ? 1 : currentPage;
@@ -99,7 +112,15 @@ export default function MyPrescriptionScreen() {
     <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="My Prescriptions" />
 
-      <View className="p-4 flex-1">
+      <View className="flex-1 px-4">
+        {/* Search Bar */}
+        <TextInput
+          placeholder="Search Prescriptions..."
+          value={search}
+          onChangeText={handleSearchChange}
+          className="my-4 px-4 py-4 bg-white rounded-xl border border-background-soft text-gray-700"
+        />
+
         {initialLoading ? (
           Array.from({ length: 3 }).map((_, index) => (
             <SkeletonPrescriptionCard key={index} />
@@ -133,21 +154,13 @@ export default function MyPrescriptionScreen() {
             contentContainerStyle={{ paddingBottom: 32 }}
             ListFooterComponent={
               currentPage <= totalPages && prescriptions.length > 0 ? (
-                <TouchableOpacity
+                <CTAButton
+                  label="Load More"
                   onPress={() => fetchMyPrescriptions()}
+                  loaderText="Loading..."
+                  loading={loading}
                   disabled={loading}
-                  className={`mt-4 mb-6 px-4 py-2 rounded-full items-center ${
-                    loading ? "bg-brand-primary/50" : "bg-brand-primary"
-                  }`}
-                >
-                  <Text
-                    className={`font-lexend-medium ${
-                      loading ? "text-gray-500" : "text-white"
-                    }`}
-                  >
-                    {loading ? "Loading..." : "Load More"}
-                  </Text>
-                </TouchableOpacity>
+                />
               ) : null
             }
           />

@@ -81,6 +81,7 @@
     "expo-system-ui": "~5.0.7",
     "expo-web-browser": "~14.1.6",
     "firebase": "^11.6.0",
+    "lodash": "^4.17.21",
     "lucide-react-native": "^0.503.0",
     "mime": "^4.0.7",
     "nativewind": "^4.1.23",

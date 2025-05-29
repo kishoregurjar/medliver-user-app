@@ -1,12 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TextInput,
-  RefreshControl,
-  TouchableOpacity,
-} from "react-native";
+import React, { useCallback, useState } from "react";
+import { View, Text, FlatList, TextInput, RefreshControl } from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import { useFocusEffect } from "expo-router";
@@ -14,6 +7,7 @@ import useAxios from "@/hooks/useAxios";
 import OrderCard from "@/components/cards/OrderCard";
 import SkeletonOrderCard from "@/components/skeletons/SkeletonOrderCard";
 import debounce from "lodash.debounce";
+import CTAButton from "@/components/common/CTAButton";
 
 export default function MyOrdersScreen() {
   const [orders, setOrders] = useState([]);
@@ -43,7 +37,7 @@ export default function MyOrdersScreen() {
       return;
     }
 
-    const fetched = data?.data?.orders ?? [];    
+    const fetched = data?.data?.orders ?? [];
     const totalFromApi = data?.data?.totalPages ?? 1;
 
     if (reset) {
@@ -150,21 +144,14 @@ export default function MyOrdersScreen() {
             !initialLoading &&
             currentPage <= totalPages &&
             orders.length > 0 ? (
-              <TouchableOpacity
+              <CTAButton
+                label="Load More"
                 onPress={() => fetchOrders()}
+                loaderText="Loading..."
+                loading={loadingOrders}
                 disabled={loadingOrders}
-                className={`mt-4 mb-6 px-4 py-2 rounded-full items-center ${
-                  loadingOrders ? "bg-brand-primary/50" : "bg-brand-primary"
-                }`}
-              >
-                <Text
-                  className={`font-lexend-medium ${
-                    loadingOrders ? "text-gray-500" : "text-white"
-                  }`}
-                >
-                  {loadingOrders ? "Loading..." : "Load More"}
-                </Text>
-              </TouchableOpacity>
+                size="sm"
+              />
             ) : null
           }
           ListEmptyComponent={
