@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -48,60 +48,62 @@ const BookAnAppointmentScreen = () => {
   };
 
   return (
-    <AppLayout>
+    <AppLayout scroll={false}>
       <HeaderWithBack
         showBackButton
         title="Book an Appointment"
         clearStack
         backTo={"/home"}
       />
-      <View className="py-8">
-        <Text className="text-2xl font-lexend-bold text-text-primary mb-2">
-          Book an Appointment with our Nursing Care Experts
-        </Text>
-        <Text className="text-base font-lexend text-text-muted mb-6 leading-relaxed">
-          Schedule a visit with a medical expert
-        </Text>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="py-8">
+          <Text className="text-2xl font-lexend-bold text-text-primary mb-2">
+            Book an Appointment with our Nursing Care Experts
+          </Text>
+          <Text className="text-base font-lexend text-text-muted mb-6 leading-relaxed">
+            Schedule a visit with a medical expert
+          </Text>
 
-        {/* Form fields */}
-        <FormFieldRenderer
-          control={control}
-          errors={errors}
-          fields={FORM_FIELD_TYPES.BOOK_APPOINTMENT_DOCTOR}
-        />
-
-        {/* Confirmation Checkbox */}
-        <View className="flex-row items-center space-x-2 mb-6 mt-2">
-          <Controller
+          {/* Form fields */}
+          <FormFieldRenderer
             control={control}
-            name="confirmation"
-            render={({ field: { onChange, value } }) => (
-              <Checkbox
-                value={value}
-                onValueChange={onChange}
-                color={value ? "#FF0000" : undefined} // red when checked
-                className="mr-4"
-              />
-            )}
+            errors={errors}
+            fields={FORM_FIELD_TYPES.BOOK_APPOINTMENT_DOCTOR}
           />
-          <Text className="font-lexend text-text-primary flex-1">
-            I confirm all information is correct
-          </Text>
-        </View>
-        {errors.confirmation && (
-          <Text className="text-xs text-red-500 mb-4">
-            {errors.confirmation.message}
-          </Text>
-        )}
 
-        <CTAButton
-          label="Book an Appointment"
-          onPress={handleSubmit(onSubmit)}
-          loaderText="Booking..."
-          loading={isLoading}
-          disabled={isLoading}
-        />
-      </View>
+          {/* Confirmation Checkbox */}
+          <View className="flex-row items-center space-x-2 mb-6 mt-2">
+            <Controller
+              control={control}
+              name="confirmation"
+              render={({ field: { onChange, value } }) => (
+                <Checkbox
+                  value={value}
+                  onValueChange={onChange}
+                  color={value ? "#FF0000" : undefined} // red when checked
+                  className="mr-4"
+                />
+              )}
+            />
+            <Text className="font-lexend text-text-primary flex-1">
+              I confirm all information is correct
+            </Text>
+          </View>
+          {errors.confirmation && (
+            <Text className="text-xs text-red-500 font-lexend mb-4">
+              {errors.confirmation.message}
+            </Text>
+          )}
+
+          <CTAButton
+            label="Book an Appointment"
+            onPress={handleSubmit(onSubmit)}
+            loaderText="Booking..."
+            loading={isLoading}
+            disabled={isLoading}
+          />
+        </View>
+      </ScrollView>
     </AppLayout>
   );
 };
