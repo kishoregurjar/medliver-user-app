@@ -23,6 +23,7 @@ import SkeletonFormField from "@/components/skeletons/SkeletonFormField";
 import { useAuthUser } from "@/contexts/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useActionSheet } from "@expo/react-native-action-sheet";
+import CTAButton from "@/components/common/CTAButton";
 
 export default function EditProfileScreen() {
   const navigation = useNavigation();
@@ -312,18 +313,13 @@ export default function EditProfileScreen() {
               fields={FORM_FIELD_TYPES.EDIT_PROFILE}
             />
 
-            {/* Save Button */}
-            <TouchableOpacity
-              disabled={isEditing || uploading}
+            <CTAButton
+              label="Save Changes"
               onPress={handleSubmit(onSubmit)}
-              className={`bg-brand-primary mt-4 py-3 rounded-xl ${
-                isEditing || uploading ? "opacity-50" : ""
-              }`}
-            >
-              <Text className="text-white text-center font-lexend-medium text-base">
-                {isEditing ? "Saving..." : "Save Changes"}
-              </Text>
-            </TouchableOpacity>
+              loaderText="Saving..."
+              disabled={isEditing || uploading}
+              loading={isEditing}
+            />
           </>
         )}
       </ScrollView>

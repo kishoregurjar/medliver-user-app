@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView } from "react-native";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AppLayout from "@/components/layouts/AppLayout";
@@ -9,6 +9,7 @@ import useAxios from "@/hooks/useAxios";
 import { useAppToast } from "@/hooks/useAppToast";
 import FORM_FIELD_TYPES from "@/libs/form-field-types";
 import FORM_VALIDATIONS from "@/libs/form-validations";
+import CTAButton from "@/components/common/CTAButton";
 
 export default function ChangePasswordScreen() {
   const { showToast } = useAppToast();
@@ -60,17 +61,13 @@ export default function ChangePasswordScreen() {
           fields={FORM_FIELD_TYPES.CHANGE_PASSWORD}
         />
 
-        <TouchableOpacity
+        <CTAButton
+          label="Change Password"
           onPress={handleSubmit(onSubmit)}
+          loaderText="Changing Password..."
+          loading={isSubmitting}
           disabled={isSubmitting}
-          className={`bg-brand-primary mt-6 py-3 rounded-xl ${
-            isSubmitting ? "opacity-50" : ""
-          }`}
-        >
-          <Text className="text-white text-center font-lexend-medium text-base">
-            {isSubmitting ? "Updating..." : "Update Password"}
-          </Text>
-        </TouchableOpacity>
+        />
       </ScrollView>
     </AppLayout>
   );
