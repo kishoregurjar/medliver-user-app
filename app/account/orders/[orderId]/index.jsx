@@ -51,7 +51,7 @@ export default function ViewOrderScreen() {
 
   return (
     <AppLayout scroll={false}>
-      <HeaderWithBack title="Order Details" />
+      <HeaderWithBack title="Order Details" showBackButton />
       <View className="flex-1 py-3">
         {loading ? (
           <View className="flex-1 items-center justify-center">
