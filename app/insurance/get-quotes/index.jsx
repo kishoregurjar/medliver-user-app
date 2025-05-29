@@ -1,7 +1,8 @@
-import { View, Text, TouchableOpacity, Platform } from "react-native";
+import { View, Text } from "react-native";
 import React from "react";
 import { useRouter } from "expo-router";
 import ROUTE_PATH from "@/routes/route.constants";
+import CTAButton from "@/components/common/CTAButton";
 
 const GetQuotesScreen = () => {
   const router = useRouter();
@@ -20,18 +21,14 @@ const GetQuotesScreen = () => {
 
       {/* Bottom White Section (60%) */}
       <View className="flex-[0.6] bg-white items-center justify-center px-6">
-        <TouchableOpacity
-          activeOpacity={0.8}
-          className="bg-brand-primary w-full py-4 rounded-lg items-center"
-          style={{
-            elevation: Platform.OS === "android" ? 4 : 0,
-          }}
+        <CTAButton
+          label="Get Quotes"
           onPress={() => {
             router.push(ROUTE_PATH.APP.INSURANCE.SUBMIT_ENQUIRY);
           }}
-        >
-          <Text className="text-white text-lg font-lexend">Get Quotes</Text>
-        </TouchableOpacity>
+          size="lg"
+          className="w-full mt-4"
+        />
       </View>
     </View>
   );
