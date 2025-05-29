@@ -13,6 +13,7 @@ import {
   AvatarFallbackText,
   AvatarImage,
 } from "@/components/ui/avatar";
+import CTAButton from "@/components/common/CTAButton";
 
 const accountOptions = [
   {
@@ -118,41 +119,41 @@ const AccountScreen = () => {
             )}
           </Avatar>
 
-          <Text className="text-xl font-semibold text-gray-900">
+          <Text className="text-xl mt-2 font-semibold text-gray-900">
             {userName}
           </Text>
 
-          {isGuest ? (
-            <TouchableOpacity
-              className="px-5 py-2 mt-4 bg-indigo-100 rounded-lg"
-              activeOpacity={0.8}
-              onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}
-            >
-              <Text className="text-sm font-medium text-indigo-600">
-                Sign In
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <View className="flex-row justify-between mt-4 gap-x-4 px-5">
-              <TouchableOpacity
-                className="flex-1 py-3 bg-indigo-100 rounded-xl items-center"
-                activeOpacity={0.85}
-                onPress={() => router.push("/account/edit-profile")}
-              >
-                <Text className="text-sm font-semibold text-indigo-600">
-                  Edit Profile
-                </Text>
-              </TouchableOpacity>
+          {!isGuest && (
+            <View className="flex-row justify-between mt-4 gap-4">
+              <CTAButton
+                label="Edit Profile"
+                onPress={() => router.push(ROUTE_PATH.APP.ACCOUNT.EDIT_PROFILE)}
+                size="sm"
+                icon={
+                  <Ionicons
+                    name="create-outline"
+                    size={16}
+                    color="white"
+                    className="mr-2"
+                  />
+                }
+              />
 
-              <TouchableOpacity
-                className="flex-1 py-3 bg-indigo-600 rounded-xl items-center"
-                activeOpacity={0.85}
-                onPress={() => router.push("/account/change-password")}
-              >
-                <Text className="text-sm font-semibold text-white">
-                  Change Password
-                </Text>
-              </TouchableOpacity>
+              <CTAButton
+                label="Change Password"
+                onPress={() =>
+                  router.push(ROUTE_PATH.APP.ACCOUNT.CHANGE_PASSWORD)
+                }
+                size="sm"
+                icon={
+                  <Ionicons
+                    name="key-outline"
+                    size={16}
+                    color="white"
+                    className="mr-2"
+                  />
+                }
+              />
             </View>
           )}
         </View>
@@ -192,23 +193,22 @@ const AccountScreen = () => {
         <View className="h-px bg-gray-200 mt-4" />
 
         <View className="w-full px-4 pb-6 absolute bottom-0">
-          <TouchableOpacity
-            activeOpacity={0.6}
+          <CTAButton
+            label={isGuest ? "Sign In" : "Logout"}
             onPress={
               isGuest ? () => router.push(ROUTE_PATH.AUTH.LOGIN) : handleLogout
             }
-            className="rounded-2xl flex-row items-center justify-center px-4 py-3 space-x-3"
-          >
-            <Ionicons
-              name={isGuest ? "log-in-outline" : "log-out-outline"}
-              size={28}
-              color="#B31F24"
-              className="mr-2"
-            />
-            <Text className="text-brand-primary text-lg font-lexend-semibold">
-              {isGuest ? "Sign In" : "Logout"}
-            </Text>
-          </TouchableOpacity>
+            variant="transparent"
+            icon={
+              <Ionicons
+                name={isGuest ? "log-in-outline" : "log-out-outline"}
+                size={28}
+                color="#B31F24"
+                className="mr-2"
+              />
+            }
+            textClassName={"font-lexend-semibold text-brand-primary"}
+          />
         </View>
       </View>
     </AppLayout>

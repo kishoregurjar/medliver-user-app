@@ -16,43 +16,24 @@ export default function CTAButton({
   loaderClassName,
   size = "md", // 'sm' | 'md' | 'lg'
   iconOnly = false,
-  variant = "primary", // 'primary' | 'secondary' | 'default'
+  variant = "primary", // 'primary' | 'secondary' | 'default' | 'custom'
   mode = "solid", // 'solid' | 'outlined' | 'ghost'
   shape = "rounded", // 'square' | 'rounded' | 'pill'
 }) {
   const isDisabled = loading || disabled;
 
   const sizeStyles = {
-    sm: {
-      button: "py-2 px-3",
-      text: "text-sm",
-      loader: "gap-1",
-    },
-    md: {
-      button: "py-3 px-4",
-      text: "text-base",
-      loader: "gap-2",
-    },
-    lg: {
-      button: "py-4 px-5",
-      text: "text-lg",
-      loader: "gap-3",
-    },
+    sm: { button: "py-2 px-3", text: "text-sm", loader: "gap-1" },
+    md: { button: "py-3 px-4", text: "text-base", loader: "gap-2" },
+    lg: { button: "py-4 px-5", text: "text-lg", loader: "gap-3" },
   };
 
   const variantStyles = {
-    primary: {
-      base: "bg-brand-primary border-brand-primary text-white",
-    },
-    secondary: {
-      base: "bg-brand-secondary border-brand-secondary text-black",
-    },
-    default: {
-      base: "bg-gray-400 border-gray-400 text-black",
-    },
-    transparent: {
-      base: "bg-transparent border-transparent text-black",
-    },
+    primary: { base: "bg-brand-primary border-brand-primary text-white" },
+    secondary: { base: "bg-brand-secondary border-brand-secondary text-black" },
+    default: { base: "bg-gray-400 border-gray-400 text-black" },
+    transparent: { base: "bg-transparent border-transparent text-black" },
+    custom: { base: "" }, // will rely on passed `className`
   };
 
   const modeStyles = {
@@ -74,7 +55,10 @@ export default function CTAButton({
   const currentShape = shapeStyles[shape] || shapeStyles.rounded;
 
   const textColorFromVariant =
-    currentVariant.base.match(/text-[^\s]+/)?.[0] || "text-white";
+    variant !== "custom"
+      ? currentVariant.base.match(/text-[^\s]+/)?.[0] || "text-white"
+      : "text-white"; // fallback if not passed in className
+
   const spinnerColor =
     loaderColor || (textColorFromVariant.includes("black") ? "#000" : "#fff");
 
@@ -130,11 +114,12 @@ export default function CTAButton({
         currentSize.button,
         currentShape,
         currentMode,
-        currentVariant.base,
-        variant !== "transparent" && "shadow-md",
+        variant !== "custom" && currentVariant.base,
+        variant !== "custom" && variant !== "transparent" && "shadow-md",
         mode !== "ghost" &&
           mode !== "link" &&
           variant !== "transparent" &&
+          variant !== "custom" &&
           "border",
         isDisabled && "opacity-60",
         className

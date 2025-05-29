@@ -15,6 +15,8 @@ export const AppRouteEnum = {
   HOME: "/home",
   ACCOUNT: {
     INDEX: "/account",
+    EDIT_PROFILE: "/account/edit-profile",
+    CHANGE_PASSWORD: "/account/change-password",
     WALLET: "/account/wallet",
     OFFERS: "/account/offers",
     ORDERS: "/account/orders",
