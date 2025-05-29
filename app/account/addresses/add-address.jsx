@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, TouchableOpacity } from "react-native";
+import { ScrollView } from "react-native";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -9,6 +9,7 @@ import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
 import useAxios from "@/hooks/useAxios";
 import { useRouter } from "expo-router";
 import { useAppToast } from "@/hooks/useAppToast";
+import CTAButton from "@/components/common/CTAButton";
 
 const schema = yup.object().shape({
   address_type: yup.string().required("Address type is required"),
@@ -119,17 +120,13 @@ export default function AddAddressScreen() {
           fields={addressFields}
         />
 
-        <TouchableOpacity
-          disabled={isLoading}
+        <CTAButton
+          label="Save Address"
+          loaderText="Saving..."
           onPress={handleSubmit(onSubmit)}
-          className={`bg-brand-primary mt-4 py-3 rounded-xl ${
-            isLoading ? "opacity-50" : ""
-          }`}
-        >
-          <Text className="text-white text-center font-semibold">
-            {isLoading ? "Saving..." : "Save Address"}
-          </Text>
-        </TouchableOpacity>
+          loading={isLoading}
+          disabled={isLoading}
+        />
       </ScrollView>
     </AppLayout>
   );

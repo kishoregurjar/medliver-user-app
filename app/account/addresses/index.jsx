@@ -1,20 +1,15 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  RefreshControl,
-} from "react-native";
+import { View, Text, ScrollView, Alert, RefreshControl } from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
-import { MaterialIcons } from "@expo/vector-icons";
 import useAxios from "@/hooks/useAxios";
 import { useRouter } from "expo-router";
 import SkeletonAddressCard from "@/components/skeletons/SkeletonAddressCard";
 import UserAddressCard from "@/components/cards/UserAddressCard";
+import CTAButton from "@/components/common/CTAButton";
+import ROUTE_PATH from "@/routes/route.constants";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function MyAddressesScreen() {
   const [addresses, setAddresses] = useState([]);
@@ -124,6 +119,12 @@ export default function MyAddressesScreen() {
     <AppLayout>
       <HeaderWithBack showBackButton title="My Addresses" />
 
+      <CTAButton
+        label="Add New Address"
+        onPress={() => router.push(ROUTE_PATH.APP.ACCOUNT.ADD_ADDRESS)}
+        icon={<Ionicons name="add" size={24} color="white" className="mr-2" />}
+      />
+
       {loadingAddresses ? (
         <View className="flex gap-2 my-4">
           {Array.from({ length: 3 }, (_, index) => (
@@ -152,18 +153,11 @@ export default function MyAddressesScreen() {
               onDelete={handleDelete}
               settingDefault={settingDefaultLoading}
               activeSetId={activeSetId}
+              isDeleting={deleting}
             />
           ))}
         </ScrollView>
       )}
-
-      <TouchableOpacity
-        className="absolute bottom-6 right-6 bg-brand-primary p-4 rounded-full flex-row items-center justify-center space-x-1"
-        onPress={() => router.push("/account/addresses/add-address")}
-      >
-        <MaterialIcons name="add-location-alt" size={24} color="white" />
-        <Text className="text-white font-medium text-sm">Add Address</Text>
-      </TouchableOpacity>
     </AppLayout>
   );
 }

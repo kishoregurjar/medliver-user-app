@@ -28,7 +28,7 @@ export const AppRouteEnum = {
     PRESCRIPTION_INVOICE: "/account/prescriptions/[id]/invoice",
     NOTIFICATIONS: "/account/notifications",
     ADDRESSES: "/account/addresses",
-    ADD_ADDRESS: "/account/addresses/add",
+    ADD_ADDRESS: "/account/addresses/add-address",
     EDIT_ADDRESS: "/account/addresses/edit/[id]",
     HELP: "/account/help",
     PRIVACY_POLICY: "/account/privacy-policy",

@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import CTAButton from "../common/CTAButton";
 
 const UserAddressCard = ({
   address = {},
@@ -9,6 +10,7 @@ const UserAddressCard = ({
   onDelete,
   settingDefault = false,
   activeSetId = null,
+  isDeleting = false,
 }) => {
   const {
     _id,
@@ -31,12 +33,12 @@ const UserAddressCard = ({
       <View className="flex-row items-center justify-between mb-3">
         <View className="flex-row items-center space-x-2">
           <MaterialIcons name="location-on" size={20} color="#5C59FF" />
-          <Text className="text-base font-semibold text-gray-900 capitalize">
+          <Text className="text-base font-lexend-semibold text-gray-900 capitalize">
             {address_type || "Other"}
           </Text>
           {is_default && (
-            <View className="bg-indigo-100 px-2 py-0.5 rounded-full ml-1">
-              <Text className="text-xs text-indigo-600 font-medium">
+            <View className="bg-green-100 px-2 py-0.5 rounded-full ml-1">
+              <Text className="text-xs text-green-600 font-lexend-semibold">
                 Default
               </Text>
             </View>
@@ -46,14 +48,14 @@ const UserAddressCard = ({
 
       {/* Address Content */}
       <View className="mb-3">
-        <Text className="text-sm text-gray-700 leading-5">
+        <Text className="text-sm font-lexend text-gray-700 leading-5">
           {[house_number, street, landmark].filter(Boolean).join(", ")}
         </Text>
-        <Text className="text-sm text-gray-700 leading-5">
+        <Text className="text-sm font-lexend text-gray-700 leading-5">
           {[city, state].filter(Boolean).join(", ")}
           {pincode ? ` - ${pincode}` : ""}
         </Text>
-        <Text className="text-sm text-gray-700 leading-5">
+        <Text className="text-sm font-lexend text-gray-700 leading-5">
           {country || "India"}
         </Text>
       </View>
@@ -63,55 +65,69 @@ const UserAddressCard = ({
         {/* Left Side (Edit + Delete) */}
         <View className="flex-row gap-2">
           {typeof onEdit === "function" && (
-            <TouchableOpacity
-              className="flex-row items-center px-3 py-1 rounded-lg bg-gray-100"
+            <CTAButton
+              label="Edit"
+              icon={
+                <MaterialIcons
+                  name="edit"
+                  size={14}
+                  color="#5C59FF"
+                  className="mr-1"
+                />
+              }
               onPress={() => onEdit(_id)}
-            >
-              <MaterialIcons name="edit" size={16} color="#4B5563" />
-              <Text className="ml-1 text-sm text-gray-700">Edit</Text>
-            </TouchableOpacity>
+              variant="custom"
+              size="sm"
+              className="flex-row items-center px-3 py-1 rounded-lg bg-indigo-100"
+              textClassName="text-sm font-lexend text-indigo-600"
+            />
           )}
 
           {!is_default && typeof onDelete === "function" && (
-            <TouchableOpacity
-              className="flex-row items-center px-3 py-1 rounded-lg bg-red-100"
+            <CTAButton
+              label="Delete"
+              icon={
+                <MaterialIcons
+                  name="delete"
+                  size={14}
+                  color="#dc2626"
+                  className="mr-1"
+                />
+              }
+              loaderText="Deleting..."
+              loaderColor={"#dc2626"}
+              loading={isDeleting}
+              disabled={isDeleting}
               onPress={() => onDelete(_id)}
-            >
-              <MaterialIcons name="delete" size={16} color="#dc2626" />
-              <Text className="ml-1 text-sm text-red-600">Remove</Text>
-            </TouchableOpacity>
+              variant="custom"
+              size="sm"
+              className="flex-row items-center px-3 py-1 rounded-lg bg-red-100"
+              textClassName="text-sm font-lexend text-red-600"
+            />
           )}
           {!is_default && typeof onSetDefault === "function" && (
-            <TouchableOpacity
-              className="flex-row items-center px-3 py-1 rounded-lg bg-indigo-100"
+            <CTAButton
+              label="Set Default"
+              icon={
+                <MaterialIcons
+                  name="check-circle"
+                  size={14}
+                  color="#16a34a"
+                  className="mr-1"
+                />
+              }
               onPress={() => onSetDefault(_id)}
+              loaderText="Setting..."
+              loaderColor={"#16a34a"}
+              variant="custom"
+              size="sm"
+              className="flex-row items-center px-3 py-1 rounded-lg bg-green-100"
+              textClassName="text-sm font-lexend text-green-600"
+              loading={settingDefault}
               disabled={settingDefault}
-            >
-              <MaterialIcons name="check-circle" size={16} color="#5C59FF" />
-              <Text className="ml-1 text-sm text-indigo-600">
-                {settingDefault && activeSetId === _id
-                  ? "Setting..."
-                  : "Set Default"}
-              </Text>
-            </TouchableOpacity>
-          )}  
+            />
+          )}
         </View>
-
-        {/* Right Side (Set Default) */}
-        {/* {!is_default && typeof onSetDefault === "function" && (
-          <TouchableOpacity
-            className="flex-row items-center px-3 py-1 rounded-lg bg-indigo-100"
-            onPress={() => onSetDefault(_id)}
-            disabled={settingDefault}
-          >
-            <MaterialIcons name="check-circle" size={16} color="#5C59FF" />
-            <Text className="ml-1 text-sm text-indigo-600">
-              {settingDefault && activeSetId === _id
-                ? "Setting..."
-                : "Set Default"}
-            </Text>
-          </TouchableOpacity>
-        )} */}
       </View>
     </View>
   );
