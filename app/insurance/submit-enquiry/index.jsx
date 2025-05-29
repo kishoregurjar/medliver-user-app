@@ -11,6 +11,7 @@ import FORM_FIELD_TYPES from "@/libs/form-field-types";
 import FORM_VALIDATIONS from "@/libs/form-validations";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
+import CTAButton from "@/components/common/CTAButton";
 
 const InsuranceEnquiryScreen = () => {
   const {
@@ -54,6 +55,7 @@ const InsuranceEnquiryScreen = () => {
   }));
 
   const onSubmit = async (payload) => {
+    delete payload.termsAccepted;
     const { data, error } = await submitEnquiry({
       url: "/user/apply-for-insurance",
       method: "POST",
@@ -92,7 +94,7 @@ const InsuranceEnquiryScreen = () => {
           fields={fields.filter((f) => f.visible !== false)}
         />
 
-        <View className="flex-row items-center mt-6">
+        <View className="flex-row items-center my-5">
           <Controller
             control={control}
             name="termsAccepted"
@@ -118,7 +120,7 @@ const InsuranceEnquiryScreen = () => {
                   </Text>
                 </TouchableOpacity>
                 {error && (
-                  <Text className="text-red-500 mt-1 text-xs">
+                  <Text className="text-red-500 mt-1 text-xs font-lexend">
                     {error.message}
                   </Text>
                 )}
@@ -127,16 +129,13 @@ const InsuranceEnquiryScreen = () => {
           />
         </View>
 
-        <TouchableOpacity
-          onPress={handleSubmit(onSubmit, (formErrors) =>
-            console.log("Form Validation Errors:", formErrors)
-          )}
-          className="mt-6 py-4 rounded-xl bg-brand-primary active:opacity-80"
-        >
-          <Text className="text-white text-center text-base font-lexend-bold">
-            Submit Enquiry
-          </Text>
-        </TouchableOpacity>
+        <CTAButton
+          label="Submit Enquiry"
+          onPress={handleSubmit(onSubmit)}
+          loaderText="Submitting..."
+          loading={isLoading}
+          disabled={isLoading}
+        />
       </View>
     </AppLayout>
   );

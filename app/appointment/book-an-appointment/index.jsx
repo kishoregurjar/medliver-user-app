@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,13 +10,10 @@ import FORM_FIELD_TYPES from "@/libs/form-field-types";
 import { useAppToast } from "@/hooks/useAppToast";
 import useAxios from "@/hooks/useAxios";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
+import CTAButton from "@/components/common/CTAButton";
 
 const BookAnAppointmentScreen = () => {
-  const {
-    request: submitDoctorAppointment,
-    loading: isLoading,
-    error: hasError,
-  } = useAxios();
+  const { request: submitDoctorAppointment, loading: isLoading } = useAxios();
 
   const { showToast } = useAppToast();
 
@@ -33,6 +30,7 @@ const BookAnAppointmentScreen = () => {
   });
 
   const onSubmit = async (payload) => {
+    delete payload.confirmation;
     const { data, error } = await submitDoctorAppointment({
       url: "/user/create-doctoreLead",
       method: "POST",
@@ -91,25 +89,18 @@ const BookAnAppointmentScreen = () => {
           </Text>
         </View>
         {errors.confirmation && (
-          <Text className="text-xs text-brand-primary mb-4">
-            {errors.confirmation.message}
-          </Text>
-        )}
-        {errors.confirmation && (
           <Text className="text-xs text-red-500 mb-4">
             {errors.confirmation.message}
           </Text>
         )}
 
-        {/* Submit button */}
-        <TouchableOpacity
-          className="bg-brand-primary py-4 rounded-xl mt-2"
+        <CTAButton
+          label="Book an Appointment"
           onPress={handleSubmit(onSubmit)}
-        >
-          <Text className="text-white font-lexend-bold text-center text-base">
-            Submit Appointment Request
-          </Text>
-        </TouchableOpacity>
+          loaderText="Booking..."
+          loading={isLoading}
+          disabled={isLoading}
+        />
       </View>
     </AppLayout>
   );
