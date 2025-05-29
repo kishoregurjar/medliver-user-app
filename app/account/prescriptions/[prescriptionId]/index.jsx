@@ -9,7 +9,7 @@ import {
   Linking,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import useAxios from "@/hooks/useAxios";
@@ -20,7 +20,7 @@ export default function ViewPrescriptionScreen() {
   const [prescription, setPrescription] = useState(null);
 
   const fetchPrescription = async () => {
-    const { data, error } = await request({
+    const { data } = await request({
       method: "GET",
       url: `/user/get-prescription-details-by-id`,
       authRequired: true,
@@ -46,22 +46,31 @@ export default function ViewPrescriptionScreen() {
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
-    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+    return `${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`;
+  };
+
+  const getStatusBadgeStyle = (status) => {
+    switch (status) {
+      case "pending":
+        return { bg: "bg-yellow-100", text: "text-yellow-800" };
+      case "completed":
+        return { bg: "bg-green-100", text: "text-green-700" };
+      default:
+        return { bg: "bg-gray-200", text: "text-gray-600" };
+    }
   };
 
   if (loading || !prescription) {
     return (
       <AppLayout>
         <HeaderWithBack showBackButton title="Prescription Details" />
-        <View className="bg-white m-4 p-4 rounded-2xl flex gap-2">
-          <View className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-2" />
-          <View className="h-4 w-32 bg-gray-200 rounded animate-pulse mb-4" />
-          <View className="h-4 w-36 bg-gray-200 rounded animate-pulse mb-2" />
-          <View className="h-4 w-48 bg-gray-200 rounded animate-pulse mb-4" />
-          <View className="h-4 w-40 bg-gray-200 rounded animate-pulse mb-2" />
-          <View className="h-4 w-28 bg-gray-200 rounded animate-pulse mb-4" />
-          <View className="h-4 w-36 bg-gray-200 rounded animate-pulse mb-2" />
-          <View className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-4" />
+        <View className="m-4 p-4 bg-white rounded-xl space-y-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <View
+              key={i}
+              className="h-4 bg-gray-200 rounded w-1/2 animate-pulse"
+            />
+          ))}
         </View>
       </AppLayout>
     );
@@ -78,62 +87,76 @@ export default function ViewPrescriptionScreen() {
     assigned_pharmacy,
   } = prescription;
 
+  const { bg, text } = getStatusBadgeStyle(status);
+
   return (
     <AppLayout>
       <HeaderWithBack showBackButton title="Prescription Details" />
-
       <ScrollView contentContainerStyle={{ padding: 16 }}>
-        <View className="bg-white p-4 rounded-2xl shadow-sm">
-          <Text className="text-lg font-lexend-semibold mb-2">Status:</Text>
-          <Text className="text-brand-primary font-lexend-medium capitalize">
-            {status || "N/A"}
-          </Text>
-
-          <Text className="text-lg font-lexend-semibold mt-4 mb-2">
-            Submitted At:
-          </Text>
-          <Text className="text-gray-700 font-lexend-medium">
-            {formatDate(created_at)}
-          </Text>
-
-          <Text className="text-lg font-lexend-semibold mt-4 mb-2">
-            Total Amount:
-          </Text>
-          <Text className="text-gray-700 font-lexend-medium">
-            ₹{total_amount?.toFixed(2) ?? "0.00"}
-          </Text>
-
-          <Text className="text-lg font-lexend-semibold mt-4 mb-2">
-            Assigned Pharmacy:
-          </Text>
-          <Text className="text-gray-700 font-lexend-medium">
-            {assigned_pharmacy?.name || "Not assigned"}
-          </Text>
-
-          <Text className="text-lg font-lexend-semibold mt-4 mb-2">
-            Assigned Delivery Partner:
-          </Text>
-          <Text className="text-gray-700 font-lexend-medium">
-            {assigned_delivery_partner?.name || "Not assigned"}
-          </Text>
-
-          {remarks && (
-            <>
-              <Text className="text-lg font-lexend-semibold mt-4 mb-2">
-                Remarks:
+        <View className="bg-white rounded-2xl p-4 shadow-sm space-y-4">
+          {/* Status */}
+          <View className="flex-row items-center justify-between">
+            <Text className="text-lg font-lexend-semibold">Status</Text>
+            <View className={`px-3 py-1 rounded-full ${bg}`}>
+              <Text className={`text-sm font-medium capitalize ${text}`}>
+                {status}
               </Text>
-              <Text className="text-gray-700">{remarks}</Text>
-            </>
+            </View>
+          </View>
+
+          {/* Submission Time */}
+          <View>
+            <Text className="text-sm text-gray-500 mb-1">Submitted On</Text>
+            <Text className="font-lexend-medium text-gray-800">
+              {formatDate(created_at)}
+            </Text>
+          </View>
+
+          {/* Amount */}
+          <View>
+            <Text className="text-sm text-gray-500 mb-1">Total Amount</Text>
+            <Text className="font-lexend-medium text-gray-800">
+              ₹{total_amount?.toFixed(2) ?? "0.00"}
+            </Text>
+          </View>
+
+          {/* Pharmacy Info */}
+          <View>
+            <Text className="text-sm text-gray-500 mb-1">
+              Assigned Pharmacy
+            </Text>
+            <Text className="font-lexend-medium text-gray-800">
+              {assigned_pharmacy?.name || "Not Assigned"}
+            </Text>
+          </View>
+
+          {/* Delivery Partner Info */}
+          <View>
+            <Text className="text-sm text-gray-500 mb-1">Delivery Partner</Text>
+            <Text className="font-lexend-medium text-gray-800">
+              {assigned_delivery_partner?.name || "Not Assigned"}
+            </Text>
+          </View>
+
+          {/* Remarks */}
+          {remarks && (
+            <View>
+              <Text className="text-sm text-gray-500 mb-1">Remarks</Text>
+              <Text className="font-lexend-regular text-gray-800">
+                {remarks}
+              </Text>
+            </View>
           )}
 
+          {/* View Bill */}
           {bill_path && (
             <TouchableOpacity
               onPress={() => openLink(bill_path)}
-              className="mt-6 flex-row items-center space-x-2"
+              className="flex-row items-center space-x-2 mt-2"
             >
               <Ionicons
                 name="document-text-outline"
-                size={24}
+                size={20}
                 color="#4F46E5"
               />
               <Text className="text-brand-primary underline font-lexend-medium">
@@ -143,12 +166,23 @@ export default function ViewPrescriptionScreen() {
           )}
         </View>
 
+        {/* Images */}
         <View className="mt-6">
           <Text className="text-lg font-lexend-semibold mb-3">
-            Prescription Images:
+            Prescription Images
           </Text>
+
           {images.length === 0 ? (
-            <Text className="text-gray-500">No images uploaded</Text>
+            <View className="p-4 bg-gray-50 rounded-xl items-center">
+              <MaterialIcons
+                name="image-not-supported"
+                size={24}
+                color="#999"
+              />
+              <Text className="text-gray-500 mt-2 text-sm">
+                No images uploaded.
+              </Text>
+            </View>
           ) : (
             images.map((img, index) => (
               <Image
