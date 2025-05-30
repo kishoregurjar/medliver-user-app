@@ -82,14 +82,14 @@ const AppTabBar = () => {
             key={tab.name}
             onPress={() => router.push(tab.path)}
             android_ripple={{
-              color: "rgba(0,0,0,0.1)",
+              color: "rgba(179, 31, 36, 0.2)", // Updated ripple color
               borderless: false,
             }}
             style={{
               flex: 1,
               alignItems: "center",
               justifyContent: "center",
-              height: 64, // consistent height
+              height: 64,
               paddingTop: 6,
               paddingBottom: 4,
               borderTopWidth: 2,
@@ -102,18 +102,18 @@ const AppTabBar = () => {
                   opacity: pressed && Platform.OS === "ios" ? 0.6 : 1,
                   alignItems: "center",
                   justifyContent: "center",
-                  position: "relative", // needed for absolute badge
+                  position: "relative",
                 }}
               >
                 <Ionicons
                   name={iconName}
-                  size={22} // slightly smaller icon for better alignment
+                  size={22}
                   color={isActive ? activeColor : inactiveColor}
                 />
                 <Text
                   style={{
                     fontSize: 11,
-                    marginTop: 2, // more compact
+                    marginTop: 2,
                     fontFamily: "Lexend-Medium",
                     color: isActive ? activeColor : inactiveColor,
                   }}
