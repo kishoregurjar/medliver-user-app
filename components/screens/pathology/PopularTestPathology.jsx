@@ -4,10 +4,20 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 
 import PathologyTestCard from "@/components/cards/PathologyTestCard";
 import SkeletonPathologyTestCard from "@/components/skeletons/SkeletonPathologyTestCard";
+import { useRouter } from "expo-router";
 
 const PopularTestPathology = () => {
+  const router = useRouter();
+
   const { request: getPopularTests, loading: isLoading } = useAxios();
   const [popularTests, setPopularTests] = useState([]);
+
+  const handlePress = (id) => {
+    router.push({
+      pathname: "/pathology/lab-test/[testId]",
+      params: { testId: id },
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,7 +73,11 @@ const PopularTestPathology = () => {
           </View>
         ) : (
           popularTests.map((item) => (
-            <PathologyTestCard key={item._id} item={item} />
+            <PathologyTestCard
+              key={item._id}
+              item={item}
+              onPress={handlePress}
+            />
           ))
         )}
       </ScrollView>

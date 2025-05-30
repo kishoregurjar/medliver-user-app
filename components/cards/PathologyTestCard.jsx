@@ -45,7 +45,7 @@ const PathologyTestCard = ({
       <TouchableOpacity
         onPress={handlePress}
         className="w-48 bg-white rounded-2xl p-3 mr-4 border border-background-soft"
-        activeOpacity={0.8}
+        activeOpacity={0.7}
         key={id}
       >
         {imageSource ? (
