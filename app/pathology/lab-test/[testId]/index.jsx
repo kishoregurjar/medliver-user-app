@@ -3,13 +3,13 @@ import React from "react";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 
-export default function PharmacyProductScreen() {
+export default function PathologyTestDetailsScreen() {
   return (
     <AppLayout>
       {/* Header */}
       <HeaderWithBack showBackButton title="My Wallet" />
       <View className="flex-1 items-center justify-center">
-        <Text className="text-2xl font-bold">PharmacyProductScreen</Text>
+        <Text className="text-2xl font-bold">PathologyTestDetailsScreen</Text>
         <Text className="text-lg">Screen Work In Progress</Text>
       </View>
     </AppLayout>
