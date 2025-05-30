@@ -60,6 +60,9 @@ const AppTabBar = () => {
     opacity: opacity.value,
   }));
 
+  const activeColor = "#B31F24";
+  const inactiveColor = "#6E6A7C";
+
   return (
     <Animated.View
       style={[
@@ -68,62 +71,67 @@ const AppTabBar = () => {
           paddingBottom: insets.bottom,
         },
       ]}
-      className="absolute left-0 right-0 bottom-0 bg-white dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-700 flex-row justify-around items-center h-[64px] z-50"
+      className="absolute left-0 right-0 bottom-0 bg-white dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-700 flex-row justify-around items-center z-50"
     >
       {tabs.map((tab) => {
         const isActive = pathname.includes(tab.name);
         const iconName = isActive ? tab.icon : `${tab.icon}-outline`;
-        const activeColor = "#B31F24"; // Change as per your theme
-        const inactiveColor = "#6E6A7C"; // Muted
 
         return (
           <Pressable
             key={tab.name}
             onPress={() => router.push(tab.path)}
-            android_ripple={{ color: "rgba(0,0,0,0.1)", borderless: false }}
+            android_ripple={{
+              color: "rgba(0,0,0,0.1)",
+              borderless: false,
+            }}
             style={{
               flex: 1,
               alignItems: "center",
               justifyContent: "center",
+              height: 64, // consistent height
+              paddingTop: 6,
+              paddingBottom: 4,
               borderTopWidth: 2,
               borderTopColor: isActive ? activeColor : "transparent",
-              height: "100%",
             }}
           >
             {({ pressed }) => (
               <View
                 style={{
-                  opacity: Platform.OS === "ios" && pressed ? 0.6 : 1,
+                  opacity: pressed && Platform.OS === "ios" ? 0.6 : 1,
                   alignItems: "center",
                   justifyContent: "center",
+                  position: "relative", // needed for absolute badge
                 }}
               >
                 <Ionicons
                   name={iconName}
-                  size={24}
+                  size={22} // slightly smaller icon for better alignment
                   color={isActive ? activeColor : inactiveColor}
                 />
                 <Text
                   style={{
                     fontSize: 11,
-                    marginTop: 4,
+                    marginTop: 2, // more compact
                     fontFamily: "Lexend-Medium",
                     color: isActive ? activeColor : inactiveColor,
                   }}
                 >
                   {tab.label}
                 </Text>
+
                 {tab.name === "cart" && tab.badge > 0 && (
                   <View
                     style={{
                       position: "absolute",
-                      top: 4,
-                      right: 24,
+                      top: -4,
+                      right: -10,
                       backgroundColor: activeColor,
                       borderRadius: 8,
                       minWidth: 16,
-                      paddingHorizontal: 4,
-                      paddingVertical: 1,
+                      height: 16,
+                      paddingHorizontal: 3,
                       alignItems: "center",
                       justifyContent: "center",
                     }}
