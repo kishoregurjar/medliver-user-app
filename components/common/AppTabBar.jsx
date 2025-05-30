@@ -1,5 +1,5 @@
 import { usePathname, useRouter } from "expo-router";
-import { View, TouchableOpacity, Text } from "react-native";
+import { View, Pressable, Text, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useEffect } from "react";
@@ -68,40 +68,80 @@ const AppTabBar = () => {
           paddingBottom: insets.bottom,
         },
       ]}
-      className="absolute left-0 right-0 bottom-0 h-[64px] bg-white dark:bg-neutral-900 flex-row justify-around items-center border-t border-gray-200 dark:border-neutral-700 z-50"
+      className="absolute left-0 right-0 bottom-0 bg-white dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-700 flex-row justify-around items-center h-[64px] z-50"
     >
       {tabs.map((tab) => {
         const isActive = pathname.includes(tab.name);
-        const iconName = isActive ? `${tab.icon}` : `${tab.icon}-outline`;
+        const iconName = isActive ? tab.icon : `${tab.icon}-outline`;
+        const activeColor = "#B31F24"; // Change as per your theme
+        const inactiveColor = "#6E6A7C"; // Muted
 
         return (
-          <TouchableOpacity
+          <Pressable
             key={tab.name}
             onPress={() => router.push(tab.path)}
-            className={`flex-1 items-center justify-center relative`}
-            activeOpacity={0.8}
+            android_ripple={{ color: "rgba(0,0,0,0.1)", borderless: false }}
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              borderTopWidth: 2,
+              borderTopColor: isActive ? activeColor : "transparent",
+              height: "100%",
+            }}
           >
-            <Ionicons
-              name={iconName}
-              size={24}
-              color={isActive ? "#B31F24" : "#6E6A7C"}
-            />
-            <Text
-              className={`text-[11px] mt-1 font-lexend-medium ${
-                isActive ? "text-brand-primary" : "text-text-muted"
-              }`}
-            >
-              {tab.label}
-            </Text>
-
-            {tab.name === "cart" && tab.badge > 0 && (
-              <View className="absolute top-0 right-6 bg-brand-primary rounded-full px-1.5 py-[1px] min-w-[16px] items-center justify-center">
-                <Text className="text-white text-[10px] font-lexend-semibold">
-                  {tab.badge}
+            {({ pressed }) => (
+              <View
+                style={{
+                  opacity: Platform.OS === "ios" && pressed ? 0.6 : 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Ionicons
+                  name={iconName}
+                  size={24}
+                  color={isActive ? activeColor : inactiveColor}
+                />
+                <Text
+                  style={{
+                    fontSize: 11,
+                    marginTop: 4,
+                    fontFamily: "Lexend-Medium",
+                    color: isActive ? activeColor : inactiveColor,
+                  }}
+                >
+                  {tab.label}
                 </Text>
+                {tab.name === "cart" && tab.badge > 0 && (
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: 4,
+                      right: 24,
+                      backgroundColor: activeColor,
+                      borderRadius: 8,
+                      minWidth: 16,
+                      paddingHorizontal: 4,
+                      paddingVertical: 1,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 10,
+                        fontFamily: "Lexend-SemiBold",
+                      }}
+                    >
+                      {tab.badge}
+                    </Text>
+                  </View>
+                )}
               </View>
             )}
-          </TouchableOpacity>
+          </Pressable>
         );
       })}
     </Animated.View>
