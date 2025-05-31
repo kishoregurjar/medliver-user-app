@@ -123,7 +123,7 @@ export default function CartAddressSelection({
         <CTAButton
           iconOnly
           icon={<Feather name="refresh-cw" size={20} color="#6B7280" />}
-          variant="default"
+          variant="transparent"
           onPress={fetchUserAddresses}
           size="sm"
         />
