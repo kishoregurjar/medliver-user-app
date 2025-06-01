@@ -4,7 +4,6 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  SafeAreaView,
 } from "react-native";
 import { useState } from "react";
 import * as Location from "expo-location";
@@ -17,7 +16,8 @@ import { useRouter } from "expo-router";
 export default function SelectLocationScreen() {
   const router = useRouter();
   const [pincode, setPincode] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingManualSubmit, setLoadingManualSubmit] = useState(false);
+  const [loadingCurrentLocation, setLoadingCurrentLocation] = useState(false);
   const [locationDetails, setLocationDetails] = useState(null);
   const [error, setError] = useState("");
 
@@ -40,22 +40,17 @@ export default function SelectLocationScreen() {
   };
 
   const fetchLocationFromPincode = async (pin) => {
-    try {
-      const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
-      const data = await res.json();
-      const postOffice = data?.[0]?.PostOffice?.[0];
-      if (postOffice) {
-        return {
-          city: postOffice.District,
-          state: postOffice.State,
-          pincode: postOffice.Pincode,
-        };
-      } else {
-        throw new Error("Invalid pincode.");
-      }
-    } catch (e) {
-      throw new Error("Failed to fetch location from pincode.");
+    const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+    const data = await res.json();
+    const postOffice = data?.[0]?.PostOffice?.[0];
+    if (postOffice) {
+      return {
+        city: postOffice.District,
+        state: postOffice.State,
+        pincode: postOffice.Pincode,
+      };
     }
+    throw new Error("Invalid pincode.");
   };
 
   const handleManualSubmit = async () => {
@@ -64,8 +59,8 @@ export default function SelectLocationScreen() {
       return;
     }
 
-    setLoading(true);
     setError("");
+    setLoadingManualSubmit(true);
 
     try {
       const location = await fetchLocationFromPincode(pincode);
@@ -74,20 +69,18 @@ export default function SelectLocationScreen() {
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setLoadingManualSubmit(false);
     }
   };
 
   const handleUseCurrentLocation = async () => {
-    setLoading(true);
     setError("");
+    setLoadingCurrentLocation(true);
 
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        setError("Permission to access location was denied.");
-        setLoading(false);
-        return;
+        throw new Error("Permission to access location was denied.");
       }
 
       const loc = await Location.getCurrentPositionAsync({});
@@ -96,110 +89,110 @@ export default function SelectLocationScreen() {
         longitude: loc.coords.longitude,
       });
 
-      if (address?.postalCode) {
-        const location = await fetchLocationFromPincode(address.postalCode);
-        setLocationDetails(location);
-        navigateToHome(location);
-      } else {
-        setError("Could not fetch postal code from location.");
+      const pin = address?.postalCode;
+
+      if (!pin || !/^\d{6}$/.test(pin)) {
+        throw new Error("Could not fetch valid postal code from location.");
       }
+
+      const location = await fetchLocationFromPincode(pin);
+      setLocationDetails(location);
+      navigateToHome(location);
     } catch (err) {
-      setError("Failed to get current location.");
+      setError(err.message || "Failed to get current location.");
     } finally {
-      setLoading(false);
+      setLoadingCurrentLocation(false);
     }
   };
 
   return (
     <AppLayout scroll={false}>
-      <SafeAreaView className="flex-1 px-4">
-        <HeaderWithBack
-          showBackButton
-          title="Select Location"
-          clearStack
-          backTo="/home"
-        />
+      <HeaderWithBack
+        showBackButton
+        title="Select Location"
+        clearStack
+        backTo="/home"
+      />
 
-        <View className="flex-1 justify-start mt-6">
-          <Text className="text-base font-lexend-semibold mb-2 text-gray-700">
-            Enter Pincode
-          </Text>
-          <View className="flex-row items-center bg-white border border-background-soft px-4 py-3 rounded-xl mb-4">
-            <Ionicons name="location-outline" size={20} color="#888" />
-            <TextInput
-              className="flex-1 ml-2 text-base"
-              placeholder="Enter 6-digit pincode"
-              keyboardType="number-pad"
-              value={pincode}
-              maxLength={6}
-              onChangeText={(text) => {
-                setPincode(text);
-                setError("");
-              }}
-              editable={!loading}
-              returnKeyType="done"
-            />
-          </View>
+      <View className="flex-1 justify-start mt-6">
+        <Text className="text-base font-lexend-semibold mb-2 text-gray-700">
+          Enter Pincode
+        </Text>
+        <View className="flex-row items-center bg-white border border-background-soft px-4 py-3 rounded-xl mb-4">
+          <Ionicons name="location-outline" size={20} color="#888" />
+          <TextInput
+            className="flex-1 ml-2 text-base"
+            placeholder="Enter 6-digit pincode"
+            keyboardType="number-pad"
+            value={pincode}
+            maxLength={6}
+            onChangeText={(text) => {
+              setPincode(text);
+              setError("");
+            }}
+            editable={!loadingManualSubmit && !loadingCurrentLocation}
+            returnKeyType="done"
+          />
+        </View>
 
-          <TouchableOpacity
-            className={`px-4 py-3 rounded-xl mb-6 ${
-              loading ? "bg-gray-400" : "bg-primary"
-            }`}
-            onPress={handleManualSubmit}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text className="text-center text-white font-lexend-semibold text-base">
-                Submit Pincode
-              </Text>
-            )}
-          </TouchableOpacity>
-
-          {/* Divider */}
-          <View className="flex-row items-center mb-4">
-            <View className="flex-1 h-px bg-gray-300" />
-            <Text className="mx-2 text-gray-400 text-sm">OR</Text>
-            <View className="flex-1 h-px bg-gray-300" />
-          </View>
-
-          {/* Use Current Location */}
-          <TouchableOpacity
-            className="flex-row items-center justify-center border border-primary rounded-xl px-4 py-3"
-            onPress={handleUseCurrentLocation}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#22c55e" />
-            ) : (
-              <>
-                <Ionicons name="navigate" size={20} color="#22c55e" />
-                <Text className="ml-2 text-primary font-lexend-semibold">
-                  Use My Current Location
-                </Text>
-              </>
-            )}
-          </TouchableOpacity>
-
-          {/* Error */}
-          {error && (
-            <Text className="text-red-500 mt-4 text-sm font-lexend">
-              {error}
+        <TouchableOpacity
+          className={`px-4 py-3 rounded-xl mb-6 ${
+            loadingManualSubmit ? "bg-primary" : "bg-primary"
+          }`}
+          onPress={handleManualSubmit}
+          disabled={loadingManualSubmit || loadingCurrentLocation}
+        >
+          {loadingManualSubmit ? (
+            <ActivityIndicator color="#B31F24" />
+          ) : (
+            <Text className="text-center text-brand-primary font-lexend-semibold text-base">
+              Submit Pincode
             </Text>
           )}
+        </TouchableOpacity>
 
-          {/* Location Preview */}
-          {locationDetails && (
-            <View className="mt-6 bg-green-50 border border-green-200 rounded-lg px-4 py-3">
-              <Text className="text-green-700 font-lexend">
-                Selected: {locationDetails.city}, {locationDetails.state} -{" "}
-                {locationDetails.pincode}
-              </Text>
-            </View>
-          )}
+        {/* Divider */}
+        <View className="flex-row items-center mb-4">
+          <View className="flex-1 h-px bg-gray-300" />
+          <Text className="mx-2 text-gray-400 text-base font-lexend">OR</Text>
+          <View className="flex-1 h-px bg-gray-300" />
         </View>
-      </SafeAreaView>
+
+        {/* Use Current Location */}
+        <TouchableOpacity
+          className="flex-row items-center justify-center border border-primary rounded-xl px-4 py-3"
+          onPress={handleUseCurrentLocation}
+          disabled={loadingManualSubmit || loadingCurrentLocation}
+        >
+          {loadingCurrentLocation ? (
+            <ActivityIndicator color="#B31F24" />
+          ) : (
+            <>
+              <Ionicons name="navigate" size={20} color="#B31F24" />
+              <Text className="ml-2 text-brand-primary font-lexend-semibold">
+                Use My Current Location
+              </Text>
+            </>
+          )}
+        </TouchableOpacity>
+
+        {/* Error */}
+        {error && (
+          <Text className="text-brand-primary mt-4 text-sm font-lexend">
+            {error}
+          </Text>
+        )}
+
+        {/* Location Preview */}
+        {locationDetails && (
+          <View className="mt-6 bg-green-50 border border-green-200 rounded-lg px-4 py-3">
+            <Text className="text-green-700 font-lexend">
+              Selected: {locationDetails.city}, {locationDetails.state} -{" "}
+              {locationDetails.pincode}
+            </Text>
+          </View>
+        )}
+      </View>
     </AppLayout>
   );
 }
