@@ -89,16 +89,29 @@ export default function SelectLocationScreen() {
         longitude: loc.coords.longitude,
       });
 
+      console.log("Reverse geocoded address:", address); // Debug log
+
       const pin = address?.postalCode;
+      const countryCode = address?.isoCountryCode;
+
+      // ✅ India-only validation
+      if (countryCode !== "IN") {
+        throw new Error(
+          "Currently, we only support addresses in India. Please enter a valid Indian pincode manually."
+        );
+      }
 
       if (!pin || !/^\d{6}$/.test(pin)) {
-        throw new Error("Could not fetch valid postal code from location.");
+        throw new Error(
+          "Could not fetch a valid Indian pincode from your location. Please enter it manually."
+        );
       }
 
       const location = await fetchLocationFromPincode(pin);
       setLocationDetails(location);
       navigateToHome(location);
     } catch (err) {
+      console.error("Location error", err);
       setError(err.message || "Failed to get current location.");
     } finally {
       setLoadingCurrentLocation(false);
