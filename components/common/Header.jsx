@@ -56,7 +56,7 @@ const Header = () => {
           className="flex-row items-center flex-shrink pr-2"
           onPress={() =>
             router.push({
-              pathname: ROUTE_PATH.APP.SELECT_ADDRESS.INDEX,
+              pathname: ROUTE_PATH.APP.SELECT_LOCATION.INDEX,
               params: { current: selectedAddress },
             })
           }

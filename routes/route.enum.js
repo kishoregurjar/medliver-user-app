@@ -67,5 +67,5 @@ export const AppRouteEnum = {
     ORDER_MEDICINE_INVOICE: "/pharmacy/order-medicine/[id]/invoice",
   },
   SEARCH: { INDEX: "/search" },
-  SELECT_ADDRESS: { INDEX: "/select-address" },
+  SELECT_LOCATION: { INDEX: "/select-location" },
 };
