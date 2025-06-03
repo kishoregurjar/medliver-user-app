@@ -34,30 +34,32 @@ export default function PathologyTestDetailsScreen() {
 
   const renderDetailRow = (label, value) => (
     <View className="mt-3 flex-row">
-      <Text className="font-semibold text-gray-800 w-40">{label}:</Text>
-      <Text className="flex-1 text-gray-700">{value || "N/A"}</Text>
+      <Text className="font-lexend-bold text-text-primary w-40">{label}:</Text>
+      <Text className="flex-1 font-lexend text-text-muted">
+        {value || "N/A"}
+      </Text>
     </View>
   );
 
   return (
     <AppLayout>
       <HeaderWithBack showBackButton title="Test Details" />
-      <View className="flex-1 p-4 bg-gray-50">
+      <View className="flex-1 p-4">
         {isLoading ? (
           <View className="flex-1 items-center justify-center">
             <ActivityIndicator size="large" color="#5C59FF" />
-            <Text className="mt-2 text-base text-gray-600">
-              Loading test details...
+            <Text className="mt-2 text-base text-text-muted">
+              Loading Test Details...
             </Text>
           </View>
         ) : testDetails ? (
           <ScrollView className="flex-1">
-            <View className="p-4 bg-white rounded-2xl shadow-md">
-              <Text className="text-2xl font-bold text-[#212121]">
+            <View className="p-4 bg-white rounded-2xl">
+              <Text className="text-2xl font-lexend-bold text-[#212121]">
                 {testDetails.name || "Untitled Test"}
               </Text>
               {testDetails.description ? (
-                <Text className="text-sm text-gray-600 mt-1 italic">
+                <Text className="text-sm font-lexend text-text-muted my-2">
                   {testDetails.description}
                 </Text>
               ) : null}
@@ -92,8 +94,8 @@ export default function PathologyTestDetailsScreen() {
           </ScrollView>
         ) : (
           <View className="flex-1 items-center justify-center">
-            <Text className="text-base text-gray-600">
-              No test details found.
+            <Text className="text-base font-lexend text-text-muted">
+              No Test Details Found.
             </Text>
           </View>
         )}
