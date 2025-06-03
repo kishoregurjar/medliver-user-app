@@ -109,7 +109,7 @@ export default function MyOrdersScreen() {
   return (
     <AppLayout scroll={false} className="flex-1">
       <HeaderWithBack showBackButton title="My Orders" />
-      <View className="flex-1 px-4">
+      <View className="flex-1">
         {/* Search Bar */}
         <TextInput
           placeholder="Search orders..."

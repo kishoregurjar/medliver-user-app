@@ -92,8 +92,8 @@ export default function ViewPrescriptionScreen() {
   return (
     <AppLayout>
       <HeaderWithBack showBackButton title="Prescription Details" />
-      <ScrollView contentContainerStyle={{ padding: 16 }}>
-        <View className="bg-white rounded-2xl p-4 space-y-4">
+      <ScrollView>
+        <View className="bg-white rounded-2xl p-4">
           {/* Status */}
           <View className="flex-row items-center justify-between">
             <Text className="text-lg font-lexend-semibold">Status</Text>

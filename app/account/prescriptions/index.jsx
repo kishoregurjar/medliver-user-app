@@ -112,7 +112,7 @@ export default function MyPrescriptionScreen() {
     <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="My Prescriptions" />
 
-      <View className="flex-1 px-4">
+      <View className="flex-1">
         {/* Search Bar */}
         <TextInput
           placeholder="Search Prescriptions..."
