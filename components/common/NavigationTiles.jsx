@@ -65,7 +65,7 @@ export default function NavigationTiles() {
               </View>
             </View>
 
-            <Text className="text-center text-[15px] font-lexend-semibold text-black mb-1">
+            <Text className="text-center text-base font-lexend-semibold text-black mb-1">
               {tile.label}
             </Text>
             <Text className="text-center text-xs font-lexend text-brand-primary">

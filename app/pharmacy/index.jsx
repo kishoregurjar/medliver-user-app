@@ -120,7 +120,7 @@ const PharmacyHome = () => {
         contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
       >
         <HomePromoCarouselPharmacy />
-        <CategoriesPharmacy />
+        {/* <CategoriesPharmacy /> */}
         <BestSellerPharmacy />
         <SpecialOfferPharmacy />
         <TopPicksPharmacy />
