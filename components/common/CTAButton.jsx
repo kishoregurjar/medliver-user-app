@@ -16,8 +16,8 @@ export default function CTAButton({
   loaderClassName,
   size = "md", // 'sm' | 'md' | 'lg'
   iconOnly = false,
-  variant = "primary", // 'primary' | 'secondary' | 'default' | 'custom'
-  mode = "solid", // 'solid' | 'outlined' | 'ghost'
+  variant = "primary", // 'primary' | 'secondary' | 'default' | 'custom' | 'transparent'
+  mode = "solid", // 'solid' | 'outlined' | 'ghost' | 'link'
   shape = "rounded", // 'square' | 'rounded' | 'pill'
 }) {
   const isDisabled = loading || disabled;

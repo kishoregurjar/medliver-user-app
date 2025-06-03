@@ -5,6 +5,7 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import PathologyTestCard from "@/components/cards/PathologyTestCard";
 import SkeletonPathologyTestCard from "@/components/skeletons/SkeletonPathologyTestCard";
 import { useRouter } from "expo-router";
+import ROUTE_PATH from "@/routes/route.constants";
 
 const PopularTestPathology = () => {
   const router = useRouter();
@@ -14,7 +15,7 @@ const PopularTestPathology = () => {
 
   const handlePress = (id) => {
     router.push({
-      pathname: "/pathology/lab-test/[testId]",
+      pathname: ROUTE_PATH.APP.PATHOLOGY.LAB_TEST_DETAILS,
       params: { testId: id },
     });
   };

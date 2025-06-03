@@ -54,10 +54,11 @@ export const AppRouteEnum = {
   NOTIFICATIONS: { INDEX: "/notifications" },
   PATHOLOGY: {
     INDEX: "/pathology",
-    BOOK_TEST: "/pathology/book-test",
-    BOOK_TEST_DETAILS: "/pathology/book-test/[id]",
-    BOOK_TEST_TRACK: "/pathology/book-test/[id]/track",
-    BOOK_TEST_INVOICE: "/pathology/book-test/[id]/invoice",
+    LAB_TEST: "/pathology/lab-test",
+    LAB_TEST_DETAILS: "/pathology/lab-test/[testId]",
+    LAB_TEST_BOOK: "/pathology/lab-test/[testId]/book-test",
+    LAB_TEST_TRACK: "/pathology/lab-test/[testId]/track",
+    LAB_TEST_INVOICE: "/pathology/lab-test/[testId]/invoice",
   },
   PHARMACY: {
     INDEX: "/pharmacy",
