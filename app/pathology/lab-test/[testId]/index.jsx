@@ -50,7 +50,7 @@ export default function PathologyTestDetailsScreen() {
   return (
     <AppLayout>
       <HeaderWithBack showBackButton title="Lab Test Details" />
-      <View className="flex-1 p-4">
+      <View className="flex-1">
         {isLoading ? (
           <View className="flex-1 items-center justify-center">
             <ActivityIndicator size="large" color="#5C59FF" />
