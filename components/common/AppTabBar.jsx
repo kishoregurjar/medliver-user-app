@@ -48,8 +48,11 @@ const AppTabBar = () => {
     },
   ];
 
-  const isTabBarVisible = !pathname.includes("/product/");
-
+  const pathsToExclude = ["/product/", "/cart/", "/checkout/", "/lab-test/"];
+  const isTabBarVisible = !pathsToExclude.some((path) =>
+    pathname.includes(path)
+  );
+  
   useEffect(() => {
     translateY.value = withTiming(isTabBarVisible ? 0 : 100, { duration: 300 });
     opacity.value = withTiming(isTabBarVisible ? 1 : 0, { duration: 300 });

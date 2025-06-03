@@ -34,6 +34,7 @@ const IMAGES = {
     LOGIN: require("../assets/images/signin_registration_screen.png"),
     FORGOT: require("../assets/images/forgot_screen.png"),
     VERIFICATION: require("../assets/images/verify_otp_screen.png"),
+    SUPPORT_HELP: require("../assets/images/support_help_screen.png"),
   },
   COMPONENTS: {
     HOME_NAV_TILE_1: require("../assets/images/buy_medicine.png"),

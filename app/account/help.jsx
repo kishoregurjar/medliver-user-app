@@ -6,22 +6,14 @@ import {
   TextInput,
   TouchableOpacity,
   LayoutAnimation,
-  Platform,
-  UIManager,
   Linking,
+  Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome, MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
-
-// Enable LayoutAnimation for Android
-if (
-  Platform.OS === "android" &&
-  UIManager.setLayoutAnimationEnabledExperimental
-) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
+import STATIC from "@/utils/constants";
 
 const faqs = [
   {
@@ -41,16 +33,21 @@ const faqs = [
 const otherTopics = [
   {
     title: "Payment & Transfers",
-    icon: "credit-card",
+    subtitle:
+      "Times frames and subscriptions control, transfer, and currency exchange",
+    icon: "compare-arrows",
     onPress: () => console.log("Payment help tapped"),
   },
   {
     title: "Cards & Account",
-    icon: "account-balance",
+    subtitle:
+      "Information on cards details, PIN and limits, available cards, managing your account and top up",
+    icon: "credit-card",
     onPress: () => console.log("Cards help tapped"),
   },
   {
     title: "Call Support",
+    subtitle: "Monday to Friday 10:30 am to 1:30pm",
     icon: "phone-in-talk",
     onPress: () => Linking.openURL("tel:+1234567890"),
   },
@@ -70,7 +67,7 @@ export default function HelpScreen() {
 
       <ScrollView className="flex-1 pt-4 pb-10 gap-4">
         {/* Greeting */}
-        <View className="px-4 mb-4">
+        <View className="mb-4">
           <Text className="text-2xl font-lexend-bold text-gray-900">
             Hi there 👋
           </Text>
@@ -80,55 +77,75 @@ export default function HelpScreen() {
         </View>
 
         {/* Search Bar */}
-        <View className="bg-white px-4 py-3 mb-4 rounded-2xl flex-row items-center">
-          <Ionicons name="search" size={20} color="#6B7280" />
+        <View className="bg-white px-4 py-1 mb-4 rounded-xl border border-background-soft flex-row items-center">
+          <MaterialIcons name="search" size={20} color="#6B7280" />
           <TextInput
             placeholder="Search help articles..."
             placeholderTextColor="#6B7280"
-            className="ml-2 flex-1 text-base text-gray-800"
+            className="ml-2 flex-1 text-base text-text-primary font-lexend"
           />
         </View>
 
         {/* Priority Support Banner */}
-        <TouchableOpacity activeOpacity={0.7} className="mb-4">
-          <LinearGradient
-            colors={["#6B73FF", "#000DFF"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            className="rounded-2xl p-5"
-          >
-            <Text className="text-white text-lg font-semibold">
-              🎯 Priority Support
+        <LinearGradient
+          colors={["#E75A55", "#F0B646"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          className="p-8 mb-4"
+          style={{
+            borderRadius: 12,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          {/* Text Section (60%) */}
+          <View style={{ flex: 0.6, paddingRight: 8 }}>
+            <Text className="text-white text-xl font-lexend-bold">
+              Priority Support
             </Text>
-            <Text className="text-white text-sm mt-1">
-              Get instant help from our support experts.
+            <Text className="text-white text-sm font-lexend mt-2">
+              Get your Questions answered faster in the Support Chat
             </Text>
-          </LinearGradient>
-        </TouchableOpacity>
+          </View>
+          {/* Image Section (40%) */}
+          <View style={{ flex: 0.4 }}>
+            <Image
+              source={STATIC.IMAGES.PAGES.SUPPORT_HELP} // Replace with your image URL or local asset
+              style={{ width: "100%", height: 80, resizeMode: "contain" }} // Adjust height as needed
+            />
+          </View>
+        </LinearGradient>
 
         {/* Popular Questions */}
-        <View className="bg-white p-5 mb-4 rounded-3xl gap-4">
-          <Text className="text-lg font-bold text-gray-900">
+        <View className="gap-4 my-2">
+          <Text className="text-lg font-lexend-bold text-text-primary">
             Popular Questions
           </Text>
+
           {faqs.map((faq, index) => (
-            <View key={index} className="border border-gray-200 rounded-2xl">
+            <View
+              key={index}
+              className="border border-background-soft rounded-2xl"
+            >
               <TouchableOpacity
                 onPress={() => toggleExpand(index)}
-                className="flex-row justify-between items-center px-4 py-4 bg-gray-50 rounded-2xl"
+                activeOpacity={0.8}
+                className={`flex-row justify-between items-center px-4 py-4 bg-gray-100 ${
+                  expandedIndex === index ? "rounded-t-2xl" : "rounded-2xl"
+                }`}
               >
-                <Text className="text-base font-medium text-gray-800 flex-1 pr-3">
+                <Text className="text-base font-lexend-medium text-text-primary flex-1 pr-3">
                   {faq.question}
                 </Text>
                 <MaterialIcons
                   name={expandedIndex === index ? "expand-less" : "expand-more"}
                   size={24}
-                  color="#6B7280"
+                  color="#212121"
                 />
               </TouchableOpacity>
               {expandedIndex === index && (
-                <View className="px-4 pb-4 pt-1 bg-white rounded-b-2xl">
-                  <Text className="text-sm text-gray-600 leading-relaxed">
+                <View className="px-4 py-4 bg-white rounded-b-2xl">
+                  <Text className="text-sm font-lexend text-text-muted leading-relaxed">
                     {faq.answer}
                   </Text>
                 </View>
@@ -138,19 +155,37 @@ export default function HelpScreen() {
         </View>
 
         {/* Other Topics */}
-        <View className="bg-white p-5 mb-4 rounded-3xl">
-          <Text className="text-lg font-bold text-gray-900">Other Topics</Text>
-          <View className="flex-row flex-wrap justify-between">
+        <View className="my-2">
+          <Text className="text-lg font-lexend-bold text-text-primary">
+            Other Topics
+          </Text>
+          <View>
             {otherTopics.map((topic, idx) => (
               <TouchableOpacity
                 key={idx}
                 onPress={topic.onPress}
-                className="w-[48%] bg-white p-4 mb-3 rounded-2xl items-start"
+                className="p-4 mb-3 rounded-2xl flex flex-row justify-center items-center"
               >
-                <MaterialIcons name={topic.icon} size={24} color="#5C59FF" />
-                <Text className="mt-3 text-base font-medium text-gray-800">
-                  {topic.title}
-                </Text>
+                <View className="bg-white p-2 rounded-lg">
+                  <MaterialIcons name={topic.icon} size={36} color="#212121" />
+                </View>
+
+                <View className="flex-1 ml-4">
+                  <Text className="text-base font-lexend-medium text-text-primary">
+                    {topic.title}
+                  </Text>
+                  <Text className="ml-auto text-sm font-lexend text-text-muted">
+                    {topic.subtitle}
+                  </Text>
+                </View>
+
+                <View className="ml-4">
+                  <MaterialIcons
+                    name={"arrow-forward-ios"}
+                    size={14}
+                    color="#212121"
+                  />
+                </View>
               </TouchableOpacity>
             ))}
           </View>
