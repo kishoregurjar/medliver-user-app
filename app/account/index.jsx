@@ -29,17 +29,17 @@ const accountOptions = [
     guest: true,
   },
   {
-    label: "My Orders",
+    label: "Orders",
     icon: "cart-outline",
     path: "/account/orders",
     guest: false,
   },
-  // {
-  //   label: "My Bookings",
-  //   icon: "calendar-outline",
-  //   path: "/account/bookings",
-  //   guest: false,
-  // },
+  {
+    label: "My Diagnostic Tests",
+    icon: "calendar-outline",
+    path: "/account/diagnostics",
+    guest: false,
+  },
   {
     label: "My Prescriptions",
     icon: "medkit-outline",

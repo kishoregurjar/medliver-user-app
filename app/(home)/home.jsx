@@ -16,7 +16,6 @@ export default function HomeScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        className="px-4"
         contentContainerStyle={{
           paddingBottom: insets.bottom + 100, // ensures tile is above tab bar on all devices
         }}
@@ -28,13 +27,6 @@ export default function HomeScreen() {
           <Pressable
             onPress={() => router.push("/livvie-chat")}
             className="p-4 rounded-2xl bg-accent-softIndigo flex-row items-center justify-between"
-            style={{
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3,
-            }}
           >
             <View className="flex-1 pr-3">
               <Text className="text-lg font-lexend-bold text-white mb-1">

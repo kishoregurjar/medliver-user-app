@@ -38,7 +38,7 @@ export default function NavigationTiles() {
 
   return (
     <View
-      className="my-5 px-4"
+      className="my-5"
       // style={{ paddingBottom: insets.bottom + 86 }} // Ensures it's not hidden under tab bar
     >
       {/* <Image
@@ -56,16 +56,16 @@ export default function NavigationTiles() {
         </Text>
       </View>
 
-      <View className="flex-row flex-wrap justify-between">
+      <View className="flex-row flex-wrap justify-center gap-5">
         {tiles.map((tile, index) => (
           <TouchableOpacity
             key={index}
             onPress={() => router.push(tile.path)}
             activeOpacity={0.85}
-            className="bg-white rounded-2xl p-5 mb-4"
+            className="bg-white rounded-2xl p-8"
             style={{ flexBasis: "48%" }}
           >
-            <View className="items-center justify-center mb-4">
+            <View className="items-center justify-center">
               <View className="w-16 h-16 rounded-full bg-brand-primary/10 items-center justify-center">
                 <MaterialCommunityIcons
                   name={tile.icon}
