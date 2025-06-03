@@ -51,7 +51,7 @@ export default function NavigationTiles() {
           <TouchableOpacity
             key={index}
             onPress={() => router.push(tile.path)}
-            activeOpacity={0.85}
+            activeOpacity={0.8}
             className="bg-white rounded-2xl p-6 mb-4"
             style={{ width: "48%" }} // ensures two columns on all screen sizes
           >
