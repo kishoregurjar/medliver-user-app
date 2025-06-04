@@ -38,15 +38,6 @@ export default function CartPaymentSummary({
             ₹{totalAmount.toFixed(2)}
           </Text>
         </View>
-
-        {/* <TouchableOpacity
-          onPress={onCheckoutPress}
-          className="bg-brand-primary/90 px-6 py-3 rounded-xl"
-        >
-          <Text className="text-white text-base font-lexend-semibold">
-            Checkout
-          </Text>
-        </TouchableOpacity> */}
       </View>
     </View>
   );
