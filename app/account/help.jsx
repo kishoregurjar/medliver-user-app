@@ -62,10 +62,10 @@ export default function HelpScreen() {
   };
 
   return (
-    <AppLayout>
+    <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="Help & Support" />
 
-      <ScrollView className="flex-1 pt-4 pb-10 gap-4">
+      <ScrollView className="flex-1 pt-4 pb-10 gap-4" showsVerticalScrollIndicator={false}>
         {/* Greeting */}
         <View className="mb-4">
           <Text className="text-2xl font-lexend-bold text-gray-900">
