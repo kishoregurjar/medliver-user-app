@@ -34,6 +34,7 @@ export default function UserPaymentOptions({
     console.log("Placing order with method:", method);
   }, // Callback when Place Order is pressed
   isInitiatingOrder = false, // Flag to indicate if order is being placed
+  type = "pharmacy", // Type of payment options, default is "book"
 }) {
   const [selectedMethod, setSelectedMethod] = useState(null);
 
@@ -95,9 +96,11 @@ export default function UserPaymentOptions({
 
       {selectedMethod && (
         <CTAButton
-          label={"Place Order"}
+          label={`${type === "pharmacy" ? "Place Order" : "Book Test"}`}
           onPress={handlePlaceOrder}
-          loaderText="Placing Order..."
+          loaderText={`${
+            type === "pharmacy" ? "Placing Order..." : "Booking Test..."
+          }`}
           loading={isInitiatingOrder}
           disabled={isInitiatingOrder}
         />
