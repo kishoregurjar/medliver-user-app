@@ -11,12 +11,12 @@ import { BlurView } from "expo-blur";
 import AppLayout from "@/components/layouts/AppLayout";
 import Header from "@/components/common/Header";
 import ROUTE_PATH from "@/routes/route.constants";
-import CategoriesPharmacy from "@/components/screens/pharmacy/CategoriesPharmacy";
 import BestSellerPharmacy from "@/components/screens/pharmacy/BestSellerPharmacy";
-import SpecialOfferPharmacy from "@/components/screens/pharmacy/SpecialOfferPharmacy";
 import TopPicksPharmacy from "@/components/screens/pharmacy/TopPicksPharmacy";
-import HomePromoCarouselPharmacy from "@/components/screens/pharmacy/HomePromoCarouselPharmacy";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import AppHomeCarousel from "@/components/common/AppHomeCarousel";
+import AppCategories from "@/components/common/AppCategories";
+import AppSpecialOffer from "@/components/common/AppSpecialOffer";
 
 const HEADER_HEIGHT = 220;
 
@@ -119,10 +119,10 @@ const PharmacyHome = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
       >
-        <HomePromoCarouselPharmacy />
-        {/* <CategoriesPharmacy /> */}
+        <AppHomeCarousel />
+        {/* <AppCategories /> */}
         <BestSellerPharmacy />
-        <SpecialOfferPharmacy />
+        <AppSpecialOffer />
         <TopPicksPharmacy />
       </Animated.ScrollView>
 

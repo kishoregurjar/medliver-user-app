@@ -15,11 +15,11 @@ import AppLayout from "@/components/layouts/AppLayout";
 import Header from "@/components/common/Header";
 import ROUTE_PATH from "@/routes/route.constants";
 
-import HomePromoCarouselPathology from "@/components/screens/pathology/HomePromoCarouselPathology";
-import CategoriesPathology from "@/components/screens/pathology/CategoriesPathology";
 import ContactOurExpert from "@/components/screens/pathology/ContactOurExpert";
-import SpecialOfferPathology from "@/components/screens/pathology/SpecialOfferPathology";
 import PopularTestPathology from "@/components/screens/pathology/PopularTestPathology";
+import AppHomeCarousel from "@/components/common/AppHomeCarousel";
+import AppCategories from "@/components/common/AppCategories";
+import AppSpecialOffer from "@/components/common/AppSpecialOffer";
 
 const HEADER_HEIGHT = 220;
 
@@ -122,10 +122,10 @@ export default function PathologyHome() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
       >
-        <HomePromoCarouselPathology />
+        <AppHomeCarousel type="pathology" />
         <ContactOurExpert />
-        <CategoriesPathology />
-        <SpecialOfferPathology />
+        <AppCategories type="pathology" />
+        <AppSpecialOffer type="pathology" />
         <PopularTestPathology />
       </Animated.ScrollView>
 
