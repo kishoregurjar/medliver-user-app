@@ -11,10 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native"; // Use RN's native hook
-import {
-  useActionSheet,
-  ActionSheetProvider,
-} from "@expo/react-native-action-sheet";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { ToastProvider } from "@gluestack-ui/toast";
