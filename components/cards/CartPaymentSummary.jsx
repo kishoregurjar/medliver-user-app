@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 
 const SummaryRow = ({ label, value }) => (
   <View className="flex-row justify-between">

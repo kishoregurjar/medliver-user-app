@@ -8,8 +8,12 @@ import { useRouter } from "expo-router";
 import CTAButton from "../common/CTAButton";
 
 export default function CartAddressSelection({
-  onSelectDeliveryAddress,
-  onAddAddressPress, // Optional: to navigate to Add Address screen
+  onSelectDeliveryAddress = () => {
+    console.log("Address selected:", id);
+  }, // Callback when an address is selected
+  onAddAddressPress = () => {
+    console.log("Add address pressed");
+  }, // Optional: to navigate to Add Address screen
 }) {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -103,23 +107,12 @@ export default function CartAddressSelection({
     );
   };
 
-  const handleAddNewAddress = () => {
-    router.push("/account/addresses/add-address");
-  };
-
   return (
     <View className="bg-white rounded-2xl p-4 my-4">
       <View className="flex-row justify-between items-center mb-3">
         <Text className="text-lg font-lexend-semibold text-text-muted">
           Delivery Address
         </Text>
-        {/* <TouchableOpacity
-          onPress={fetchUserAddresses}
-          className="p-1 rounded-full"
-          hitSlop={8}
-        >
-          <Feather name="refresh-cw" size={20} color="#6B7280" />
-        </TouchableOpacity> */}
         <CTAButton
           iconOnly
           icon={<Feather name="refresh-cw" size={20} color="#6B7280" />}
@@ -146,7 +139,7 @@ export default function CartAddressSelection({
       )}
 
       <TouchableOpacity
-        onPress={handleAddNewAddress}
+        onPress={onAddAddressPress}
         className="mt-4 py-3 rounded-xl bg-brand-primary items-center"
         activeOpacity={0.8}
       >

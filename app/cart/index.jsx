@@ -164,6 +164,7 @@ export default function CartScreen() {
                 console.log("Selected address ID:", id);
                 setSelectedAddress(id);
               }}
+              onAddAddressPress={() => router.push(ROUTE_PATH.APP.ACCOUNT.ADD_ADDRESS)}
             />
 
             <CartPaymentOptions

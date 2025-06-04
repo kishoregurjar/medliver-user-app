@@ -27,9 +27,13 @@ const paymentMethods = [
 ];
 
 export default function CartPaymentOptions({
-  onSelectPaymentMethod,
-  onPlaceOrder,
-  isInitiatingOrder,
+  onSelectPaymentMethod = (id) => {
+    console.log("Payment method selected:", id);
+  }, // Callback when a payment method is selected
+  onPlaceOrder = (method) => {
+    console.log("Placing order with method:", method);
+  }, // Callback when Place Order is pressed
+  isInitiatingOrder = false, // Flag to indicate if order is being placed
 }) {
   const [selectedMethod, setSelectedMethod] = useState(null);
 
