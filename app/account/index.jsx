@@ -16,12 +16,12 @@ import {
 import CTAButton from "@/components/common/CTAButton";
 
 const accountOptions = [
-  {
-    label: "My Wallet",
-    icon: "wallet-outline",
-    path: "/account/wallet",
-    guest: false,
-  },
+  // {
+  //   label: "My Wallet",
+  //   icon: "wallet-outline",
+  //   path: "/account/wallet",
+  //   guest: false,
+  // },
   {
     label: "Offers",
     icon: "pricetags-outline",
