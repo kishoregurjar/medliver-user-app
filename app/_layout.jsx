@@ -1,4 +1,3 @@
-// app/_layout.tsx
 import {
   DarkTheme,
   DefaultTheme,
@@ -9,16 +8,18 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
-import { useColorScheme } from "react-native"; // Use RN's native hook
+import { Stack, usePathname } from "expo-router";
+import { useColorScheme } from "react-native";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { ToastProvider } from "@gluestack-ui/toast";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CartProvider } from "@/contexts/CartContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
+
 import "./global.css";
 
-// Load fonts
 import {
   LexendDeca_100Thin,
   LexendDeca_200ExtraLight,
@@ -30,13 +31,13 @@ import {
   LexendDeca_800ExtraBold,
   LexendDeca_900Black,
 } from "@expo-google-fonts/lexend-deca";
-import { CartProvider } from "@/contexts/CartContext";
-import { NotificationProvider } from "@/contexts/NotificationContext";
 
-SplashScreen.preventAutoHideAsync(); // Show splash screen until fonts load
+// Keep splash screen visible until fonts are loaded
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const pathname = usePathname(); // ✅ Safe and simple path tracking
 
   const [fontsLoaded] = useFonts({
     LexendDeca_100Thin,
@@ -50,11 +51,19 @@ export default function RootLayout() {
     LexendDeca_900Black,
   });
 
+  // Hide splash when fonts are ready
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
+
+  // ✅ Log path only in dev mode to avoid clutter
+  useEffect(() => {
+    if (__DEV__) {
+      console.log("[DEV] Current Pathname:", pathname);
+    }
+  }, [pathname]);
 
   if (!fontsLoaded) return null;
 
@@ -72,7 +81,6 @@ export default function RootLayout() {
                     <StatusBar
                       style={colorScheme === "dark" ? "light" : "dark"}
                     />
-                    {/* No need for View wrapper — Stack will take up full screen */}
                     <Stack screenOptions={{ headerShown: false }} />
                   </SafeAreaProvider>
                 </ActionSheetProvider>
