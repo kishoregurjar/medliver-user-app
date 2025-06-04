@@ -23,9 +23,9 @@ const IconButton = ({ icon, onPress, badgeCount = 0 }) => (
 );
 
 export default function HeaderWithBack({
-  title,
+  title = "Header",
   clearStack = false,
-  backTo,
+  backTo = null,
   showBackButton = false,
   showSearch = false,
   showCart = false,

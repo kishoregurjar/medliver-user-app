@@ -146,8 +146,6 @@ const OffersScreen = () => {
                         </View>
                       )}
 
-                      {console.log(offer.bannerImageUrl, "offer.bannerImageUrl")}
-
                       {offer.bannerImageUrl && (
                         <Image
                           source={{ uri: offer.bannerImageUrl }}

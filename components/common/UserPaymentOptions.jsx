@@ -26,7 +26,7 @@ const paymentMethods = [
   },
 ];
 
-export default function CartPaymentOptions({
+export default function UserPaymentOptions({
   onSelectPaymentMethod = (id) => {
     console.log("Payment method selected:", id);
   }, // Callback when a payment method is selected

@@ -7,7 +7,7 @@ import SkeletonAddressCard from "@/components/skeletons/SkeletonAddressCard";
 import { useRouter } from "expo-router";
 import CTAButton from "../common/CTAButton";
 
-export default function CartAddressSelection({
+export default function UserAddressSelection({
   onSelectDeliveryAddress = () => {
     console.log("Address selected:", id);
   }, // Callback when an address is selected

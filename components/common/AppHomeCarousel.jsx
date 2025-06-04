@@ -67,8 +67,6 @@ const AppHomeCarousel = ({ type = "pharmacy" }) => {
             ...randomStyle,
           };
         });
-        console.log(enhancedData, "enhancedData");
-
         setPromoBanners(enhancedData);
       }
     };
@@ -77,8 +75,6 @@ const AppHomeCarousel = ({ type = "pharmacy" }) => {
   }, []);
 
   const handlePress = (item) => {
-    console.log(item, "AppHomeCarousel item clicked");
-
     if (item.path?.startsWith("/")) {
       router.push(`${item.path}`);
     } else if (item.redirectUrl?.startsWith("http")) {

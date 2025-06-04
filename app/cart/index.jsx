@@ -12,9 +12,9 @@ import CartUrgentDeliveryToggle from "@/components/cards/CartUrgentDeliveryToggl
 import CartPaymentSummary from "@/components/cards/CartPaymentSummary";
 import SkeletonCartScreen from "@/components/skeletons/SkeletonCartScreen";
 import { useCart } from "@/contexts/CartContext";
-import CartAddressSelection from "@/components/cards/CartAddressSelection";
-import CartPaymentOptions from "@/components/cards/CartPaymentOptions";
 import useAxios from "@/hooks/useAxios";
+import UserAddressSelection from "@/components/common/UserAddressSelection";
+import UserPaymentOptions from "@/components/common/UserPaymentOptions";
 
 export default function CartScreen() {
   const { authUser } = useAuthUser();
@@ -159,7 +159,7 @@ export default function CartScreen() {
               }}
             />
 
-            <CartAddressSelection
+            <UserAddressSelection
               onSelectDeliveryAddress={(id) => {
                 console.log("Selected address ID:", id);
                 setSelectedAddress(id);
@@ -167,7 +167,7 @@ export default function CartScreen() {
               onAddAddressPress={() => router.push(ROUTE_PATH.APP.ACCOUNT.ADD_ADDRESS)}
             />
 
-            <CartPaymentOptions
+            <UserPaymentOptions
               onSelectPaymentMethod={(method) => setSelectedPayment(method)}
               onPlaceOrder={handlePlaceOrder}
               isInitiatingOrder={initiateOrderLoading}
