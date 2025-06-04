@@ -56,8 +56,8 @@ const AppHomeCarousel = ({ type = "pharmacy" }) => {
         url,
       });      
 
-      if (!error && data?.status === 200 && Array.isArray(data.data)) {
-        const enhancedData = data.data.map((item) => {
+      if (!error && data?.status === 200 && Array.isArray(data.data.banners)) {
+        const enhancedData = data.data.banners.map((item) => {
           const randomStyle =
             fallbackBannerStyles[
               Math.floor(Math.random() * fallbackBannerStyles.length)

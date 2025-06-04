@@ -1,66 +1,186 @@
-import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
-import React from "react";
+import React, { useCallback, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  Linking,
+  RefreshControl,
+  ActivityIndicator,
+} from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
-import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-const offersData = [
-  {
-    title: "50% Off on All Medicines",
-    description: "Get 50% off on selected medicines for a limited time.",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    title: "Free Delivery on Orders Above $50",
-    description: "Enjoy free delivery on orders above $50.",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    title: "Buy 1 Get 1 Free on Vitamins",
-    description: "Buy one bottle of vitamins and get another free.",
-    image: "https://via.placeholder.com/150",
-  },
-];
+import useAxios from "@/hooks/useAxios";
+import { useRouter, useFocusEffect } from "expo-router";
+import STATIC from "@/utils/constants";
+import dayjs from "dayjs";
 
 const OffersScreen = () => {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { request: getSpecialOffers } = useAxios();
+
+  const [offers, setOffers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const isMountedRef = useRef(false);
+
+  const fetchOffers = async ({
+    page = 1,
+    isRefresh = false,
+    isLoadMore = false,
+  } = {}) => {
+    try {
+      if (isRefresh) setRefreshing(true);
+      else if (isLoadMore) setLoadingMore(true);
+      else setLoading(true);
+
+      const { data, error } = await getSpecialOffers({
+        url: `/user/get-all-banners?isActive=true&limit=10&page=${page}`,
+        method: "GET",
+      });
+
+      if (!error && data?.data) {
+        const newOffers = data.data.banners || [];
+
+        setOffers((prev) => {
+          return isLoadMore ? [...prev, ...newOffers] : newOffers;
+        });
+
+        setCurrentPage(data.data.currentPage || 1);
+        setTotalPages(data.data.totalPages || 1);
+      }
+    } catch (err) {
+      console.error("Failed to fetch offers", err);
+    } finally {
+      if (isRefresh) setRefreshing(false);
+      else if (isLoadMore) setLoadingMore(false);
+      else setLoading(false);
+    }
+  };
+
+  const handlePress = (item) => {
+    if (item.path?.startsWith("/")) {
+      router.push(item.path);
+    } else if (item.redirectUrl?.startsWith("http")) {
+      Linking.openURL(item.redirectUrl);
+    }
+  };
+
+  const handleLoadMore = () => {
+    if (currentPage < totalPages && !loadingMore) {
+      fetchOffers({ page: currentPage + 1, isLoadMore: true });
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!isMountedRef.current) {
+        fetchOffers();
+        isMountedRef.current = true;
+      }
+    }, [])
+  );
 
   return (
-    <AppLayout>
-      {/* Header */}
+    <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="Offers" />
 
       <View className="flex-1">
-        {/* Scrollable Content */}
         <ScrollView
           className="mt-4"
-          contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                setCurrentPage(1);
+                fetchOffers({ page: 1, isRefresh: true });
+              }}
+            />
+          }
+          contentContainerStyle={{ paddingBottom: insets.bottom + 48 }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Offers List Section */}
-          <View className="bg-white p-4 rounded-3xl">
-            {offersData.map((offer, index) => (
+          {loading ? (
+            Array.from({ length: 5 }).map((_, i) => (
               <View
-                key={index}
-                className="flex-row items-center p-4 rounded-xl mb-4 bg-gray-50"
-              >
-                <Image
-                  source={{ uri: offer.image }}
-                  className="w-16 h-16 rounded-lg mr-4"
-                />
-                <View className="flex-1">
-                  <Text className="text-lg font-semibold text-gray-800">
-                    {offer.title}
-                  </Text>
-                  <Text className="text-sm text-gray-600 mt-1">
-                    {offer.description}
-                  </Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-              </View>
-            ))}
-          </View>
+                key={i}
+                className="h-50 bg-gray-200 dark:bg-gray-700 rounded-2xl mb-4 mx-4 animate-pulse"
+              />
+            ))
+          ) : offers.length > 0 ? (
+            <>
+              {offers.map((offer) => (
+                <TouchableOpacity
+                  key={offer._id}
+                  onPress={() => handlePress(offer)}
+                  activeOpacity={0.8}
+                  className="p-4 mb-4 border-b border-text-muted/50"
+                >
+                  <View className="flex-row items-start">
+                    <Image
+                      source={STATIC.IMAGES.APP.LOGO}
+                      className="w-12 h-12 rounded-md mr-3"
+                      resizeMode="contain"
+                    />
+                    <View className="flex-1">
+                      <Text className="text-lg font-lexend-bold text-text-primary">
+                        {offer.title}
+                      </Text>
+                      <Text className="text-sm font-lexend text-text-muted mt-1">
+                        {offer.description}
+                      </Text>
+
+                      {offer.endDate && (
+                        <View className="bg-green-100 px-2 py-0.5 mt-2 self-start rounded-md">
+                          <Text className="text-xs text-green-800 font-lexend-medium">
+                            Valid till{" "}
+                            {dayjs(offer.endDate).format("MMM D, YYYY")}
+                          </Text>
+                        </View>
+                      )}
+
+                      {console.log(offer.bannerImageUrl, "offer.bannerImageUrl")}
+
+                      {offer.bannerImageUrl && (
+                        <Image
+                          source={{ uri: offer.bannerImageUrl }}
+                          className="w-full h-40 mt-4 rounded-lg"
+                          resizeMode="cover"
+                        />
+                      )}
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+
+              {currentPage < totalPages && (
+                <TouchableOpacity
+                  onPress={handleLoadMore}
+                  disabled={loadingMore}
+                  className="mx-4 mb-6 mt-2 bg-primary rounded-xl py-3 items-center"
+                >
+                  {loadingMore ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text className="text-white font-lexend-medium text-base">
+                      Load More
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              )}
+            </>
+          ) : (
+            <Text className="text-center text-text-muted font-lexend-medium mt-10">
+              No active offers available.
+            </Text>
+          )}
         </ScrollView>
       </View>
     </AppLayout>
