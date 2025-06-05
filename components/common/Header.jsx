@@ -7,35 +7,75 @@ import {
   Pressable,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as Location from "expo-location";
 import { useLocalSearchParams, useRouter } from "expo-router";
+
 import HeaderWithBack from "./HeaderWithBack";
 import { useAuthUser } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallbackText, AvatarImage } from "../ui/avatar";
 import ROUTE_PATH from "@/routes/route.constants";
+import { useAppToast } from "@/hooks/useAppToast";
 
 const { width } = Dimensions.get("window");
 
 const Header = () => {
   const router = useRouter();
+  const { showToast } = useAppToast();
   const { selectedAddress: returnedAddress } = useLocalSearchParams();
   const { authUser } = useAuthUser();
 
-  const [selectedAddress, setSelectedAddress] = useState(
-    "Indore, Madhya Pradesh"
-  );
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [locationLoading, setLocationLoading] = useState(false);
 
   const user = authUser?.user;
   const isGuest = !user;
   const userName = user?.fullName || "Guest";
   const userProfilePicture = user?.profilePicture;
 
+  // If address returned from SELECT_LOCATION screen
   useEffect(() => {
-    if (returnedAddress) setSelectedAddress(returnedAddress);
+    if (returnedAddress) {
+      setSelectedAddress(returnedAddress);
+    }
   }, [returnedAddress]);
+
+  // Get location on mount
+  useEffect(() => {
+    if (!returnedAddress) fetchCurrentLocation();
+  }, []);
+
+  const fetchCurrentLocation = async () => {
+    try {
+      setLocationLoading(true);
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        showToast("error", "Permission to access location was denied");
+        return;
+      }
+
+      const loc = await Location.getCurrentPositionAsync({});
+      const reverse = await Location.reverseGeocodeAsync(loc.coords);
+      const address = reverse[0];
+
+      if (address) {
+        const composed = `${address.city || ""}, ${address.region || ""}${
+          address.postalCode ? `, ${address.postalCode}` : ""
+        }`;
+        setSelectedAddress(composed.trim());
+      } else {
+        setSelectedAddress("Location not found");
+      }
+    } catch (err) {
+      console.error("Location error:", err);
+      showToast("error", "Failed to get location");
+    } finally {
+      setLocationLoading(false);
+    }
+  };
 
   return (
     <View>
-      {/* Top Header with Icons */}
+      {/* Top Header */}
       <HeaderWithBack
         showCart
         showNotification
@@ -61,17 +101,23 @@ const Header = () => {
             })
           }
         >
-          <Ionicons name="location" size={20} color="#6E6A7C" />
+          <Ionicons name="navigate" size={20} color="#6E6A7C" />
           <View className="ml-2 flex-row items-center flex-shrink">
-            <Text className="text-sm text-gray-500 font-lexend">
+            <Text className="text-sm text-text-muted font-lexend">
               Deliver to
             </Text>
-            <Text
-              className="text-sm text-gray-500 font-lexend mx-2"
-              numberOfLines={1}
-            >
-              {selectedAddress}
-            </Text>
+            {locationLoading ? (
+              <Text className="text-sm text-text-muted font-lexend mx-2">
+                Locating...
+              </Text>
+            ) : (
+              <Text
+                className="text-sm text-text-muted font-lexend mx-2"
+                numberOfLines={1}
+              >
+                {selectedAddress || "Fetching location..."}
+              </Text>
+            )}
             <Ionicons name="chevron-down" size={18} color="#6E6A7C" />
           </View>
         </TouchableOpacity>
@@ -112,7 +158,7 @@ const Header = () => {
         </View>
       </View>
 
-      {/* Search Input (Navigates to Search Page) */}
+      {/* Search Input */}
       <Pressable
         onPress={() => router.push(ROUTE_PATH.APP.SEARCH.INDEX)}
         className="flex-row items-center bg-white border border-background-soft rounded-xl px-4 py-4 mb-4"
