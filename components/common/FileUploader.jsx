@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import mime from "mime"; // Ensure it's installed
 
 import useFileUpload from "@/hooks/useFileUpload";
+import { useAuthUser } from "@/contexts/AuthContext";
 
 const FilePreviewItem = ({ item, index, onPreview, onRemove }) => (
   <View className="mr-3 relative">
@@ -64,6 +65,8 @@ export default function FileUploader({
     maxFiles,
   });
 
+  const { authUser } = useAuthUser();
+
   const [previewImage, setPreviewImage] = useState(null);
 
   const handlePickFile = useCallback(async () => {
@@ -95,6 +98,10 @@ export default function FileUploader({
   }, [allowedTypes, validateFiles, setSelectedFiles]);
 
   const handleUpload = useCallback(async () => {
+    if (!authUser.isAuthenticated ) {
+      Alert.alert("Unauthorized", "You must be logged in to upload.");
+      return;
+    }
     const { data, error } = await uploadFile();
     if (data && onSuccess) onSuccess(data);
     if (error && onError) onError(error);

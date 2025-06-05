@@ -77,7 +77,10 @@ export default function useFileUpload({
       });
 
       const response = await axios.post(
-        `https://zonal-presence-production.up.railway.app/api/v1${url}`,
+        `${
+          process.env.EXPO_PUBLIC_API_URL ||
+          "https://medliver-backend-production.up.railway.app/api/v1"
+        }${url}`,
         formData,
         {
           headers: {
