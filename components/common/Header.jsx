@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -7,71 +7,37 @@ import {
   Pressable,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import * as Location from "expo-location";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 import HeaderWithBack from "./HeaderWithBack";
 import { useAuthUser } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallbackText, AvatarImage } from "../ui/avatar";
 import ROUTE_PATH from "@/routes/route.constants";
-import { useAppToast } from "@/hooks/useAppToast";
+import { useUserLocation } from "@/contexts/LocationContext";
 
 const { width } = Dimensions.get("window");
 
 const Header = () => {
   const router = useRouter();
-  const { showToast } = useAppToast();
-  const { selectedAddress: returnedAddress } = useLocalSearchParams();
   const { authUser } = useAuthUser();
-
-  const [selectedAddress, setSelectedAddress] = useState("");
-  const [locationLoading, setLocationLoading] = useState(false);
+  const {
+    location,
+    loading: locationLoading,
+    fetchCurrentLocation,
+    setLocation,
+  } = useUserLocation();
 
   const user = authUser?.user;
   const isGuest = !user;
   const userName = user?.fullName || "Guest";
   const userProfilePicture = user?.profilePicture;
 
-  // If address returned from SELECT_LOCATION screen
+  // Fetch current location only on mount (if not already set)
   useEffect(() => {
-    if (returnedAddress) {
-      setSelectedAddress(returnedAddress);
+    if (!location) {
+      fetchCurrentLocation();
     }
-  }, [returnedAddress]);
-
-  // Get location on mount
-  useEffect(() => {
-    if (!returnedAddress) fetchCurrentLocation();
   }, []);
-
-  const fetchCurrentLocation = async () => {
-    try {
-      setLocationLoading(true);
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        showToast("error", "Permission to access location was denied");
-        return;
-      }
-
-      const loc = await Location.getCurrentPositionAsync({});
-      const reverse = await Location.reverseGeocodeAsync(loc.coords);
-      const address = reverse[0];
-
-      if (address) {
-        const composed = `${address.city || ""}, ${address.region || ""}${
-          address.postalCode ? `, ${address.postalCode}` : ""
-        }`;
-        setSelectedAddress(composed.trim());
-      } else {
-        setSelectedAddress("Location not found");
-      }
-    } catch (err) {
-      console.error("Location error:", err);
-      showToast("error", "Failed to get location");
-    } finally {
-      setLocationLoading(false);
-    }
-  };
 
   return (
     <View>
@@ -97,27 +63,22 @@ const Header = () => {
           onPress={() =>
             router.push({
               pathname: ROUTE_PATH.APP.SELECT_LOCATION.INDEX,
-              params: { current: selectedAddress },
             })
           }
         >
-          <Ionicons name="navigate" size={20} color="#6E6A7C" />
+          <Ionicons name="location" size={16} color="#6E6A7C" />
           <View className="ml-2 flex-row items-center flex-shrink">
             <Text className="text-sm text-text-muted font-lexend">
               Deliver to
             </Text>
-            {locationLoading ? (
-              <Text className="text-sm text-text-muted font-lexend mx-2">
-                Locating...
-              </Text>
-            ) : (
-              <Text
-                className="text-sm text-text-muted font-lexend mx-2"
-                numberOfLines={1}
-              >
-                {selectedAddress || "Fetching location..."}
-              </Text>
-            )}
+            <Text
+              className="text-sm text-text-muted font-lexend-bold mx-1 underline"
+              numberOfLines={1}
+            >
+              {locationLoading
+                ? "Locating..."
+                : `${location?.city}, ${location?.postalCode}`}
+            </Text>
             <Ionicons name="chevron-down" size={18} color="#6E6A7C" />
           </View>
         </TouchableOpacity>
