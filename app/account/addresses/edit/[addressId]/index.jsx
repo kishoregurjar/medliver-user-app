@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import * as Location from "expo-location";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
@@ -11,6 +12,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useAppToast } from "@/hooks/useAppToast";
 import SkeletonFormField from "@/components/skeletons/SkeletonFormField";
 import CTAButton from "@/components/common/CTAButton";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const schema = yup.object().shape({
   address_type: yup.string().required("Address type is required"),
@@ -23,7 +25,7 @@ const schema = yup.object().shape({
     .string()
     .required("Pincode is required")
     .matches(/^\d{6}$/, "Pincode must be 6 digits"),
-  country: yup.string().required(),
+  country: yup.string().required("Country is required"),
 });
 
 const addressFields = [
@@ -70,9 +72,13 @@ export default function EditAddressScreen() {
   const { request: fetchAddress, loading: fetching } = useAxios();
   const { request: updateAddress, loading: updating } = useAxios();
 
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [location, setLocation] = useState(null);
+
   const {
     control,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors },
   } = useForm({
@@ -83,7 +89,6 @@ export default function EditAddressScreen() {
     mode: "onChange",
   });
 
-  // Fetch address data on mount
   useEffect(() => {
     if (!addressId) return;
 
@@ -111,19 +116,50 @@ export default function EditAddressScreen() {
         state: address.state,
         pincode: address.pincode,
         country: address.country,
+        is_default: address?.is_default || false,
       });
     };
 
     getAddressDetails();
   }, [addressId]);
 
+  const fetchCurrentLocation = async () => {
+    try {
+      setLocationLoading(true);
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        showToast("error", "Permission to access location was denied");
+        return;
+      }
+
+      const loc = await Location.getCurrentPositionAsync({});
+      const reverse = await Location.reverseGeocodeAsync(loc.coords);
+      const address = reverse[0];
+
+      setLocation(loc.coords);
+
+      if (address) {
+        setValue("street", address.street || "");
+        setValue("city", address.city || "");
+        setValue("state", address.region || "");
+        setValue("pincode", address.postalCode || "");
+        setValue("country", address.country || "");
+      }
+    } catch (err) {
+      console.error("Location error:", err);
+      showToast("error", "Failed to get current location");
+    } finally {
+      setLocationLoading(false);
+    }
+  };
+
   const onSubmit = async (formData) => {
     const payload = {
       ...formData,
       addressId,
       location: {
-        lat: 22.69992214152458,
-        long: 75.83582576647855,
+        lat: location?.latitude || null,
+        long: location?.longitude || null,
       },
     };
 
@@ -153,7 +189,27 @@ export default function EditAddressScreen() {
           ))}
         </>
       ) : (
-        <ScrollView className="py-2" keyboardShouldPersistTaps="handled">
+        <ScrollView className="px-4 py-6" keyboardShouldPersistTaps="handled">
+          <CTAButton
+            label="Use Current Location"
+            icon={
+              <MaterialIcons
+                name="my-location"
+                size={20}
+                color="#B31F24"
+                className="mr-2"
+              />
+            }
+            loaderText="Locating..."
+            loaderColor="#B31F24"
+            variant="transparent"
+            onPress={fetchCurrentLocation}
+            loading={locationLoading}
+            disabled={locationLoading}
+            textClassName="text-brand-primary font-lexend-bold text-base"
+            className="mb-4"
+          />
+
           <FormFieldRenderer
             control={control}
             errors={errors}

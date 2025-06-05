@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView } from "react-native";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import * as Location from "expo-location";
+
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import FormFieldRenderer from "@/components/inputs/FormFieldRenderer";
@@ -10,6 +12,7 @@ import useAxios from "@/hooks/useAxios";
 import { useRouter } from "expo-router";
 import { useAppToast } from "@/hooks/useAppToast";
 import CTAButton from "@/components/common/CTAButton";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const schema = yup.object().shape({
   address_type: yup.string().required("Address type is required"),
@@ -22,7 +25,7 @@ const schema = yup.object().shape({
     .string()
     .required("Pincode is required")
     .matches(/^\d{6}$/, "Pincode must be 6 digits"),
-  country: yup.string().required(),
+  country: yup.string().required("Country is required"),
 });
 
 const addressFields = [
@@ -70,6 +73,7 @@ export default function AddAddressScreen() {
   const router = useRouter();
   const { showToast } = useAppToast();
   const { request: addAddress, loading: isLoading } = useAxios();
+  const [locationLoading, setLocationLoading] = useState(false);
 
   const {
     control,
@@ -90,8 +94,8 @@ export default function AddAddressScreen() {
     const payload = {
       ...formData,
       location: {
-        lat: 22.69992214152458,
-        long: 75.83582576647855,
+        lat: location?.latitude || null,
+        long: location?.longitude || null,
       },
     };
 
@@ -99,7 +103,7 @@ export default function AddAddressScreen() {
       url: "/user/add-address",
       method: "POST",
       authRequired: true,
-      payload: payload,
+      payload,
     });
 
     if (error) {
@@ -110,10 +114,64 @@ export default function AddAddressScreen() {
     }
   };
 
+  const [location, setLocation] = useState(null);
+
+  const fetchCurrentLocation = async () => {
+    try {
+      setLocationLoading(true);
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        showToast("error", "Permission to access location was denied");
+        setLocationLoading(false);
+        return;
+      }
+
+      const loc = await Location.getCurrentPositionAsync({});
+      const reverse = await Location.reverseGeocodeAsync(loc.coords);
+      const address = reverse[0];
+
+      setLocation(loc.coords);
+
+      // Auto-fill form fields
+      if (address) {
+        setValue("street", address.street || "");
+        setValue("city", address.city || "");
+        setValue("state", address.region || "");
+        setValue("pincode", address.postalCode || "");
+        setValue("country", address.country || "");
+      }
+    } catch (err) {
+      console.error("Location error:", err);
+      showToast("error", "Failed to get location");
+    } finally {
+      setLocationLoading(false);
+    }
+  };
+
   return (
     <AppLayout>
       <HeaderWithBack showBackButton title="Add Address" />
       <ScrollView className="px-4 py-6" keyboardShouldPersistTaps="handled">
+        <CTAButton
+          label="Use Current Location"
+          icon={
+            <MaterialIcons
+              name="my-location"
+              size={20}
+              color="#B31F24"
+              className="mr-2"
+            />
+          }
+          loaderText="Locating..."
+          loaderColor={"#B31F24"}
+          variant="transparent"
+          onPress={fetchCurrentLocation}
+          loading={locationLoading}
+          disabled={locationLoading}
+          textClassName={"text-brand-primary font-lexend-bold text-base"}
+          className={"mb-4"}
+        />
+
         <FormFieldRenderer
           control={control}
           errors={errors}
