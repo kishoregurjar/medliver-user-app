@@ -7,6 +7,8 @@ import useAxios from "@/hooks/useAxios";
 import CTAButton from "@/components/common/CTAButton";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ROUTE_PATH from "@/routes/route.constants";
+import { useAuthUser } from "@/contexts/AuthContext";
+import { useAppToast } from "@/hooks/useAppToast";
 
 export default function PathologyTestDetailsScreen() {
   const { testId } = useLocalSearchParams();
@@ -15,6 +17,8 @@ export default function PathologyTestDetailsScreen() {
   const [showWarningModal, setShowWarningModal] = useState(false);
   const router = useRouter();
 
+  const { authUser } = useAuthUser();
+  const { showToast } = useAppToast();
   const { request: getTestDetails, loading: isLoading } = useAxios();
 
   useEffect(() => {
@@ -22,7 +26,6 @@ export default function PathologyTestDetailsScreen() {
       const { data, error } = await getTestDetails({
         method: "GET",
         url: `/user/get-test-details`,
-        authRequired: true,
         params: { testId },
       });
 
@@ -152,11 +155,19 @@ export default function PathologyTestDetailsScreen() {
                       label="Continue Booking"
                       size="sm"
                       onPress={() => {
-                        setShowWarningModal(false);
-                        router.push({
-                          pathname: ROUTE_PATH.APP.PATHOLOGY.LAB_TEST_BOOK,
-                          params: { testId: testDetails._id },
-                        });
+                        if (authUser?.isAuthenticated) {
+                          setShowWarningModal(false);
+                          router.push({
+                            pathname: ROUTE_PATH.APP.PATHOLOGY.LAB_TEST_BOOK,
+                            params: { testId: testDetails._id },
+                          });
+                        } else {
+                          showToast(
+                            "warning",
+                            "Please login to book the test."
+                          );
+                          setShowWarningModal(false);
+                        }
                       }}
                     />
                   </View>

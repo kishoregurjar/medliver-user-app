@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
@@ -9,6 +9,7 @@ import useAxios from "@/hooks/useAxios";
 import { Image } from "react-native";
 import SkeletonTestDetailsBook from "@/components/skeletons/SkeletonTestDetailsBook";
 import { useAppToast } from "@/hooks/useAppToast";
+import ROUTE_PATH from "@/routes/route.constants";
 
 export default function BookTestScreen() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function BookTestScreen() {
 
   const { request: getTestDetails, loading: isLoading } = useAxios();
   const { request: initiateUserBooking, loading: initiateBookingLoading } =
-  useAxios();
+    useAxios();
   const [testDetails, setTestDetails] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
