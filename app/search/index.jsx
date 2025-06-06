@@ -74,6 +74,7 @@ export default function SearchMedicineScreen() {
         />
 
         {/* Fixed Search Bar */}
+        {/* Fixed Search Bar */}
         <View className="pt-4">
           <View className="flex-row items-center bg-white border border-background-soft px-4 py-3 rounded-xl">
             <Ionicons name="search" size={20} color="#888" />
@@ -87,6 +88,17 @@ export default function SearchMedicineScreen() {
               }}
               returnKeyType="search"
             />
+            {query.length > 0 && (
+              <TouchableOpacity
+                activeOpacity={0.6}
+                onPress={() => {
+                  setQuery("");
+                  setIsSearching(false); // back to featured
+                }}
+              >
+                <Ionicons name="close-circle" size={24} color="grey" />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
@@ -101,7 +113,7 @@ export default function SearchMedicineScreen() {
               <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
                 Explore Medilivurr
               </Text>
-              <View className="flex-row justify-around items-center my-2">
+              <View className="flex-row justify-evenly items-center my-2">
                 <CTAButton
                   label="Pharmacy"
                   icon={
