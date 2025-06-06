@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
-  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AppLayout from "@/components/layouts/AppLayout";
@@ -16,43 +15,42 @@ import useAxios from "@/hooks/useAxios";
 import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
 import SkeletonPharmacyProductCard from "@/components/skeletons/SkeletonPharmacyProductCard";
 import FileUploader from "@/components/common/FileUploader";
+import CTAButton from "@/components/common/CTAButton";
+import ROUTE_PATH from "@/routes/route.constants";
 
 export default function SearchMedicineScreen() {
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState([]);
+  const [isSearching, setIsSearching] = useState(false); // NEW
   const router = useRouter();
 
-  const {
-    request: searchMedicines,
-    loading: isLoading,
-    error: hasError,
-  } = useAxios();
-  const {
-    request: fetchFeaturedProducts,
-    loading: isFeaturedLoading,
-    error: hasFeaturedError,
-  } = useAxios();
+  const { request: searchMedicines, loading: isLoading } = useAxios();
+  const { request: fetchFeaturedProducts, loading: isFeaturedLoading } =
+    useAxios();
 
-  const categories = [
-    "Pain Relief",
-    "Cough & Cold",
-    "Vitamins",
-    "Diabetes",
-    "Heart Care",
-  ];
+  // const categories = [
+  //   "Pain Relief",
+  //   "Cough & Cold",
+  //   "Vitamins",
+  //   "Diabetes",
+  //   "Heart Care",
+  // ];
 
   const handleSearch = async (searchTerm) => {
-    if (!searchTerm?.trim()) return;
+    if (!searchTerm?.trim()) {
+      setIsSearching(false); // back to featured
+      // Optional: reassign featured products if needed again
+      return;
+    }
+
+    setIsSearching(true);
 
     const { data, error } = await searchMedicines({
       method: "GET",
       url: `/user/search-medicine?query=${searchTerm}&page=1`,
     });
-    if (error) {
-      console.error("Search error:", error);
-      return;
-    }
-    if (data?.data?.data) {
+
+    if (!error && data?.data?.data) {
       setProducts(data.data.data);
     }
   };
@@ -64,13 +62,9 @@ export default function SearchMedicineScreen() {
         url: "/user/get-all-feature-product?page=1",
       });
 
-      if (error) {
-        console.error("Error fetching featured products:", error);
-        return;
-      }
-
-      if (data?.data?.featuredProducts) {
+      if (!error && data?.status === 200) {
         setProducts(data.data.featuredProducts);
+        setIsSearching(false); // ensure flag is reset
       }
     };
 
@@ -111,7 +105,7 @@ export default function SearchMedicineScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Categories */}
-          {query.length === 0 && (
+          {/* {query.length === 0 && (
             <View className="mb-6">
               <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
                 Categories
@@ -133,7 +127,41 @@ export default function SearchMedicineScreen() {
                 ))}
               </ScrollView>
             </View>
-          )}
+          )} */}
+          {/* Explore Section */}
+          <View className="mb-6">
+            <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
+              Explore Medilivurr
+            </Text>
+            <View className="flex-row justify-around items-center my-2">
+              <CTAButton
+                label="Pharmacy"
+                icon={
+                  <Ionicons
+                    name="medkit"
+                    size={16}
+                    color="#fff"
+                    className="mr-2"
+                  />
+                }
+                shape="pill"
+                onPress={() => router.push(ROUTE_PATH.APP.PHARMACY.INDEX)}
+              />
+              <CTAButton
+                label="Pathology"
+                icon={
+                  <Ionicons
+                    name="flask"
+                    size={16}
+                    color="#fff"
+                    className="mr-2"
+                  />
+                }
+                shape="pill"
+                onPress={() => router.push(ROUTE_PATH.APP.PATHOLOGY.INDEX)}
+              />
+            </View>
+          </View>
 
           {/* Have a Prescription */}
           <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
@@ -157,28 +185,48 @@ export default function SearchMedicineScreen() {
           </View>
           {/* Products Section */}
           <View className="mb-6">
-            {query?.length > 0 ? (
-              <View className="bg-white rounded-2xl p-4">
-                {isLoading ? (
-                  Array.from({ length: 10 }).map((_, index) => (
-                    <>
-                      {/* Skeleton for list of products */}
-                      <View className="animate-pulse flex-row items-center border-b border-background-soft p-2 mb-4">
-                        <View className="flex-1">
-                          <View className="h-4 w-full bg-gray-300 rounded mb-2"></View>
-                          <View className="h-4 w-3/4 bg-gray-300 rounded"></View>
-                        </View>
+            {!isSearching && (
+              <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
+                Featured Products
+              </Text>
+            )}
+
+            {isLoading || isFeaturedLoading ? (
+              <ScrollView
+                horizontal={isSearching ? false : true}
+                showsHorizontalScrollIndicator={false}
+              >
+                {Array.from({ length: isSearching ? 10 : 3 }).map((_, index) =>
+                  isSearching ? (
+                    <View
+                      key={index}
+                      className="animate-pulse flex-row items-center border-b border-background-soft p-2 mb-4"
+                    >
+                      <View className="flex-1">
+                        <View className="h-4 w-full bg-gray-300 rounded mb-2"></View>
+                        <View className="h-4 w-3/4 bg-gray-300 rounded"></View>
                       </View>
-                    </>
-                  ))
-                ) : products.length === 0 ? (
-                  <View className="h-28 justify-center items-center px-4">
-                    <Text className="text-gray-400 text-sm font-lexend-medium">
-                      No products found for "{query}".
-                    </Text>
-                  </View>
-                ) : (
-                  products.map((item) => (
+                    </View>
+                  ) : (
+                    <SkeletonPharmacyProductCard key={index} />
+                  )
+                )}
+              </ScrollView>
+            ) : products.length === 0 ? (
+              <View className="h-28 justify-center items-center px-4">
+                <Text className="text-gray-400 text-sm font-lexend-medium">
+                  {isSearching
+                    ? `No products found for "${query}".`
+                    : "No products found."}
+                </Text>
+              </View>
+            ) : (
+              <ScrollView
+                horizontal={!isSearching}
+                showsHorizontalScrollIndicator={false}
+              >
+                {products.map((item) =>
+                  isSearching ? (
                     <TouchableOpacity
                       key={item._id}
                       className="border-b border-background-soft p-1 mb-4 flex-row items-center"
@@ -204,41 +252,20 @@ export default function SearchMedicineScreen() {
                         </Text>
                       </View>
                     </TouchableOpacity>
-                  ))
-                )}
-              </View>
-            ) : (
-              <>
-                <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
-                  Featured Products
-                </Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  {isFeaturedLoading ? (
-                    Array.from({ length: 3 }).map((_, index) => (
-                      <SkeletonPharmacyProductCard key={index} />
-                    ))
-                  ) : products.length === 0 ? (
-                    <View className="h-28 justify-center items-center px-4">
-                      <Text className="text-gray-400 text-sm font-lexend-medium">
-                        No products found.
-                      </Text>
-                    </View>
                   ) : (
-                    products.map((item) => (
-                      <PharmacyProductCard
-                        key={item._id}
-                        item={item}
-                        onPress={() =>
-                          router.push({
-                            pathname: "/pharmacy/product/[productId]",
-                            params: { productId: item._id },
-                          })
-                        }
-                      />
-                    ))
-                  )}
-                </ScrollView>
-              </>
+                    <PharmacyProductCard
+                      key={item._id}
+                      item={item}
+                      onPress={() =>
+                        router.push({
+                          pathname: "/pharmacy/product/[productId]",
+                          params: { productId: item._id },
+                        })
+                      }
+                    />
+                  )
+                )}
+              </ScrollView>
             )}
           </View>
         </ScrollView>

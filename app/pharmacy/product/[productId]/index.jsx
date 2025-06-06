@@ -161,7 +161,7 @@ export default function PharmacyProductDetailsScreen() {
     };
 
     const logUserEventProduct = async () => {
-      if (!authUser) return; // Only log if user is authenticated
+      if (!authUser.isAuthenticated) return; // Only log if user is authenticated
 
       const { data, error } = await logUserEventMedicineClick({
         url: `/user/log-medicine-click`,
