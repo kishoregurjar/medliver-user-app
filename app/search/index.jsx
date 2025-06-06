@@ -28,14 +28,6 @@ export default function SearchMedicineScreen() {
   const { request: fetchFeaturedProducts, loading: isFeaturedLoading } =
     useAxios();
 
-  // const categories = [
-  //   "Pain Relief",
-  //   "Cough & Cold",
-  //   "Vitamins",
-  //   "Diabetes",
-  //   "Heart Care",
-  // ];
-
   const handleSearch = async (searchTerm) => {
     if (!searchTerm?.trim()) {
       setIsSearching(false); // back to featured
@@ -98,91 +90,73 @@ export default function SearchMedicineScreen() {
           </View>
         </View>
 
-        {/* Scrollable Content */}
         <ScrollView
           className="flex-1 pt-4"
           contentContainerStyle={{ paddingBottom: 40 }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Categories */}
-          {/* {query.length === 0 && (
+          {/* Explore Section */}
+          {!isSearching && (
             <View className="mb-6">
               <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
-                Categories
+                Explore Medilivurr
               </Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {categories.map((category, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    className="bg-brand-primary/10 border border-brand-primary/90 px-4 py-2 rounded-full mr-3"
-                    onPress={() => {
-                      setQuery(category);
-                      handleSearch(category);
-                    }}
-                  >
-                    <Text className="text-brand-primary text-sm font-lexend-medium">
-                      {category}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
+              <View className="flex-row justify-around items-center my-2">
+                <CTAButton
+                  label="Pharmacy"
+                  icon={
+                    <Ionicons
+                      name="medkit"
+                      size={16}
+                      color="#fff"
+                      className="mr-2"
+                    />
+                  }
+                  shape="pill"
+                  onPress={() => router.push(ROUTE_PATH.APP.PHARMACY.INDEX)}
+                />
+                <CTAButton
+                  label="Pathology"
+                  icon={
+                    <Ionicons
+                      name="flask"
+                      size={16}
+                      color="#fff"
+                      className="mr-2"
+                    />
+                  }
+                  shape="pill"
+                  onPress={() => router.push(ROUTE_PATH.APP.PATHOLOGY.INDEX)}
+                />
+              </View>
             </View>
-          )} */}
-          {/* Explore Section */}
-          <View className="mb-6">
-            <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
-              Explore Medilivurr
-            </Text>
-            <View className="flex-row justify-around items-center my-2">
-              <CTAButton
-                label="Pharmacy"
-                icon={
-                  <Ionicons
-                    name="medkit"
-                    size={16}
-                    color="#fff"
-                    className="mr-2"
-                  />
-                }
-                shape="pill"
-                onPress={() => router.push(ROUTE_PATH.APP.PHARMACY.INDEX)}
-              />
-              <CTAButton
-                label="Pathology"
-                icon={
-                  <Ionicons
-                    name="flask"
-                    size={16}
-                    color="#fff"
-                    className="mr-2"
-                  />
-                }
-                shape="pill"
-                onPress={() => router.push(ROUTE_PATH.APP.PATHOLOGY.INDEX)}
-              />
-            </View>
-          </View>
+          )}
 
           {/* Have a Prescription */}
-          <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
-            Have a Doctor's Prescription?
-          </Text>
-          <Text className="text-sm font-lexend-medium text-gray-600 mb-3">
-            Upload your prescription and get your medicines delivered to your
-            doorstep.
-          </Text>
-          <View className="p-2">
-            <FileUploader
-              url="/user/upload-prescription"
-              allowedTypes={["image/png", "image/jpeg", "application/pdf"]}
-              maxFileSize={5}
-              maxFiles={5}
-              onSuccess={(data) => {
-                console.log("File Upload Success:", data);
-              }}
-              onError={(err) => console.log("File Upload Error:", err)}
-            />
-          </View>
+          {!isSearching && (
+            <>
+              <Text className="text-lg font-lexend-semibold text-gray-900 mb-3">
+                Have a Doctor's Prescription?
+              </Text>
+              <Text className="text-sm font-lexend-medium text-gray-600 mb-3">
+                Upload your prescription and get your medicines delivered to
+                your doorstep.
+              </Text>
+              <View className="p-2">
+                <FileUploader
+                  url="/user/upload-prescription"
+                  allowedTypes={["image/png", "image/jpeg", "application/pdf"]}
+                  maxFileSize={5}
+                  maxFiles={5}
+                  onSuccess={(data) => {
+                    console.log("File Upload Success:", data);
+                  }}
+                  onError={(err) => console.log("File Upload Error:", err)}
+                />
+              </View>
+            </>
+          )}
+
           {/* Products Section */}
           <View className="mb-6">
             {!isSearching && (
