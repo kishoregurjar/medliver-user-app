@@ -31,7 +31,6 @@ export const NotificationProvider = ({ children }) => {
     });
 
     if (error) {
-      console.error("Error fetching notifications:", error);
       setError(error.message || "Failed to fetch notifications.");
       setNotifications([]);
     } else {
@@ -42,8 +41,6 @@ export const NotificationProvider = ({ children }) => {
           timestamp: n.sentAt,
           subtitle: n.message,
         })) || [];
-
-      console.log("Fetched notifications:", mapped);
       setNotifications(mapped);
     }
 

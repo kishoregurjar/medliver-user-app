@@ -23,7 +23,12 @@ export async function registerForPushNotificationsAsync() {
     }
 
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log("Expo Push Notification Token:", token);
+    if (__DEV__) {
+      console.log(
+        `------------------------- [DEV] Expo Push Notification Token Status: ${finalStatus} -------------------------`
+      );
+      console.log("[DEV] Expo Push Notification Token:", token);
+    }
   } else {
     alert("Push notifications require a physical device");
   }
@@ -47,5 +52,13 @@ export const getFCMToken = async () => {
   const tokenData = await Notifications.getDevicePushTokenAsync({
     type: "fcm",
   });
-  console.log("Firebase : FCM Token:", tokenData.data);
+  if (__DEV__) {
+    console.log(
+      `------------------------- [DEV] FCM Token Status: ${status} -------------------------`
+    );
+
+    console.log("[DEV] FCM Token Data:", tokenData);
+    console.log("[DEV] Device Push Token:", tokenData.data);
+    console.log("[DEV] Device Push Token Type:", tokenData.type);
+  }
 };

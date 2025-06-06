@@ -16,9 +16,11 @@ const axiosInstance = axios.create({
 
 // Interceptor for request logging (optional)
 axiosInstance.interceptors.request.use((config) => {
-  console.log(
-    `Making Request: METHOD - ${config.method} URL - ${config.url} HEADERS - ${config.headers}`
-  );
+  if (__DEV__)
+    console.log(`-------------------------- [DEV] API Request -------------------------`);
+    console.log(
+      ` Making Request: METHOD - ${config.method} URL - ${config.url} HEADERS - ${config.headers}`
+    );
   return config;
 });
 
@@ -28,12 +30,14 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    console.log(
-      `API Error: ${error.config.url || "NA"} - ${
-        error.response.status || error.response.data.status || "NA"
-      } - ${error.response.data.message || "Something went wrong"}`
-    );
-    // console.log(`API Error: ${error.response}`);
+    if (__DEV__) {
+      console.log(`-------------------------- [DEV] API Error -------------------------`);
+      console.log(
+        `API Error: METHOD - ${error.config.method || "NA"} URL - ${error.config.url || "NA"} - ${
+          error.response.status || error.response.data.status || "NA"
+        } - ${error.response.data.message || "Something went wrong"}`
+      );
+    }
 
     // ✅ Handle 401 Unauthorized Error
     if (error.response?.data?.status === 401) {

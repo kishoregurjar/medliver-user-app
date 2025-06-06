@@ -77,16 +77,12 @@ export default function CartScreen() {
       paymentMethod: selectedPayment,
     };
 
-    console.log("Placing order with details:", initiateOrder);
-
     const { data, error } = await initiateUserOrder({
       url: "/user/create-order",
       method: "POST",
       payload: initiateOrder,
       authRequired: true,
     });
-
-    console.log("Order placement response:", data);
 
     if (error) {
       console.error("Order placement failed:", error);

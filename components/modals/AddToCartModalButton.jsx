@@ -59,7 +59,6 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
   };
 
   const handleAddToCart = async () => {
-    if (!authUser?.isAuthenticated) return;
     const { data, error } = await addToCartItem(product._id, quantity);
     if (error) {
       showToast("error", error || "Failed to add item to cart");

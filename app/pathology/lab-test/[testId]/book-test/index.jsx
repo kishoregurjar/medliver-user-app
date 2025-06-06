@@ -31,16 +31,12 @@ export default function BookTestScreen() {
       paymentMethod: selectedPayment,
     };
 
-    console.log("Placing Booking with details:", initiateBooking);
-
     const { data, error } = await initiateUserBooking({
       url: "/user/test-booking",
       method: "POST",
       payload: initiateBooking,
       authRequired: true,
     });
-
-    console.log("Booking test response:", data);
 
     if (error) {
       console.error("Booking test failed:", error);
