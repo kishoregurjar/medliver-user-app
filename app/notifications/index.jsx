@@ -1,19 +1,15 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator,
   RefreshControl,
 } from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
-import { useFocusEffect, useRouter } from "expo-router";
-import { useAuthUser } from "@/contexts/AuthContext";
-import useAxios from "@/hooks/useAxios";
-import { formatDistanceToNow } from "date-fns";
-import { Divider } from "@/components/ui/divider";
+import { useRouter } from "expo-router";
+import { useNotification } from "@/contexts/NotificationContext";
 import NotificationCard from "@/components/cards/NotificationCard";
 import SkeletonNotificationCard from "@/components/skeletons/SkeletonNotificationCard";
 
@@ -21,47 +17,13 @@ const tabs = ["All", "Unread", "Read"];
 
 export default function NotificationsScreen() {
   const [activeTab, setActiveTab] = useState("Unread");
-  const [notifications, setNotifications] = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
-
   const router = useRouter();
-  const { authUser } = useAuthUser();
-  const { request: getNotifications, loading: loadingNotifications } =
-    useAxios();
-  const { request: updateNotificationStatus } = useAxios();
 
-  const fetchNotifications = async () => {
-    const { data, error } = await getNotifications({
-      method: "GET",
-      url: `/user/get-notification-by-recipientId`,
-      authRequired: true,
-    });
-
-    if (data?.data) {
-      const mappedNotifications = data.data.map((n) => ({
-        ...n,
-        isRead: n.status === "read",
-        timestamp: n.sentAt,
-        subtitle: n.message,
-      }));
-      setNotifications(mappedNotifications);
-    } else {
-      setNotifications([]);
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      if (authUser && authUser.isAuthenticated) {
-        fetchNotifications();
-      }
-    }, [authUser])
-  );
+  const { notifications, fetchNotifications, markAsRead, loading, error } =
+    useNotification();
 
   const onRefresh = async () => {
-    setRefreshing(true);
     await fetchNotifications();
-    setRefreshing(false);
   };
 
   const counts = {
@@ -77,30 +39,10 @@ export default function NotificationsScreen() {
   });
 
   const handleNotificationPress = async (notification) => {
-    if (!authUser || !authUser.isAuthenticated) return;
-
     if (!notification.isRead) {
-      const { error } = await updateNotificationStatus({
-        method: "PUT",
-        url: `/user/update-notification-status`,
-        data: { notificationId: notification._id },
-        authRequired: true,
-      });
-
-      if (error) {
-        console.error("Error updating notification status:", error);
-        return;
-      }
-
-      setNotifications((prev) =>
-        prev.map((n) =>
-          n._id === notification._id
-            ? { ...n, isRead: true, status: "read" }
-            : n
-        )
-      );
+      const success = await markAsRead(notification._id);
+      if (!success) return; // Optionally show error feedback
     }
-
     router.push(`/notification-details/${notification._id}`);
   };
 
@@ -150,14 +92,19 @@ export default function NotificationsScreen() {
         })}
       </View>
 
-      {loadingNotifications ? (
+      {/* Content */}
+      {loading ? (
         renderSkeletons()
+      ) : error ? (
+        <Text className="text-center text-red-500 font-lexend mt-10">
+          {error}
+        </Text>
       ) : (
         <FlatList
           data={filteredNotifications}
-          keyExtractor={(item) => item._id?.toString() || item.id?.toString()}
+          keyExtractor={(item) => item._id?.toString()}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl refreshing={loading} onRefresh={onRefresh} />
           }
           renderItem={({ item }) => (
             <NotificationCard
