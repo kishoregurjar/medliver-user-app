@@ -48,7 +48,7 @@ const AppTabBar = () => {
     },
   ];
 
-  const pathsToExclude = ["/product/", "/cart/", "/checkout/", "/lab-test/"];
+  const pathsToExclude = ["/product/", "/cart/", "/checkout/", "/lab-test/", "/category/"];
   const isTabBarVisible = !pathsToExclude.some((path) =>
     pathname.includes(path)
   );

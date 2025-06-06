@@ -1,45 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-
-const pathologyCategories = [
-  {
-    label: "Blood Test",
-    icon: "water-outline",
-    path: "/pathology/categories/blood-test",
-  },
-  {
-    label: "Urine Test",
-    icon: "flask-outline",
-    path: "/pathology/categories/urine-test",
-  },
-  {
-    label: "COVID-19",
-    icon: "medkit-outline",
-    path: "/pathology/categories/covid-19",
-  },
-  {
-    label: "Thyroid",
-    icon: "pulse-outline",
-    path: "/pathology/categories/thyroid",
-  },
-  {
-    label: "Diabetes",
-    icon: "analytics-outline",
-    path: "/pathology/categories/diabetes",
-  },
-  {
-    label: "Liver Function",
-    icon: "body-outline",
-    path: "/pathology/categories/liver-function",
-  },
-  {
-    label: "Kidney Test",
-    icon: "medkit-outline",
-    path: "/pathology/categories/kidney-test",
-  },
-];
+import useAxios from "@/hooks/useAxios";
 
 const pharmacyCategories = [
   { label: "Tablets", icon: "tablet-portrait-outline" },
@@ -54,6 +17,30 @@ const pharmacyCategories = [
 
 const AppCategories = ({ type = "pharmacy" }) => {
   const router = useRouter();
+  const [pathologyCategories, setPathologyCategories] = useState([]);
+  const { request: getAllCategories, loading: isLoading } = useAxios();
+
+  const fetchAllCategories = async () => {
+    const { data, error } = await getAllCategories({
+      method: "GET",
+      url:
+        type === "pathology"
+          ? "/user/get-all-test-category-pathology"
+          : "/user/get-all-test-category-pathology",
+    });
+
+    console.log(`fetching ${type} categories`, data.data, error);
+    if (!error && data?.status === 200 && data?.data) {
+      setPathologyCategories(data.data.categories || []);
+    } else {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllCategories();
+  }, [type]);
+
   const categories =
     type === "pharmacy" ? pharmacyCategories : pathologyCategories;
 
@@ -70,24 +57,53 @@ const AppCategories = ({ type = "pharmacy" }) => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 4 }}
       >
-        {categories.map((cat, i) => (
-          <TouchableOpacity
-            key={i}
-            activeOpacity={0.8}
-            className="bg-white rounded-2xl items-center justify-center p-4 w-28 mr-4"
-            onPress={() => cat.path && router.push(cat.path)}
-          >
-            {/* Icon */}
-            <View className="bg-background-soft p-3 rounded-full mb-2">
-              <Ionicons name={cat.icon} size={26} color="#6E6A7C" />
+        {isLoading ? (
+          Array.from({ length: 8 }).map((_, i) => (
+            <View
+              key={i}
+              className="bg-gray-200 rounded-2xl items-center justify-center p-4 w-28 mr-4 animate-pulse"
+            >
+              <View className="bg-background-soft p-3 rounded-full mb-2">
+                <Ionicons name="flask" size={26} color="#6E6A7C" />
+              </View>
+              <Text className="text-xs text-center font-lexend-medium text-text-primary">
+                Loading...
+              </Text>
             </View>
-
-            {/* Label */}
-            <Text className="text-xs text-center font-lexend-medium text-text-primary">
-              {cat.label}
+          ))
+        ) : categories.length === 0 ? (
+          <View className="flex-1 items-center justify-center">
+            <Text className="text-gray-400 text-sm font-lexend-medium">
+              No categories found.
             </Text>
-          </TouchableOpacity>
-        ))}
+          </View>
+        ) : (
+          categories.length > 0 &&
+          categories.map((cat, i) => (
+            <TouchableOpacity
+              key={i}
+              activeOpacity={0.8}
+              className="bg-white rounded-2xl items-center justify-center p-4 w-28 mr-4"
+              onPress={() =>
+                router.push({
+                  pathname:
+                    type === "pharmacy"
+                      ? "/pharmacy/category/[categoryId]"
+                      : "/pathology/category/[category]",
+                  params: { category: cat._id },
+                })
+              }
+            >
+              <View className="bg-background-soft p-3 rounded-full mb-2">
+                <Ionicons name={"flask"} size={26} color="#6E6A7C" />
+              </View>
+
+              <Text className="text-xs text-center font-lexend-medium text-text-primary">
+                {cat.name}
+              </Text>
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
     </View>
   );
