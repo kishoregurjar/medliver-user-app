@@ -259,7 +259,7 @@ export default function SearchMedicineScreen() {
                       onPress={() =>
                         router.push({
                           pathname: "/pharmacy/product/[productId]",
-                          params: { productId: item._id },
+                          params: { productId: item.product._id },
                         })
                       }
                     />
