@@ -22,6 +22,7 @@ export default function CartScreen() {
   const { authUser } = useAuthUser();
   const { showToast } = useAppToast();
   const {
+    isSyncingCart,
     cartItems,
     localQuantities,
     updateQuantity,
@@ -110,7 +111,13 @@ export default function CartScreen() {
         backTo="/home"
       />
       <ScrollView className="flex-1 py-4" showsVerticalScrollIndicator={false}>
-        {cartItems.length > 0 ? (
+        {isSyncingCart ? (
+          <View className="flex-1 justify-center items-center px-6">
+            <Text className="text-lg font-lexend-medium text-center mb-4">
+              Syncing your cart...
+            </Text>
+          </View>
+        ) : cartItems.length > 0 ? (
           <>
             <View className="bg-white border border-background-surface p-4 rounded-xl">
               <Text className="text-lg font-lexend-semibold text-text-muted">

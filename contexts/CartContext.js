@@ -19,11 +19,12 @@ export const CartProvider = ({ children }) => {
   const { authUser } = useAuthUser();
   const isLoggedIn = !!authUser?.isAuthenticated;
 
-  const { request: fetchCart } = useAxios();
+  const { request: fetchCart, loading: isLoadingCart } = useAxios();
   const { request: updateQty } = useAxios();
   const { request: removeItemApi } = useAxios();
   const { request: addItemApi } = useAxios();
 
+  const [isSyncingCart, setIsSyncingCart] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [localQuantities, setLocalQuantities] = useState({});
   const [lastQuantities, setLastQuantities] = useState({});
@@ -84,6 +85,8 @@ export const CartProvider = ({ children }) => {
 
   // Sync guest cart to server after login
   const syncGuestCartToServer = async () => {
+    if (isSyncingCart) return; // Prevent multiple syncs
+    setIsSyncingCart(true);
     try {
       const stored = await AsyncStorage.getItem(LOCAL_CART_KEY);
       if (!stored) return;
@@ -106,6 +109,8 @@ export const CartProvider = ({ children }) => {
       await loadCart();
     } catch (e) {
       console.error("Failed to sync guest cart", e);
+    } finally {
+      setIsSyncingCart(false);
     }
   };
 
@@ -236,6 +241,8 @@ export const CartProvider = ({ children }) => {
 
   const value = useMemo(
     () => ({
+      isLoadingCart,
+      isSyncingCart,
       cartItems,
       localQuantities,
       addToCartItem,
