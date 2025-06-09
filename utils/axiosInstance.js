@@ -17,25 +17,43 @@ const axiosInstance = axios.create({
 // Interceptor for request logging (optional)
 axiosInstance.interceptors.request.use((config) => {
   if (__DEV__)
-    console.log(`-------------------------- [DEV] API Request -------------------------`);
     console.log(
-      ` Making Request: METHOD - ${config.method} URL - ${config.url} HEADERS - ${config.headers}`
+      `-------------------------- [DEV] API Request -------------------------`
     );
+  console.log(
+    ` API Request: METHOD - ${config.method} URL - ${config.url} HEADERS - ${config.headers}`
+  );
   return config;
 });
 
 // Interceptor for response error handling (e.g., token refresh handling)
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // if (__DEV__) {
+    //   console.log(
+    //     `-------------------------- [DEV] API Response -------------------------`
+    //   );
+    //   console.log(
+    //     `API Response: METHOD - ${response.config.method} URL - ${response.config.url} STATUS - ${response.status} DATA - ${JSON.stringify(
+    //       response.data || "No Data"
+    //     )}`
+    //   );
+    // }
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
 
     if (__DEV__) {
-      console.log(`-------------------------- [DEV] API Error -------------------------`);
       console.log(
-        `API Error: METHOD - ${error.config.method || "NA"} URL - ${error.config.url || "NA"} - ${
-          error.response.status || error.response.data.status || "NA"
-        } - ${error.response.data.message || "Something went wrong"}`
+        `-------------------------- [DEV] API Error -------------------------`
+      );
+      console.log(
+        `API Error: METHOD - ${error.config.method || "NA"} URL - ${
+          error.config.url || "NA"
+        } - ${error.response.status || error.response.data.status || "NA"} - ${
+          error.response.data.message || "Something went wrong"
+        }`
       );
     }
 
@@ -46,8 +64,10 @@ axiosInstance.interceptors.response.use(
       // Optional toast
       // showToast("error", error.response?.data?.message || "Session expired. Please login again.");
 
-      await AsyncStorage.removeItem("authUser");
-      router.replace(ROUTE_PATH.APP.HOME); // navigate to login
+      if (error.config?.url !== "/user/user-login") {
+        await AsyncStorage.removeItem("authUser");
+        router.replace(ROUTE_PATH.APP.HOME); // navigate to login
+      }
 
       return Promise.reject(error);
     }

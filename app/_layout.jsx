@@ -6,7 +6,6 @@ import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-
 import {
   DarkTheme,
   DefaultTheme,
@@ -32,11 +31,10 @@ import { CartProvider } from "@/contexts/CartContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { LocationProvider } from "@/contexts/LocationContext";
 import { NavigationHistoryProvider } from "@/contexts/NavigationHistoryContext";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ConfigProvider } from "@/contexts/ConfigContext";
+import { helpers } from "@/utils/helpers";
 
 import "./global.css";
-import { helpers } from "@/utils/helpers";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -85,28 +83,30 @@ export default function RootLayout() {
   return (
     <GluestackUIProvider>
       <AuthProvider>
-        <LocationProvider>
-          <CartProvider>
-            <NotificationProvider>
-              <NavigationHistoryProvider>
-                <ToastProvider>
-                  <ThemeProvider
-                    value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-                  >
-                    <ActionSheetProvider>
-                      <SafeAreaProvider>
-                        <StatusBar
-                          style={colorScheme === "dark" ? "light" : "dark"}
-                        />
-                        <Stack screenOptions={{ headerShown: false }} />
-                      </SafeAreaProvider>
-                    </ActionSheetProvider>
-                  </ThemeProvider>
-                </ToastProvider>
-              </NavigationHistoryProvider>
-            </NotificationProvider>
-          </CartProvider>
-        </LocationProvider>
+        <ConfigProvider>
+          <LocationProvider>
+            <CartProvider>
+              <NotificationProvider>
+                <NavigationHistoryProvider>
+                  <ToastProvider>
+                    <ThemeProvider
+                      value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+                    >
+                      <ActionSheetProvider>
+                        <SafeAreaProvider>
+                          <StatusBar
+                            style={colorScheme === "dark" ? "light" : "dark"}
+                          />
+                          <Stack screenOptions={{ headerShown: false }} />
+                        </SafeAreaProvider>
+                      </ActionSheetProvider>
+                    </ThemeProvider>
+                  </ToastProvider>
+                </NavigationHistoryProvider>
+              </NotificationProvider>
+            </CartProvider>
+          </LocationProvider>
+        </ConfigProvider>
       </AuthProvider>
     </GluestackUIProvider>
   );
