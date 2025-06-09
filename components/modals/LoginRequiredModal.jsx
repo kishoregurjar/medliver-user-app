@@ -13,6 +13,8 @@ import FORM_FIELD_TYPES from "@/libs/form-field-types";
 import STATIC from "@/utils/constants";
 import CTAButton from "@/components/common/CTAButton";
 import { useAuthUser } from "@/contexts/AuthContext";
+import { router } from "expo-router";
+import ROUTE_PATH from "@/routes/route.constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function LoginRequiredModal({ visible, onClose }) {
@@ -68,7 +70,7 @@ export default function LoginRequiredModal({ visible, onClose }) {
           onPress={onClose}
           className="absolute top-4 right-4 z-10"
         >
-            <MaterialCommunityIcons name="close" size={24} color="black" />
+          <MaterialCommunityIcons name="close" size={24} color="black" />
         </TouchableOpacity>
 
         <View className="items-center my-2">
@@ -88,13 +90,25 @@ export default function LoginRequiredModal({ visible, onClose }) {
           fields={FORM_FIELD_TYPES.SIGN_IN}
         />
 
+        {/* Forgot password link */}
+        <TouchableOpacity
+          onPress={() => {
+            onClose();
+            router.push(ROUTE_PATH.AUTH.FORGOT_PASSWORD);
+          }}
+          className="mt-2 mb-4"
+        >
+          <Text className="text-right text-sm font-lexend-bold text-accent-softIndigo">
+            Forgot Password?
+          </Text>
+        </TouchableOpacity>
+
         <CTAButton
           onPress={handleSubmit(onSubmit)}
           label="Sign In"
           loaderText="Signing In..."
           loading={isLoading}
           disabled={isLoading}
-          className="mt-4"
         />
 
         <CTAButton
@@ -103,6 +117,21 @@ export default function LoginRequiredModal({ visible, onClose }) {
           variant="transparent"
           textClassName="text-center text-base text-text-muted mt-3"
         />
+
+        {/* Sign Up */}
+        <View className="flex-row justify-center items-center mt-4">
+          <Text className="text-text-muted font-lexend-bold">New User?</Text>
+          <TouchableOpacity
+            onPress={() => {
+              onClose();
+              router.push(ROUTE_PATH.AUTH.SIGNUP);
+            }}
+          >
+            <Text className="ml-1 text-accent-softIndigo font-lexend-bold">
+              Sign Up
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );
