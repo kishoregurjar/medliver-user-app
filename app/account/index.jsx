@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import AppLayout from "@/components/layouts/AppLayout";
 import { Ionicons } from "@expo/vector-icons";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
@@ -14,75 +14,15 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import CTAButton from "@/components/common/CTAButton";
-
-const accountOptions = [
-  // {
-  //   label: "My Wallet",
-  //   icon: "wallet-outline",
-  //   path: "/account/wallet",
-  //   guest: false,
-  // },
-  {
-    label: "Offers",
-    icon: "pricetags-outline",
-    path: "/account/offers",
-    guest: true,
-  },
-  {
-    label: "Orders",
-    icon: "cart-outline",
-    path: "/account/orders",
-    guest: false,
-  },
-  {
-    label: "My Diagnostic Tests",
-    icon: "calendar-outline",
-    path: "/account/diagnostics",
-    guest: false,
-  },
-  {
-    label: "My Prescriptions",
-    icon: "medkit-outline",
-    path: "/account/prescriptions",
-    guest: false,
-  },
-  {
-    label: "My Addresses",
-    icon: "home-outline",
-    path: "/account/addresses",
-    guest: false,
-  },
-  {
-    label: "Notifications",
-    icon: "notifications-outline",
-    path: "/notifications",
-    guest: true,
-  },
-  {
-    label: "Help",
-    icon: "help-circle-outline",
-    path: "/account/help",
-    guest: true,
-  },
-  {
-    label: "Privacy Policy",
-    icon: "shield-checkmark-outline",
-    path: "/account/privacy-policy",
-    guest: true,
-  },
-  {
-    label: "Terms of Use",
-    icon: "document-text-outline",
-    path: "/account/terms-of-use",
-    guest: true,
-  },
-];
+import LoginRequiredModal from "@/components/modals/LoginRequiredModal";
+import { accountOptions } from "@/utils/constants";
 
 const AccountScreen = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { logout, authUser } = useAuthUser();
   const { showToast } = useAppToast();
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const user = authUser?.user;
   const isGuest = !authUser?.isAuthenticated;
@@ -166,26 +106,31 @@ const AccountScreen = () => {
             contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
             showsVerticalScrollIndicator={false}
           >
-            {accountOptions
-              .filter((item) => (isGuest ? item.guest : true))
-              .map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  className="flex-row items-center justify-between p-2 rounded-xl"
-                  activeOpacity={0.7}
-                  onPress={() => router.push(item.path)}
-                >
-                  <View className="flex-row items-center space-x-4">
-                    <View className="w-10 h-10 bg-brand-primary/30 rounded-full items-center justify-center flex mr-5">
-                      <Ionicons name={item.icon} size={22} color="#E55150" />
-                    </View>
-                    <Text className="text-xs font-lexend-medium text-gray-800">
-                      {item.label}
-                    </Text>
+            {accountOptions.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                className="flex-row items-center justify-between p-2 rounded-xl"
+                activeOpacity={0.7}
+                onPress={() => {
+                  if (item.requiresAuth && isGuest) {
+                    // Redirect guest to login screen or show modal
+                    setShowLoginModal(true);
+                  } else {
+                    router.push(item.path);
+                  }
+                }}
+              >
+                <View className="flex-row items-center space-x-4">
+                  <View className="w-10 h-10 bg-brand-primary/30 rounded-full items-center justify-center flex mr-5">
+                    <Ionicons name={item.icon} size={22} color="#E55150" />
                   </View>
-                  <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-                </TouchableOpacity>
-              ))}
+                  <Text className="text-xs font-lexend-medium text-gray-800">
+                    {item.label}
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+              </TouchableOpacity>
+            ))}
           </ScrollView>
         </View>
 
@@ -211,6 +156,13 @@ const AccountScreen = () => {
           />
         </View>
       </View>
+
+      {showLoginModal && (
+        <LoginRequiredModal
+          visible={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+        />
+      )}
     </AppLayout>
   );
 };

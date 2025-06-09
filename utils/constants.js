@@ -1,4 +1,4 @@
-import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 export const socialButtons = [
   {
@@ -19,6 +19,63 @@ export const socialButtons = [
   //   color: "#000",
   //   text: "Continue with Apple",
   // },
+];
+
+export const accountOptions = [
+  {
+    label: "Offers",
+    icon: "pricetags-outline",
+    path: "/account/offers",
+    requiresAuth: false,
+  },
+  {
+    label: "Orders",
+    icon: "cart-outline",
+    path: "/account/orders",
+    requiresAuth: true,
+  },
+  {
+    label: "My Diagnostic Tests",
+    icon: "calendar-outline",
+    path: "/account/diagnostics",
+    requiresAuth: true,
+  },
+  {
+    label: "My Prescriptions",
+    icon: "medkit-outline",
+    path: "/account/prescriptions",
+    requiresAuth: true,
+  },
+  {
+    label: "My Addresses",
+    icon: "home-outline",
+    path: "/account/addresses",
+    requiresAuth: true,
+  },
+  {
+    label: "Notifications",
+    icon: "notifications-outline",
+    path: "/notifications",
+    requiresAuth: false,
+  },
+  {
+    label: "Help",
+    icon: "help-circle-outline",
+    path: "/account/help",
+    requiresAuth: false,
+  },
+  {
+    label: "Privacy Policy",
+    icon: "shield-checkmark-outline",
+    path: "/account/privacy-policy",
+    requiresAuth: false,
+  },
+  {
+    label: "Terms of Use",
+    icon: "document-text-outline",
+    path: "/account/terms-of-use",
+    requiresAuth: false,
+  },
 ];
 
 const IMAGES = {
