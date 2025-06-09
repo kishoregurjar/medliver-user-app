@@ -6,7 +6,7 @@ export default function CartItemCard({
   quantity,
   onRemove,
   onQuantityChange,
-}) {
+}) {  
   return (
     <View className="bg-white p-4 my-1 rounded-xl flex-row items-start space-x-4">
       <View className="w-1/4 h-24 bg-gray-100 rounded-lg overflow-hidden">
@@ -21,7 +21,7 @@ export default function CartItemCard({
 
       <View className="flex-1">
         <Text className="text-lg font-lexend-semibold" numberOfLines={1}>
-          {item.name}
+          {item.name || item.item_id.name}
         </Text>
         <Text className="text-sm text-gray-600">
           {item.item_id.short_composition1}
