@@ -84,6 +84,7 @@
     "lodash": "^4.17.21",
     "lucide-react-native": "^0.503.0",
     "mime": "^4.0.7",
+    "moti": "^0.30.0",
     "nativewind": "^4.1.23",
     "react": "19.0.0",
     "react-dom": "19.0.0",

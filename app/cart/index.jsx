@@ -17,6 +17,7 @@ import UserAddressSelection from "@/components/common/UserAddressSelection";
 import UserPaymentOptions from "@/components/common/UserPaymentOptions";
 import CTAButton from "@/components/common/CTAButton";
 import LoginRequiredModal from "@/components/modals/LoginRequiredModal";
+import LoadingDots from "@/components/common/LoadingDots";
 
 export default function CartScreen() {
   const { authUser } = useAuthUser();
@@ -111,12 +112,8 @@ export default function CartScreen() {
         backTo="/home"
       />
       <ScrollView className="flex-1 py-4" showsVerticalScrollIndicator={false}>
-        {isSyncingCart ? (
-          <View className="flex-1 justify-center items-center px-6">
-            <Text className="text-lg font-lexend-medium text-center mb-4">
-              Syncing your cart...
-            </Text>
-          </View>
+        {true ? (
+          <LoadingDots title={"Syncing Cart..."} subtitle={"Please wait..."} />
         ) : cartItems.length > 0 ? (
           <>
             <View className="bg-white border border-background-surface p-4 rounded-xl">
