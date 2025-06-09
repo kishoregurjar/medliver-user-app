@@ -59,6 +59,20 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
   };
 
   const handleAddToCart = async () => {
+    if (!authUser?.isAuthenticated) {
+      try {
+        await addToCartItem(product._id, quantity, {
+          ...product,
+        });
+        showToast("success", "Item added to cart (Guest)");
+        setLastQuantityForProduct(product._id, quantity);
+        onClose();
+      } catch (err) {
+        showToast("error", "Failed to add to guest cart");
+      }
+      return;
+    }
+
     const { data, error } = await addToCartItem(product._id, quantity);
     if (error) {
       showToast("error", error || "Failed to add item to cart");
@@ -73,11 +87,12 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
   const decreaseQty = () => setQuantity((prev) => Math.max(prev - 1, 1));
 
   const openModal = () => {
-    if (authUser?.isAuthenticated) {
-      setIsOpen(true);
-    } else {
-      showToast("warning", "Login to add items to cart");
-    }
+    // if (authUser?.isAuthenticated) {
+    //   setIsOpen(true);
+    // } else {
+    //   showToast("warning", "Login to add items to cart");
+    // }
+    setIsOpen(true);
   };
 
   return (

@@ -1,4 +1,3 @@
-// contexts/CartContext.js
 import React, {
   createContext,
   useContext,
@@ -7,15 +6,18 @@ import React, {
   useRef,
   useMemo,
 } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import useAxios from "@/hooks/useAxios";
 import { useAuthUser } from "@/contexts/AuthContext";
 
 const CartContext = createContext();
-
 export const useCart = () => useContext(CartContext);
+
+const LOCAL_CART_KEY = "guest-cart";
 
 export const CartProvider = ({ children }) => {
   const { authUser } = useAuthUser();
+  const isLoggedIn = !!authUser?.isAuthenticated;
 
   const { request: fetchCart } = useAxios();
   const { request: updateQty } = useAxios();
@@ -25,13 +27,10 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [localQuantities, setLocalQuantities] = useState({});
   const [lastQuantities, setLastQuantities] = useState({});
-
   const timers = useRef({});
 
-  // 🚀 Load Cart on Login
+  // Load cart from server
   const loadCart = async () => {
-    if (!authUser?.token || !authUser?.isAuthenticated) return;
-
     const { data, error } = await fetchCart({
       url: "/user/get-cart",
       method: "GET",
@@ -40,22 +39,100 @@ export const CartProvider = ({ children }) => {
 
     if (!error) {
       const items = data?.data?.items || [];
-
-      // 🧼 Clean stale quantities
+      setCartItems(items);
       const cleanedQuantities = Object.fromEntries(
         items.map((item) => [item.item_id._id, item.quantity])
       );
-
-      setCartItems(items);
       setLocalQuantities(cleanedQuantities);
     }
   };
 
+  // Load guest cart from AsyncStorage
+  const loadLocalCart = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(LOCAL_CART_KEY);
+      if (stored) {
+        const items = JSON.parse(stored);
+        setCartItems(items);
+        const qtyMap = Object.fromEntries(
+          items.map((item) => [item.item_id._id, item.quantity])
+        );
+        setLocalQuantities(qtyMap);
+      }
+    } catch (e) {
+      console.error("Failed to load guest cart", e);
+    }
+  };
+
   useEffect(() => {
-    loadCart();
+    if (isLoggedIn) {
+      loadCart();
+      syncGuestCartToServer(); // optional merge
+    } else {
+      loadLocalCart();
+    }
   }, [authUser]);
 
-  const addToCartItem = async (productId, quantity) => {
+  // Save local cart
+  const saveLocalCart = async (items) => {
+    try {
+      await AsyncStorage.setItem(LOCAL_CART_KEY, JSON.stringify(items));
+    } catch (e) {
+      console.error("Failed to save local cart", e);
+    }
+  };
+
+  // Sync guest cart to server after login
+  const syncGuestCartToServer = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(LOCAL_CART_KEY);
+      if (!stored) return;
+      const guestItems = JSON.parse(stored);
+
+      for (const item of guestItems) {
+        await addItemApi({
+          url: "/user/add-to-cart",
+          method: "POST",
+          payload: {
+            productId: item.item_id._id,
+            quantity: item.quantity,
+            type: "Medicine",
+          },
+          authRequired: true,
+        });
+      }
+
+      await AsyncStorage.removeItem(LOCAL_CART_KEY);
+      await loadCart();
+    } catch (e) {
+      console.error("Failed to sync guest cart", e);
+    }
+  };
+
+  const addToCartItem = async (productId, quantity, itemDetails = {}) => {
+    if (!isLoggedIn) {
+      const existing = cartItems.find((i) => i.item_id._id === productId);
+      let updatedCart;
+      if (existing) {
+        updatedCart = cartItems.map((item) =>
+          item.item_id._id === productId
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      } else {
+        const newItem = {
+          item_id: { _id: productId, ...itemDetails },
+          quantity,
+          price: itemDetails.price || 0,
+        };
+        updatedCart = [...cartItems, newItem];
+      }
+      setCartItems(updatedCart);
+      setLocalQuantities((prev) => ({ ...prev, [productId]: quantity }));
+      await saveLocalCart(updatedCart);
+      return;
+    }
+
     const { data, error } = await addItemApi({
       url: "/user/add-to-cart",
       method: "POST",
@@ -68,30 +145,13 @@ export const CartProvider = ({ children }) => {
     });
 
     if (!error) {
-      const existing = cartItems.find((i) => i.item_id._id === productId);
-      if (existing) {
-        updateQuantity(productId, existing.quantity + quantity);
-      } else {
-        const newItem = data?.data?.item;
-        if (newItem) {
-          setCartItems((prev) => [...prev, newItem]);
-          setLocalQuantities((prev) => ({
-            ...prev,
-            [productId]: quantity,
-          }));
-        } else {
-          await loadCart();
-        }
-      }
-
-      // 🎯 Persist last quantity
-      setLastQuantities((prev) => ({ ...prev, [productId]: quantity }));
+      await loadCart();
     }
 
     return { data, error };
   };
 
-  const updateQuantity = (productId, newQty) => {
+  const updateQuantity = async (productId, newQty) => {
     setLocalQuantities((prev) => ({ ...prev, [productId]: newQty }));
 
     if (timers.current[productId]) clearTimeout(timers.current[productId]);
@@ -103,8 +163,12 @@ export const CartProvider = ({ children }) => {
       const updatedCart = cartItems.map((i) =>
         i.item_id._id === productId ? { ...i, quantity: newQty } : i
       );
-
       setCartItems(updatedCart);
+
+      if (!isLoggedIn) {
+        await saveLocalCart(updatedCart);
+        return;
+      }
 
       const { error } = await updateQty({
         url: "/user/change-cart-product-quantity",
@@ -125,36 +189,32 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeCartItem = async (productId) => {
-    const { data, error } = await removeItemApi({
+    const updated = cartItems.filter((item) => item.item_id._id !== productId);
+    setCartItems(updated);
+    setLocalQuantities((prev) => {
+      const next = { ...prev };
+      delete next[productId];
+      return next;
+    });
+    setLastQuantities((prev) => {
+      const next = { ...prev };
+      delete next[productId];
+      return next;
+    });
+
+    if (!isLoggedIn) {
+      await saveLocalCart(updated);
+      return;
+    }
+
+    await removeItemApi({
       url: "/user/remove-item-from-cart",
       method: "PUT",
       payload: { itemId: productId, type: "Medicine" },
       authRequired: true,
     });
-
-    if (!error) {
-      setCartItems((prev) =>
-        prev.filter((item) => item.item_id._id !== productId)
-      );
-
-      // 🧼 Clean up both local and last quantity
-      setLocalQuantities((prev) => {
-        const updated = { ...prev };
-        delete updated[productId];
-        return updated;
-      });
-
-      setLastQuantities((prev) => {
-        const updated = { ...prev };
-        delete updated[productId];
-        return updated;
-      });
-    }
-
-    return { data, error };
   };
 
-  // ✅ Totals
   const itemTotal = useMemo(
     () =>
       cartItems.reduce(
@@ -174,13 +234,6 @@ export const CartProvider = ({ children }) => {
     [cartItems, localQuantities]
   );
 
-  // 🎯 Persistent Quantity Utility
-  const setLastQuantityForProduct = (productId, qty) =>
-    setLastQuantities((prev) => ({ ...prev, [productId]: qty }));
-
-  const getLastQuantityForProduct = (productId) =>
-    lastQuantities[productId] || 1;
-
   const value = useMemo(
     () => ({
       cartItems,
@@ -190,11 +243,12 @@ export const CartProvider = ({ children }) => {
       removeCartItem,
       itemTotal,
       itemCount,
-      reloadCart: loadCart,
-      setLastQuantityForProduct,
-      getLastQuantityForProduct,
+      reloadCart: isLoggedIn ? loadCart : loadLocalCart,
+      setLastQuantityForProduct: (id, qty) =>
+        setLastQuantities((prev) => ({ ...prev, [id]: qty })),
+      getLastQuantityForProduct: (id) => lastQuantities[id] || 1,
     }),
-    [cartItems, localQuantities, itemTotal, itemCount]
+    [cartItems, localQuantities, itemTotal, itemCount, isLoggedIn]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

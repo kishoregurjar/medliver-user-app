@@ -15,6 +15,8 @@ import { useCart } from "@/contexts/CartContext";
 import useAxios from "@/hooks/useAxios";
 import UserAddressSelection from "@/components/common/UserAddressSelection";
 import UserPaymentOptions from "@/components/common/UserPaymentOptions";
+import CTAButton from "@/components/common/CTAButton";
+import LoginRequiredModal from "@/components/modals/LoginRequiredModal";
 
 export default function CartScreen() {
   const { authUser } = useAuthUser();
@@ -36,39 +38,40 @@ export default function CartScreen() {
   const [urgentDelivery, setUrgentDelivery] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const promoDiscount = promoCode ? 5 : 0;
   const deliveryCharge = urgentDelivery ? 30 : 0;
   const totalAmount = itemTotal - promoDiscount + deliveryCharge;
 
-  if (!authUser?.token || !authUser?.isAuthenticated) {
-    return (
-      <AppLayout>
-        <HeaderWithBack
-          title="My Cart"
-          showBackButton
-          clearStack
-          backTo="/home"
-        />
-        <View className="flex-1 justify-center items-center px-6">
-          <Text className="text-lg font-lexend-medium text-center mb-4">
-            No cart items found.
-          </Text>
-          <Text className="text-base text-text-muted mb-6 text-center">
-            Login to view your cart items.
-          </Text>
-          <TouchableOpacity
-            onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}
-            className="bg-brand-primary px-6 py-3 rounded-xl"
-          >
-            <Text className="text-white text-base font-lexend-medium">
-              Login
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </AppLayout>
-    );
-  }
+  // if (!authUser?.token || !authUser?.isAuthenticated) {
+  //   return (
+  //     <AppLayout>
+  //       <HeaderWithBack
+  //         title="My Cart"
+  //         showBackButton
+  //         clearStack
+  //         backTo="/home"
+  //       />
+  //       <View className="flex-1 justify-center items-center px-6">
+  //         <Text className="text-lg font-lexend-medium text-center mb-4">
+  //           No cart items found.
+  //         </Text>
+  //         <Text className="text-base text-text-muted mb-6 text-center">
+  //           Login to view your cart items.
+  //         </Text>
+  //         <TouchableOpacity
+  //           onPress={() => router.push(ROUTE_PATH.AUTH.LOGIN)}
+  //           className="bg-brand-primary px-6 py-3 rounded-xl"
+  //         >
+  //           <Text className="text-white text-base font-lexend-medium">
+  //             Login
+  //           </Text>
+  //         </TouchableOpacity>
+  //       </View>
+  //     </AppLayout>
+  //   );
+  // }
 
   const handlePlaceOrder = async (details) => {
     let initiateOrder = {
@@ -130,7 +133,6 @@ export default function CartScreen() {
                 }
               />
             ))}
-
             {/* <CartPromoCodeInput
               isApplied={isPromoApplied}
               onToggle={() => setIsPromoApplied((v) => !v)}
@@ -154,20 +156,40 @@ export default function CartScreen() {
                 router.push(`${ROUTE_PATH.APP.CHECKOUT.INDEX}?`);
               }}
             />
+            {authUser?.isAuthenticated && authUser?.token && (
+              <>
+                <UserAddressSelection
+                  onSelectDeliveryAddress={(id) => {
+                    console.log("Selected address ID:", id);
+                    setSelectedAddress(id);
+                  }}
+                  onAddAddressPress={() =>
+                    router.push(ROUTE_PATH.APP.ACCOUNT.ADD_ADDRESS)
+                  }
+                />
 
-            <UserAddressSelection
-              onSelectDeliveryAddress={(id) => {
-                console.log("Selected address ID:", id);
-                setSelectedAddress(id);
-              }}
-              onAddAddressPress={() => router.push(ROUTE_PATH.APP.ACCOUNT.ADD_ADDRESS)}
-            />
-
-            <UserPaymentOptions
-              onSelectPaymentMethod={(method) => setSelectedPayment(method)}
-              onPlaceOrder={handlePlaceOrder}
-              isInitiatingOrder={initiateOrderLoading}
-            />
+                <UserPaymentOptions
+                  onSelectPaymentMethod={(method) => setSelectedPayment(method)}
+                  onPlaceOrder={handlePlaceOrder}
+                  isInitiatingOrder={initiateOrderLoading}
+                />
+              </>
+            )}
+            {!authUser?.isAuthenticated && (
+              <>
+                <CTAButton
+                  label="Place Order"
+                  onPress={() => setShowLoginModal(true)}
+                  loading={initiateOrderLoading}
+                  className="mt-4 mx-4 mb-6 bg-brand-primary rounded-xl py-3 px-6"
+                  textClassName="text-white text-base font-lexend-medium"
+                />
+                <LoginRequiredModal
+                  visible={showLoginModal}
+                  onClose={() => setShowLoginModal(false)}
+                />
+              </>
+            )}
           </>
         ) : (
           <View className="flex-1 justify-center items-center px-6 mt-28 ">
