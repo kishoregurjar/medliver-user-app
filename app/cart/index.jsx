@@ -23,6 +23,7 @@ export default function CartScreen() {
   const { authUser } = useAuthUser();
   const { showToast } = useAppToast();
   const {
+    isLoadingCart,
     isSyncingCart,
     cartItems,
     localQuantities,
@@ -112,7 +113,7 @@ export default function CartScreen() {
         backTo="/home"
       />
       <ScrollView className="flex-1 py-4" showsVerticalScrollIndicator={false}>
-        {true ? (
+        {isLoadingCart || isSyncingCart ? (
           <LoadingDots title={"Syncing Cart..."} subtitle={"Please wait..."} />
         ) : cartItems.length > 0 ? (
           <>
