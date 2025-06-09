@@ -64,7 +64,7 @@ export default function LoginRequiredModal({ visible, onClose }) {
       backdropOpacity={0.4}
       style={{ justifyContent: "flex-end", margin: 0 }}
     >
-      <View className="bg-white rounded-t-2xl px-6 pt-6 pb-8 relative">
+      <View className="bg-white rounded-t-3xl px-6 pt-6 pb-8 relative">
         {/* Close Button */}
         <TouchableOpacity
           onPress={onClose}
