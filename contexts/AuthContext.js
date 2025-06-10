@@ -68,6 +68,7 @@ export const AuthProvider = ({ children }) => {
     setAuthUser(defaultAuthUser);
     try {
       await AsyncStorage.removeItem("authUser");
+      await AsyncStorage.clear(); // Clear all storage if needed
     } catch (error) {
       console.error("Failed to remove auth user:", error);
     }

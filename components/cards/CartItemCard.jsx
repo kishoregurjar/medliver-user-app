@@ -8,7 +8,7 @@ export default function CartItemCard({
   onQuantityChange,
 }) {  
   return (
-    <View className="bg-white p-4 my-1 rounded-xl flex-row items-start space-x-4">
+    <View className="bg-white p-4 my-1 rounded-xl flex-row items-start gap-4">
       <View className="w-1/4 h-24 bg-gray-100 rounded-lg overflow-hidden">
         <Image
           source={{
