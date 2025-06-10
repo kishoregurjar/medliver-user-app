@@ -51,7 +51,10 @@ export const AppRouteEnum = {
     GET_QUOTES: "/insurance/get-quotes",
     SUBMIT_ENQUIRY: "/insurance/submit-enquiry",
   },
-  NOTIFICATIONS: { INDEX: "/notifications" },
+  NOTIFICATIONS: {
+    INDEX: "/notifications",
+    NOTIFICATION_DETAILS: "/notifications/details",
+  },
   PATHOLOGY: {
     INDEX: "/pathology",
     POPULAR_TESTS: "/pathology/popular-tests",

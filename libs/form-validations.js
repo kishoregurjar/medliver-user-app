@@ -19,7 +19,7 @@ const FORM_VALIDATIONS = {
       .string()
       .oneOf([yup.ref("password")], "Passwords must match")
       .required("Confirm your password"),
-    agree: yup.boolean().oneOf([true], "You must agree to the terms"),
+    agree: yup.boolean().oneOf([true], "You must agree to the terms and conditions"),
   }),
   LOGIN: yup.object().shape({
     email: yup.string().email("Invalid email").required("Email is required"),
@@ -102,6 +102,7 @@ const FORM_VALIDATIONS = {
     nominee_name: yup.string().required("Nominee name is required"),
     nominee_relation: yup.string().required("Nominee relation is required"),
     lead_source: yup.string().required("Lead source is required"),
+    agree: yup.boolean().oneOf([true], "You must confirm the information & agree to the terms and conditions"),
   }),
   BOOK_CAB: yup.object().shape({
     patient_name: yup.string().required("Patient name is required"),
@@ -116,9 +117,7 @@ const FORM_VALIDATIONS = {
     address: yup.string().required("Pickup address is required"),
     destination_hospital: yup.string().required("Destination is required"),
     vehicle_type: yup.string().required("Vehicle type is required"),
-    confirmation: yup
-      .boolean()
-      .oneOf([true], "You must confirm the information"),
+    agree: yup.boolean().oneOf([true], "You must confirm the information & agree to the terms and conditions"),
   }),
   BOOK_APPOINTMENT_DOCTOR: yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -132,9 +131,7 @@ const FORM_VALIDATIONS = {
       )
       .required("Phone number is required"),
     disease: yup.string().required("Disease details are required"),
-    confirmation: yup
-      .boolean()
-      .oneOf([true], "You must confirm the information"),
+    agree: yup.boolean().oneOf([true], "You must confirm the information & agree to the terms and conditions"),
   }),
 };
 

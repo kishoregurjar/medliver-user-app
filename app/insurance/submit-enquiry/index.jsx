@@ -57,11 +57,9 @@ const InsuranceEnquiryScreen = () => {
       payload,
     });
 
-    if (!error) {
-      if (data.status === 201) {
-        showToast("success", data.message || "Enquiry submitted successfully.");
-        reset();
-      }
+    if (!error && data.status === 201) {
+      showToast("success", data.message || "Enquiry submitted successfully.");
+      reset();
     } else {
       showToast("error", error || "Something went wrong");
     }
@@ -111,10 +109,10 @@ const InsuranceEnquiryScreen = () => {
                     <Checkbox
                       value={value}
                       onValueChange={onChange}
-                      color="#3b82f6"
+                      color="#B31F24"
                     />
                     <Text className="text-text-primary font-lexend dark:text-white ml-2">
-                      I agree to the{" "}
+                      I Confirm all the information is correct and agree to the{" "}
                       <Text className="text-brand-primary font-lexend">
                         Terms & Conditions
                       </Text>

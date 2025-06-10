@@ -12,6 +12,7 @@ import { useRouter } from "expo-router";
 import { useNotification } from "@/contexts/NotificationContext";
 import NotificationCard from "@/components/cards/NotificationCard";
 import SkeletonNotificationCard from "@/components/skeletons/SkeletonNotificationCard";
+import ROUTE_PATH from "@/routes/route.constants";
 
 const tabs = ["All", "Unread", "Read"];
 
@@ -39,11 +40,13 @@ export default function NotificationsScreen() {
   });
 
   const handleNotificationPress = async (notification) => {
-    if (!notification.isRead) {
-      const success = await markAsRead(notification._id);
-      if (!success) return; // Optionally show error feedback
-    }
-    router.push(`/notification-details/${notification._id}`);
+    // if (!notification.isRead) {
+    //   const success = await markAsRead(notification._id);
+    //   if (!success) return; // Optionally show error feedback
+    // }
+    router.push(
+      `${ROUTE_PATH.APP.NOTIFICATIONS.NOTIFICATION_DETAILS}?notificationId=${notification._id}`
+    );
   };
 
   const renderSkeletons = () => {

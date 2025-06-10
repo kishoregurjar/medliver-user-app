@@ -25,23 +25,20 @@ const BookAnAppointmentScreen = () => {
   } = useForm({
     resolver: yupResolver(FORM_VALIDATIONS.BOOK_APPOINTMENT_DOCTOR),
     defaultValues: {
-      confirmation: false,
+      agree: false,
     },
   });
 
   const onSubmit = async (payload) => {
-    delete payload.confirmation;
     const { data, error } = await submitDoctorAppointment({
       url: "/user/create-doctoreLead",
       method: "POST",
       payload: payload,
     });
 
-    if (!error) {
-      if (data.status === 201) {
-        showToast("success", data.message || "Enquiry submitted successfully.");
-        reset();
-      }
+    if (!error && data?.status === 201) {
+      showToast("success", data.message || "Enquiry submitted successfully.");
+      reset();
     } else {
       showToast("error", error || "Something went wrong");
     }
@@ -71,27 +68,28 @@ const BookAnAppointmentScreen = () => {
             fields={FORM_FIELD_TYPES.BOOK_APPOINTMENT_DOCTOR}
           />
 
-          {/* Confirmation Checkbox */}
+          {/* Agree Checkbox */}
           <View className="flex-row items-center space-x-2 mb-6 mt-2">
             <Controller
               control={control}
-              name="confirmation"
+              name="agree"
               render={({ field: { onChange, value } }) => (
                 <Checkbox
                   value={value}
                   onValueChange={onChange}
-                  color={value ? "#FF0000" : undefined} // red when checked
+                  color={value ? "#B31F24" : undefined} // red when checked
                   className="mr-4"
                 />
               )}
             />
             <Text className="font-lexend text-text-primary flex-1">
-              I confirm all information is correct
+              I confirm all information is correct and agree to the{" "}
+              <Text className="text-brand-primary">Terms & Conditions</Text>
             </Text>
           </View>
-          {errors.confirmation && (
+          {errors.agree && (
             <Text className="text-xs text-red-500 font-lexend mb-4">
-              {errors.confirmation.message}
+              {errors.agree.message}
             </Text>
           )}
 
