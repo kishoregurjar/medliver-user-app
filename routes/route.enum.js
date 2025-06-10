@@ -54,6 +54,7 @@ export const AppRouteEnum = {
   NOTIFICATIONS: { INDEX: "/notifications" },
   PATHOLOGY: {
     INDEX: "/pathology",
+    POPULAR_TESTS: "/pathology/popular-tests",
     LAB_TEST: "/pathology/lab-test",
     LAB_TEST_DETAILS: "/pathology/lab-test/[testId]",
     LAB_TEST_BOOK: "/pathology/lab-test/[testId]/book-test",
@@ -62,6 +63,8 @@ export const AppRouteEnum = {
   },
   PHARMACY: {
     INDEX: "/pharmacy",
+    BEST_SELLERS: "/pharmacy/best-sellers",
+    TOP_PICKS: "/pharmacy/top-picks",
     ORDER_MEDICINE: "/pharmacy/order-medicine",
     ORDER_MEDICINE_DETAILS: "/pharmacy/order-medicine/[id]",
     ORDER_MEDICINE_TRACK: "/pharmacy/order-medicine/[id]/track",

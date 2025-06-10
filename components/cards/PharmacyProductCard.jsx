@@ -10,6 +10,7 @@ const PharmacyProductCard = ({
   onPress,
   showAddToCart = true,
   type = "default",
+  fullWidth = false,
 }) => {
   if (!item || typeof item !== "object") return null;
 
@@ -48,6 +49,76 @@ const PharmacyProductCard = ({
 
   const mrp = price + 15; // Dummy MRP for UI
   const discount = Math.max(mrp - price, 0);
+
+  if (fullWidth) {
+    return (
+      <TouchableOpacity
+        onPress={handlePress}
+        activeOpacity={0.9}
+        className="w-full bg-white rounded-2xl p-4 mb-3 flex-row items-start"
+        key={id}
+      >
+        {/* Product Image */}
+        <View className="w-24 h-24 mr-4 bg-gray-100 rounded-xl overflow-hidden">
+          {imageSource ? (
+            <Image
+              source={imageSource}
+              className="w-full h-full"
+              resizeMode="contain"
+            />
+          ) : null}
+        </View>
+
+        {/* Product Details */}
+        <View className="flex-1">
+          {/* Title */}
+          <Text
+            numberOfLines={2}
+            className="font-lexend-bold text-base text-black leading-snug mb-1"
+          >
+            {name}
+          </Text>
+
+          {/* Subtitle or Manufacturer */}
+          <Text
+            numberOfLines={1}
+            className="text-xs text-text-muted font-lexend mb-1"
+          >
+            {subtitle || manufacturer}
+          </Text>
+
+          {/* Price Row */}
+          <View className="flex-row items-center mb-1">
+            <Text className="text-text-primary text-sm font-lexend-bold mr-2">
+              {formatPrice(price)}
+            </Text>
+            <Text className="text-xs font-lexend text-gray-400 line-through mr-2">
+              {formatPrice(mrp)}
+            </Text>
+            <Text className="text-xs font-lexend text-green-600">
+              Save ₹{discount.toFixed(0)}
+            </Text>
+          </View>
+
+          {/* Sold Count / Star */}
+          <View className="flex-row items-center mb-2">
+            <Ionicons name="star" size={14} color="#FFD700" />
+            <Text className="text-xs font-lexend text-text-muted ml-1">
+              {soldCount > 0
+                ? formatNumber(soldCount, 1)
+                : (Math.random() * (5 - 3.5) + 3.5).toFixed(1)}{" "}
+              sold
+            </Text>
+          </View>
+
+          {/* Add to Cart */}
+          {showAddToCart && (
+            <AddToCartModalButton product={product} variant="button" />
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  }
 
   if (type === "small") {
     return (

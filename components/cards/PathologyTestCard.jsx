@@ -9,6 +9,7 @@ const PathologyTestCard = ({
   onPress,
   showBookButton = true,
   type = "default",
+  fullWidth = false,
 }) => {
   if (!item || typeof item !== "object") return null;
 
@@ -38,6 +39,73 @@ const PathologyTestCard = ({
       onPress(id);
     }
   };
+
+  if (fullWidth) {
+    return (
+      <TouchableOpacity
+        onPress={handlePress}
+        className="bg-white rounded-2xl p-4 mb-3 w-full flex-row border border-background-soft"
+        activeOpacity={0.8}
+        key={id}
+      >
+        {/* Image block */}
+        <View className="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden mr-4">
+          <Image
+            source={imageSource}
+            className="w-full h-full"
+            resizeMode="contain"
+          />
+        </View>
+
+        {/* Details block */}
+        <View className="flex-1 justify-between">
+          {/* Name */}
+          <Text
+            className="text-base font-lexend-semibold text-black"
+            numberOfLines={1}
+          >
+            {name}
+          </Text>
+
+          {/* Sample required & Delivery */}
+          <Text className="text-xs text-gray-500" numberOfLines={1}>
+            Sample: {sample_required}
+          </Text>
+          <Text className="text-xs text-gray-500 mb-1" numberOfLines={1}>
+            Delivery: {deliveryTime}
+          </Text>
+
+          {/* Pricing */}
+          <View className="flex-row justify-between items-center mb-1">
+            <Text className="text-xs text-gray-400 line-through">
+              MRP {formatPrice(mrp)}
+            </Text>
+            <Text className="text-xs text-green-600 font-lexend-semibold">
+              Save ₹{discount.toFixed(0)}
+            </Text>
+          </View>
+
+          <Text className="text-sm font-lexend-bold text-black mb-1">
+            {formatPrice(price)}
+          </Text>
+
+          {/* Book Now */}
+          {showBookButton && (
+            <TouchableOpacity
+              onPress={handlePress}
+              className="bg-brand-primary flex-row items-center justify-center rounded-lg py-2"
+              activeOpacity={0.8}
+            >
+              <Ionicons name="flask" size={16} color="#fff" />
+              <Text className="text-white text-sm font-lexend-semibold ml-1">
+                Book Now
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  }
 
   if (type === "small") {
     // Example small layout if needed

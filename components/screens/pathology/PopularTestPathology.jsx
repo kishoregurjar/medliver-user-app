@@ -48,7 +48,9 @@ const PopularTestPathology = () => {
         <Text className="text-lg font-lexend-bold text-text-primary">
           Popular Lab Tests
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => router.push(ROUTE_PATH.APP.PATHOLOGY.POPULAR_TESTS)}
+        >
           <Text className="text-blue-600 text-sm font-lexend-bold">
             See All
           </Text>

@@ -5,6 +5,7 @@ import useAxios from "@/hooks/useAxios";
 import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
 import SkeletonPharmacyProductCard from "@/components/skeletons/SkeletonPharmacyProductCard";
 import { useAuthUser } from "@/contexts/AuthContext";
+import ROUTE_PATH from "@/routes/route.constants";
 
 const TopPicksPharmacy = () => {
   const router = useRouter();
@@ -52,7 +53,9 @@ const TopPicksPharmacy = () => {
         <Text className="text-lg font-lexend-bold text-text-primary">
           Top Picks for You
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => router.push(ROUTE_PATH.APP.PHARMACY.TOP_PICKS)}
+        >
           <Text className="text-blue-600 text-sm font-lexend-bold">
             See All
           </Text>

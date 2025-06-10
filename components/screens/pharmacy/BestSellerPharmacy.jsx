@@ -4,14 +4,11 @@ import { useRouter } from "expo-router";
 import useAxios from "@/hooks/useAxios";
 import PharmacyProductCard from "@/components/cards/PharmacyProductCard";
 import SkeletonPharmacyProductCard from "@/components/skeletons/SkeletonPharmacyProductCard";
+import ROUTE_PATH from "@/routes/route.constants";
 
 const BestSellerPharmacy = () => {
   const router = useRouter();
-  const {
-    request: fetchBestSellers,
-    loading: isLoading,
-    error: hasError,
-  } = useAxios();
+  const { request: fetchBestSellers, loading: isLoading } = useAxios();
 
   const [products, setProducts] = useState([]);
 
@@ -49,7 +46,7 @@ const BestSellerPharmacy = () => {
         <Text className="text-lg font-lexend-bold text-text-primary">
           Best Seller
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push(ROUTE_PATH.APP.PHARMACY.BEST_SELLERS)}>
           <Text className="text-blue-600 text-sm font-lexend-bold">
             See All
           </Text>
