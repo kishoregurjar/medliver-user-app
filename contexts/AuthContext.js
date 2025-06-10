@@ -16,7 +16,6 @@ const AuthContext = createContext(null);
 
 export const useAuthUser = () => useContext(AuthContext);
 
-// ✅ Define default auth state
 const defaultAuthUser = {
   isAuthenticated: false,
   user: null,
@@ -60,7 +59,7 @@ export const AuthProvider = ({ children }) => {
       await AsyncStorage.setItem("authUser", JSON.stringify(userData));
     } catch (error) {
       console.error("Failed to save auth user:", error);
-      router.replace(ROUTE_PATH.AUTH.LOGIN); // use your actual route
+      router.replace(ROUTE_PATH.AUTH.LOGIN);
     }
   };
 
@@ -68,11 +67,11 @@ export const AuthProvider = ({ children }) => {
     setAuthUser(defaultAuthUser);
     try {
       await AsyncStorage.removeItem("authUser");
-      await AsyncStorage.clear(); // Clear all storage if needed
+      await AsyncStorage.clear();
     } catch (error) {
       console.error("Failed to remove auth user:", error);
     }
-    router.replace(ROUTE_PATH.AUTH.LOGIN); // use your actual route
+    router.replace(ROUTE_PATH.AUTH.LOGIN);
   };
 
   const updateUser = async (newUserData) => {

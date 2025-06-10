@@ -179,7 +179,7 @@ export default function EditAddressScreen() {
   };
 
   return (
-    <AppLayout>
+    <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="Edit Address" />
 
       {fetching ? (
@@ -189,7 +189,11 @@ export default function EditAddressScreen() {
           ))}
         </>
       ) : (
-        <ScrollView className="px-4 py-6" keyboardShouldPersistTaps="handled">
+        <ScrollView
+          className="px-4 py-6"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           <CTAButton
             label="Use Current Location"
             icon={
