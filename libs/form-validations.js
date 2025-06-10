@@ -6,7 +6,10 @@ const FORM_VALIDATIONS = {
     email: yup.string().email("Invalid email").required("Email is required"),
     phoneNumber: yup
       .string()
-      .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+      .matches(
+        /^[6-9]\d{9}$/,
+        "Phone number must be a valid 10-digit Indian number"
+      )
       .required("Phone number is required"),
     password: yup
       .string()
@@ -51,14 +54,20 @@ const FORM_VALIDATIONS = {
     email: yup.string().email("Invalid email").required("Email is required"),
     phoneNumber: yup
       .string()
-      .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+      .matches(
+        /^[6-9]\d{9}$/,
+        "Phone number must be a valid 10-digit Indian number"
+      )
       .required("Phone number is required"),
   }),
   INSURANCE_SUBMIT_ENQUIRY: yup.object().shape({
     full_name: yup.string().required("Full name is required"),
     phone_number: yup
       .string()
-      .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+      .matches(
+        /^[6-9]\d{9}$/,
+        "Phone number must be a valid 10-digit Indian number"
+      )
       .required("Phone number is required"),
     email: yup.string().email("Invalid email").required("Email is required"),
     lead_type: yup.string().required("Lead type is required"),
@@ -98,7 +107,10 @@ const FORM_VALIDATIONS = {
     patient_name: yup.string().required("Patient name is required"),
     patient_phone: yup
       .string()
-      .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+      .matches(
+        /^[6-9]\d{9}$/,
+        "Phone number must be a valid 10-digit Indian number"
+      )
       .required("Phone number is required"),
     emergency_type: yup.string().required("Emergency type is required"),
     address: yup.string().required("Pickup address is required"),
@@ -114,7 +126,10 @@ const FORM_VALIDATIONS = {
     address: yup.string().required("Address is required"),
     phone: yup
       .string()
-      .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+      .matches(
+        /^[6-9]\d{9}$/,
+        "Phone number must be a valid 10-digit Indian number"
+      )
       .required("Phone number is required"),
     disease: yup.string().required("Disease details are required"),
     confirmation: yup

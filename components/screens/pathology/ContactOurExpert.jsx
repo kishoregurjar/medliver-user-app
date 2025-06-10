@@ -1,8 +1,23 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Linking, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 const ContactOurExpert = () => {
+  const phoneNumber = "9876543210"; // ✅ Valid Indian mobile number
+
+  const handleCallPress = () => {
+    const isValidIndianNumber = /^[6-9]\d{9}$/.test(phoneNumber);
+    if (!isValidIndianNumber) {
+      Alert.alert(
+        "Invalid Number",
+        "The number is not a valid Indian mobile number."
+      );
+      return;
+    }
+
+    Linking.openURL(`tel:${phoneNumber}`);
+  };
+
   return (
     <View className="rounded-2xl flex-row items-center justify-between mb-6 py-4">
       {/* Text Block on Right */}
@@ -16,7 +31,10 @@ const ContactOurExpert = () => {
       </View>
 
       {/* Call Button on Left */}
-      <TouchableOpacity className="bg-brand-primary px-4 py-2 rounded-full flex-row items-center">
+      <TouchableOpacity
+        onPress={handleCallPress}
+        className="bg-brand-primary px-4 py-2 rounded-full flex-row items-center"
+      >
         <Ionicons name="call" size={20} color="#fff" />
         <Text className="text-white text-base font-lexend-semibold ml-2">
           Call Now
