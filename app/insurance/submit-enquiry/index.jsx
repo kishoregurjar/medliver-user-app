@@ -14,11 +14,7 @@ import HeaderWithBack from "@/components/common/HeaderWithBack";
 import CTAButton from "@/components/common/CTAButton";
 
 const InsuranceEnquiryScreen = () => {
-  const {
-    request: submitEnquiry,
-    loading: isLoading,
-    error: hasError,
-  } = useAxios();
+  const { request: submitEnquiry, loading: isLoading } = useAxios();
 
   const { showToast } = useAppToast();
 
@@ -55,7 +51,6 @@ const InsuranceEnquiryScreen = () => {
   }));
 
   const onSubmit = async (payload) => {
-    delete payload.termsAccepted;
     const { data, error } = await submitEnquiry({
       url: "/user/apply-for-insurance",
       method: "POST",
@@ -100,7 +95,7 @@ const InsuranceEnquiryScreen = () => {
           <View className="flex-row items-center my-5">
             <Controller
               control={control}
-              name="termsAccepted"
+              name="agree"
               defaultValue={false}
               rules={{ required: "You must accept the terms and conditions" }}
               render={({
