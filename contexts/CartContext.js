@@ -133,7 +133,10 @@ export const CartProvider = ({ children }) => {
         updatedCart = [...cartItems, newItem];
       }
       setCartItems(updatedCart);
-      setLocalQuantities((prev) => ({ ...prev, [productId]: quantity }));
+      setLocalQuantities((prev) => ({
+        ...prev,
+        [productId]: (prev[productId] || 0) + quantity,
+      }));
       await saveLocalCart(updatedCart);
       return;
     }
@@ -162,11 +165,12 @@ export const CartProvider = ({ children }) => {
     if (timers.current[productId]) clearTimeout(timers.current[productId]);
 
     timers.current[productId] = setTimeout(async () => {
+      const latestQty = localQuantities[productId]; // use fresh reference
       const item = cartItems.find((i) => i.item_id._id === productId);
-      if (!item || item.quantity === newQty || newQty < 1) return;
+      if (!item || item.quantity === latestQty || latestQty < 1) return;
 
       const updatedCart = cartItems.map((i) =>
-        i.item_id._id === productId ? { ...i, quantity: newQty } : i
+        i.item_id._id === productId ? { ...i, quantity: latestQty } : i
       );
       setCartItems(updatedCart);
 
@@ -175,19 +179,12 @@ export const CartProvider = ({ children }) => {
         return;
       }
 
-      const { error } = await updateQty({
+      await updateQty({
         url: "/user/change-cart-product-quantity",
         method: "PUT",
-        payload: { itemId: productId, quantity: newQty, type: "Medicine" },
+        payload: { itemId: productId, quantity: latestQty, type: "Medicine" },
         authRequired: true,
       });
-
-      if (!error) {
-        setLocalQuantities((prev) => ({
-          ...prev,
-          [productId]: newQty,
-        }));
-      }
 
       delete timers.current[productId];
     }, 600);
@@ -220,11 +217,22 @@ export const CartProvider = ({ children }) => {
     });
   };
 
+  const clearCart = async () => {
+    setCartItems([]);
+    setLocalQuantities({});
+    setLastQuantities({});
+    if (!isLoggedIn) {
+      await AsyncStorage.removeItem(LOCAL_CART_KEY);
+    }
+  };
+
   const itemTotal = useMemo(
     () =>
       cartItems.reduce(
         (sum, item) =>
-          sum + item.price * (localQuantities[item.item_id._id] || 1),
+          sum +
+          (item.price ?? item.item_id.price ?? 0) *
+            (localQuantities[item.item_id._id] || 1),
         0
       ),
     [cartItems, localQuantities]
@@ -248,6 +256,7 @@ export const CartProvider = ({ children }) => {
       addToCartItem,
       updateQuantity,
       removeCartItem,
+      clearCart,
       itemTotal,
       itemCount,
       reloadCart: isLoggedIn ? loadCart : loadLocalCart,
@@ -255,7 +264,14 @@ export const CartProvider = ({ children }) => {
         setLastQuantities((prev) => ({ ...prev, [id]: qty })),
       getLastQuantityForProduct: (id) => lastQuantities[id] || 1,
     }),
-    [cartItems, localQuantities, itemTotal, itemCount, isLoggedIn]
+    [
+      cartItems,
+      localQuantities,
+      itemTotal,
+      itemCount,
+      isLoggedIn,
+      lastQuantities,
+    ]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
