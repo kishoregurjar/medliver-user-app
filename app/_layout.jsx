@@ -67,13 +67,6 @@ export default function RootLayout() {
           "[DEV] App Async Storage:",
           await helpers.logAsyncStorage()
         );
-        // await logAsyncStorage();
-
-        // const keys = await AsyncStorage.getAllKeys();
-        // const items = await AsyncStorage.multiGet(keys);
-        // items.forEach(([key, value]) => {
-        //   console.log(`[DEV] ${key} = ${value}`);
-        // });
       })();
     }
   }, [pathname]);

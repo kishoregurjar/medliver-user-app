@@ -20,8 +20,19 @@ export default function NotificationsScreen() {
   const [activeTab, setActiveTab] = useState("Unread");
   const router = useRouter();
 
-  const { notifications, fetchNotifications, markAsRead, loading, error } =
-    useNotification();
+  const {
+    notifications,
+    fetchNotifications,
+    markAsRead,
+    loading,
+    error,
+    expoToken,
+    fcmToken,
+  } = useNotification();
+
+  console.log("NotificationsScreen - expoToken:", expoToken);
+  console.log("NotificationsScreen - fcmToken:", fcmToken);
+  
 
   const onRefresh = async () => {
     await fetchNotifications();

@@ -1,35 +1,16 @@
-import { View, Text, Image, useWindowDimensions, Animated } from "react-native";
-import React, { useEffect, useRef } from "react";
+import { View, Text, Image, useWindowDimensions } from "react-native";
+import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import STATIC from "@/utils/constants";
-import {
-  getFCMToken,
-  registerForPushNotificationsAsync,
-} from "@/utils/notification";
 import ROUTE_PATH from "@/routes/route.constants";
 import { SafeAreaView } from "react-native-safe-area-context"; // ← More reliable SafeAreaView
 import CTAButton from "@/components/common/CTAButton";
 
 const LetsStartScreen = () => {
   const router = useRouter();
-  const scaleAnim = useRef(new Animated.Value(1)).current;
   const { width, height } = useWindowDimensions();
-
-  useEffect(() => {
-    const setupNotifications = async () => {
-      try {
-        const token = await registerForPushNotificationsAsync();
-        console.log("Expo Push Notification Token :", token);
-      } catch (error) {
-        console.log("Error setting up notifications:", error);
-      }
-    };
-
-    setupNotifications();
-    getFCMToken();
-  }, []);
 
   const dots = [
     { top: "10%", left: "15%", size: 8, color: "bg-yellow-400", opacity: 70 },
@@ -97,7 +78,14 @@ const LetsStartScreen = () => {
 
           <CTAButton
             label={"Get Started"}
-            icon={<AntDesign name="arrowright" size={20} color="white" className="ml-4" />}
+            icon={
+              <AntDesign
+                name="arrowright"
+                size={20}
+                color="white"
+                className="ml-4"
+              />
+            }
             iconPosition="right"
             onPress={() => router.push(ROUTE_PATH.APP.HOME)}
             className={"w-full"}
