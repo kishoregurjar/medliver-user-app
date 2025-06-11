@@ -48,7 +48,6 @@ export default function LoginScreen() {
     if (!error) {
       showToast("success", data.message || "User logged in successfully.");
       if (data.status === 200) {
-        router.push(ROUTE_PATH.APP.HOME);
         login(data.data);
       }
     } else {

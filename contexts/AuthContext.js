@@ -44,6 +44,11 @@ export const AuthProvider = ({ children }) => {
     loadAuthUser();
   }, []);
 
+  const isLoggedIn = useMemo(
+    () => authUser?.isAuthenticated && authUser?.token !== null,
+    [authUser]
+  );
+
   const login = async (response) => {
     const { token } = response;
 
@@ -57,6 +62,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       await AsyncStorage.setItem("authUser", JSON.stringify(userData));
+      router.replace(ROUTE_PATH.APP.HOME);
     } catch (error) {
       console.error("Failed to save auth user:", error);
       router.replace(ROUTE_PATH.AUTH.LOGIN);
@@ -77,24 +83,23 @@ export const AuthProvider = ({ children }) => {
   const updateUser = async (newUserData) => {
     if (!newUserData) return;
 
-    setAuthUser((prev) => {
-      if (!prev) return defaultAuthUser;
+    const updatedUser = {
+      ...authUser,
+      user: newUserData,
+    };
 
-      const updatedUser = {
-        ...prev,
-        user: newUserData,
-      };
+    setAuthUser(updatedUser);
 
-      AsyncStorage.setItem("authUser", JSON.stringify(updatedUser)).catch(
-        (err) => console.error("Failed to update user in storage:", err)
-      );
-
-      return updatedUser;
-    });
+    try {
+      await AsyncStorage.setItem("authUser", JSON.stringify(updatedUser));
+    } catch (err) {
+      console.error("Failed to update user in storage:", err);
+    }
   };
 
   const value = useMemo(
     () => ({
+      isLoggedIn,
       authUser,
       login,
       logout,
