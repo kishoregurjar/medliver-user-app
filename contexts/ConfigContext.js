@@ -74,7 +74,7 @@ export const ConfigProvider = ({ children }) => {
     if (!hasLoadedOnce && !loading) setHasLoadedOnce(true);
   }, [loading]);
 
-  const contextValue = useMemo(
+  const value = useMemo(
     () => ({
       config,
       loading,
@@ -85,9 +85,7 @@ export const ConfigProvider = ({ children }) => {
   );
 
   return (
-    <ConfigContext.Provider value={contextValue}>
-      {children}
-    </ConfigContext.Provider>
+    <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>
   );
 };
 

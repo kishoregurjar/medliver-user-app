@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import { useAppToast } from "@/hooks/useAppToast";
@@ -27,27 +34,28 @@ const formatLocation = (address) => ({
 export const LocationProvider = ({ children }) => {
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(false);
+  const intervalRef = useRef(null);
   const { showToast } = useAppToast();
 
   useEffect(() => {
     (async () => {
       const saved = await AsyncStorage.getItem("user-location");
       const parsedSaved = saved ? JSON.parse(saved) : null;
-      if (parsedSaved) {
-        setLocation(parsedSaved);
-      }
+      if (parsedSaved) setLocation(parsedSaved);
+
       fetchCurrentLocation(parsedSaved);
+      startPeriodicLocationCheck(); // ✅ automatic on mount
     })();
+
+    return () => stopPeriodicLocationCheck(); // ✅ cleanup on unmount
   }, []);
 
-  const fetchCurrentLocation = async (prevStored) => {
+  const fetchCurrentLocation = async (prevStored = null) => {
     try {
       setLoading(true);
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        showToast("error", "Permission denied for location");
-        return;
-      }
+      const { status } = await Location.getForegroundPermissionsAsync();
+
+      if (status !== "granted") return;
 
       const coords = await Location.getCurrentPositionAsync({});
       const [address] = await Location.reverseGeocodeAsync(coords.coords);
@@ -56,16 +64,47 @@ export const LocationProvider = ({ children }) => {
 
       const newLocation = formatLocation(address);
 
-      // Only update if different
-      await AsyncStorage.setItem("user-location", JSON.stringify(newLocation));
-      setLocation(newLocation);
       if (JSON.stringify(newLocation) !== JSON.stringify(prevStored)) {
+        await AsyncStorage.setItem(
+          "user-location",
+          JSON.stringify(newLocation)
+        );
+        setLocation(newLocation);
       }
     } catch (err) {
       console.error("Location error:", err);
       showToast("error", "Location fetch failed");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const startPeriodicLocationCheck = () => {
+    stopPeriodicLocationCheck(); // 🧼 clear any existing interval before starting new
+    intervalRef.current = setInterval(async () => {
+      try {
+        const { status } = await Location.getForegroundPermissionsAsync();
+        if (status !== "granted") {
+          const { status: newStatus } =
+            await Location.requestForegroundPermissionsAsync();
+          if (newStatus === "granted") {
+            await fetchCurrentLocation();
+          } else {
+            showToast("warning", "Location permission not granted");
+          }
+        } else {
+          await fetchCurrentLocation();
+        }
+      } catch (err) {
+        console.error("Periodic location check error:", err);
+      }
+    }, 10 * 60 * 1000); // ⏱️ 10 minutes
+  };
+
+  const stopPeriodicLocationCheck = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
   };
 
@@ -96,16 +135,21 @@ export const LocationProvider = ({ children }) => {
     setLocation(locationObject);
   };
 
+  const value = useMemo(
+    () => ({
+      location,
+      loading,
+      fetchCurrentLocation,
+      fetchLocationFromPincode,
+      updateLocation,
+      startPeriodicLocationCheck,
+      stopPeriodicLocationCheck,
+    }),
+    [location, loading]
+  );
+
   return (
-    <LocationContext.Provider
-      value={{
-        location,
-        loading,
-        fetchCurrentLocation,
-        fetchLocationFromPincode,
-        updateLocation,
-      }}
-    >
+    <LocationContext.Provider value={value}>
       {children}
     </LocationContext.Provider>
   );
