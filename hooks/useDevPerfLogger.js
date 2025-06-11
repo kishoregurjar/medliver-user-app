@@ -1,28 +1,22 @@
 // hooks/useDevPerfLogger.js
 import { useEffect, useRef } from "react";
+import { usePathname } from "expo-router";
 import { markPerfStart, markPerfEnd } from "@/utils/performanceUtils";
 
-export const useDevPerfLogger = (navigationRef) => {
-  const previousRouteName = useRef(null);
+export const useDevPerfLogger = () => {
+  const pathname = usePathname();
+  const prevPath = useRef(null);
 
   useEffect(() => {
-    const unsubscribe = navigationRef.current?.addListener("state", () => {
-      const currentRoute = navigationRef.current?.getCurrentRoute();
+    if (!pathname) return;    
 
-      if (currentRoute?.name && currentRoute.name !== previousRouteName.current) {
-        const label = `Screen: ${currentRoute.name}`;
+    // End previous mark
+    if (prevPath.current && prevPath.current !== pathname) {
+      markPerfEnd(`Screen: ${prevPath.current}`);
+    }
 
-        // End timing for previous screen
-        if (previousRouteName.current) {
-          markPerfEnd(`Screen: ${previousRouteName.current}`);
-        }
-
-        // Start timing for new screen
-        markPerfStart(label);
-        previousRouteName.current = currentRoute.name;
-      }
-    });
-
-    return unsubscribe;
-  }, [navigationRef]);
+    // Start new mark
+    markPerfStart(`Screen: ${pathname}`);
+    prevPath.current = pathname;
+  }, [pathname]);
 };
