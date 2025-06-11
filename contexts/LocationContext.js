@@ -6,6 +6,8 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { Alert, Linking, Platform } from "react-native"; // ⬅️ import this
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import { useAppToast } from "@/hooks/useAppToast";
@@ -45,25 +47,51 @@ export const LocationProvider = ({ children }) => {
       const parsedSaved = saved ? JSON.parse(saved) : null;
       if (parsedSaved) setLocation(parsedSaved);
 
-      fetchCurrentLocation(parsedSaved);
-      startPeriodicLocationCheck(); // ✅ automatic on mount
+      await fetchCurrentLocation(parsedSaved); // ⬅️ make this await
+      startPeriodicLocationCheck();
     })();
 
-    return () => stopPeriodicLocationCheck(); // ✅ cleanup on unmount
+    return () => stopPeriodicLocationCheck();
   }, []);
 
   const fetchCurrentLocation = async (prevStored = null) => {
     try {
       setLoading(true);
-      const { status } = await Location.getForegroundPermissionsAsync();
+      let { status, canAskAgain } =
+        await Location.getForegroundPermissionsAsync();
 
-      if (status !== "granted") return;
+      // 🔁 Prompt again if user can still be asked
+      if (status !== "granted" && canAskAgain) {
+        const permissionResponse =
+          await Location.requestForegroundPermissionsAsync();
+        status = permissionResponse.status;
+        canAskAgain = permissionResponse.canAskAgain;
+      }
+
+      // ❌ User denied permanently (Don't Ask Again on Android)
+      if (status !== "granted") {
+        if (!canAskAgain) {
+          Alert.alert(
+            "Permission Blocked",
+            "You've blocked location access. Please enable it from app settings.",
+            [
+              {
+                text: "Open Settings",
+                onPress: () => Linking.openSettings(),
+              },
+              { text: "Cancel", style: "cancel" },
+            ]
+          );
+        } else {
+          showToast("warning", "Location permission not granted");
+        }
+        return;
+      }
 
       const coords = await Location.getCurrentPositionAsync({});
       const [address] = await Location.reverseGeocodeAsync(coords.coords);
 
       if (!address) throw new Error("Could not reverse geocode address.");
-
       const newLocation = formatLocation(address);
 
       if (JSON.stringify(newLocation) !== JSON.stringify(prevStored)) {
