@@ -15,20 +15,47 @@ export const useCart = () => useContext(CartContext);
 
 const LOCAL_CART_KEY = "guest-cart";
 
+const usePrevious = (value) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+};
+
 export const CartProvider = ({ children }) => {
   const { authUser } = useAuthUser();
-  const isLoggedIn = !!authUser?.isAuthenticated;
+  const isLoggedIn = !!authUser?.isAuthenticated && !!authUser?.token;
+  const prevIsLoggedIn = usePrevious(isLoggedIn);
+
+  const [cartItems, setCartItems] = useState([]);
+  const [localQuantities, setLocalQuantities] = useState({});
+  const [lastQuantities, setLastQuantities] = useState({});
+  const timers = useRef({});
+  const [isSyncingCart, setIsSyncingCart] = useState(false);
 
   const { request: fetchCart, loading: isLoadingCart } = useAxios();
   const { request: updateQty } = useAxios();
   const { request: removeItemApi } = useAxios();
   const { request: addItemApi } = useAxios();
 
-  const [isSyncingCart, setIsSyncingCart] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
-  const [localQuantities, setLocalQuantities] = useState({});
-  const [lastQuantities, setLastQuantities] = useState({});
-  const timers = useRef({});
+  // Detect login/logout changes and act accordingly
+  useEffect(() => {
+    const handleCartSwitch = async () => {
+      if (isLoggedIn && !prevIsLoggedIn) {
+        // Logged in
+        await syncGuestCartToServer();
+        await loadCart();
+      } else if (!isLoggedIn && prevIsLoggedIn) {
+        // Logged out
+        await AsyncStorage.removeItem(LOCAL_CART_KEY); // Optional: clear previous session's guest cart
+        clearCart(); // reset in-memory
+        await loadLocalCart(); // load fresh guest cart
+      }
+    };
+
+    handleCartSwitch();
+  }, [isLoggedIn, prevIsLoggedIn]);
 
   // Load cart from server
   const loadCart = async () => {
