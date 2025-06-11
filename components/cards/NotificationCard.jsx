@@ -10,6 +10,9 @@ export default function NotificationCard({ item, onPress }) {
       className={`p-4 border-b border-gray-100 flex-row justify-between items-start ${
         !item.isRead ? "bg-gray-50" : ""
       }`}
+      activeOpacity={0.6}
+      // testID={`notification-card-${item._id}`}
+      // accessibilityLabel={`notification-card-${item._id}`}
     >
       <View className="flex-1 pr-2">
         <Text className="font-lexend-semibold text-black">{item.title}</Text>

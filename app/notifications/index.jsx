@@ -5,6 +5,7 @@ import {
   FlatList,
   TouchableOpacity,
   RefreshControl,
+  Alert,
 } from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
@@ -32,7 +33,6 @@ export default function NotificationsScreen() {
 
   console.log("NotificationsScreen - expoToken:", expoToken);
   console.log("NotificationsScreen - fcmToken:", fcmToken);
-  
 
   const onRefresh = async () => {
     await fetchNotifications();
@@ -50,20 +50,61 @@ export default function NotificationsScreen() {
     return true;
   });
 
-  const handleNotificationPress = async (notification) => {
-    // if (!notification.isRead) {
-    //   const success = await markAsRead(notification._id);
-    //   if (!success) return; // Optionally show error feedback
-    // }
-    router.push(
-      `${ROUTE_PATH.APP.NOTIFICATIONS.NOTIFICATION_DETAILS}?notificationId=${notification._id}`
-    );
-  };
+  const handleNotificationPress = (notification) => {
+    console.log("Notification pressed:", notification);
 
-  const renderSkeletons = () => {
-    return Array.from({ length: 6 }).map((_, index) => (
-      <SkeletonNotificationCard key={index} />
-    ));
+    // Dynamic navigation based on notificationType
+    switch (notification.notificationType) {
+      case "pharmacy_order":
+        router.push({
+          pathname: ROUTE_PATH.APP.ORDERS.ORDER_DETAILS,
+          params: { orderId: notification._id },
+        });
+        break;
+
+      case "pathology_order":
+        router.push({
+          pathname: ROUTE_PATH.APP.PATHOLOGY.ORDER_DETAILS,
+          params: { orderId: notification._id },
+        });
+        break;
+
+      case "prescription":
+        router.push({
+          pathname: ROUTE_PATH.APP.PRESCRIPTIONS.PRESCRIPTION_DETAILS,
+          params: { prescriptionId: notification._id },
+        });
+        break;
+
+      case "global_notification":
+        // Maybe go to a generic notifications details screen
+        router.push({
+          pathname: ROUTE_PATH.APP.NOTIFICATIONS.NOTIFICATION_DETAILS,
+          params: { notificationId: notification._id },
+        });
+        break;
+
+      default:
+        // fallback for unknown types
+        router.push({
+          pathname: ROUTE_PATH.APP.NOTIFICATIONS.NOTIFICATION_DETAILS,
+          params: { notificationId: notification._id },
+        });
+    }
+
+    // Show the alert
+    Alert.alert(
+      `Notification - ${notification.title}`,
+      `${notification.message}`,
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            console.log("OK Pressed");
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -106,13 +147,10 @@ export default function NotificationsScreen() {
         })}
       </View>
 
-      {/* Content */}
       {loading ? (
-        renderSkeletons()
-      ) : error ? (
-        <Text className="text-center text-red-500 font-lexend mt-10">
-          {error}
-        </Text>
+        Array.from({ length: 6 }).map((_, index) => (
+          <SkeletonNotificationCard key={index} />
+        ))
       ) : (
         <FlatList
           data={filteredNotifications}

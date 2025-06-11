@@ -53,7 +53,7 @@ export const AppRouteEnum = {
   },
   NOTIFICATIONS: {
     INDEX: "/notifications",
-    NOTIFICATION_DETAILS: "/notifications/details",
+    NOTIFICATION_DETAILS: "/notifications/[notificationId]",
   },
   PATHOLOGY: {
     INDEX: "/pathology",
