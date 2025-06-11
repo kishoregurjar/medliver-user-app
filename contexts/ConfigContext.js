@@ -4,6 +4,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  useMemo,
 } from "react";
 import useAxios from "@/hooks/useAxios";
 
@@ -19,6 +20,7 @@ export const ConfigProvider = ({ children }) => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   const { request } = useAxios();
 
@@ -52,6 +54,12 @@ export const ConfigProvider = ({ children }) => {
       }));
     } catch (err) {
       setError("Failed to load static config");
+      setConfig((prev) => ({
+        ...prev,
+        termsOfUse: "Unable to load Terms of Use.",
+        privacyPolicy: "Unable to load Privacy Policy.",
+      }));
+
       console.error("Config fetch error:", err);
     } finally {
       setLoading(false);
@@ -62,17 +70,22 @@ export const ConfigProvider = ({ children }) => {
     fetchConfig();
   }, []);
 
+  useEffect(() => {
+    if (!hasLoadedOnce && !loading) setHasLoadedOnce(true);
+  }, [loading]);
+
+  const contextValue = useMemo(
+    () => ({
+      config,
+      loading,
+      error,
+      refetch: fetchConfig,
+    }),
+    [config, loading, error, fetchConfig]
+  );
+
   return (
-    <ConfigContext.Provider
-      value={{
-        config,
-        loading,
-        error,
-        refetch: fetchConfig,
-        termsOfUse: config.termsOfUse,
-        privacyPolicy: config.privacyPolicy,
-      }}
-    >
+    <ConfigContext.Provider value={contextValue}>
       {children}
     </ConfigContext.Provider>
   );
