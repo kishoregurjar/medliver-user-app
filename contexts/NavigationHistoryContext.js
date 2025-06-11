@@ -15,7 +15,7 @@ const NavigationHistoryContext = createContext();
 
 export const useNavigationHistory = () => useContext(NavigationHistoryContext);
 
-const STORAGE_KEY = "app-navigation-history";
+const NAVIGATION_HISTORY_STORAGE_KEY = "app-navigation-history";
 const MAX_HISTORY = 5;
 
 export const NavigationHistoryProvider = ({ children }) => {
@@ -28,7 +28,7 @@ export const NavigationHistoryProvider = ({ children }) => {
   // Load stored history on mount
   useEffect(() => {
     (async () => {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
+      const stored = await AsyncStorage.getItem(NAVIGATION_HISTORY_STORAGE_KEY);
       if (stored) {
         setHistory(JSON.parse(stored));
       }
@@ -59,7 +59,7 @@ export const NavigationHistoryProvider = ({ children }) => {
 
     setHistory((prev) => {
       const updated = [...prev, entry].slice(-MAX_HISTORY);
-      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      AsyncStorage.setItem(NAVIGATION_HISTORY_STORAGE_KEY, JSON.stringify(updated));
       return updated;
     });
   }, [pathname, actionType, history]);
@@ -85,7 +85,7 @@ export const NavigationHistoryProvider = ({ children }) => {
   };
 
   const clearHistory = async () => {
-    await AsyncStorage.removeItem(STORAGE_KEY);
+    await AsyncStorage.removeItem(NAVIGATION_HISTORY_STORAGE_KEY);
     setHistory([]);
   };
 

@@ -31,6 +31,8 @@ const formatLocation = (address) => ({
   timezone: null,
 });
 
+const USER_LOCATION_STORAGE_KEY = "user-location";
+
 export const LocationProvider = ({ children }) => {
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -39,7 +41,7 @@ export const LocationProvider = ({ children }) => {
 
   useEffect(() => {
     (async () => {
-      const saved = await AsyncStorage.getItem("user-location");
+      const saved = await AsyncStorage.getItem(USER_LOCATION_STORAGE_KEY);
       const parsedSaved = saved ? JSON.parse(saved) : null;
       if (parsedSaved) setLocation(parsedSaved);
 
@@ -66,7 +68,7 @@ export const LocationProvider = ({ children }) => {
 
       if (JSON.stringify(newLocation) !== JSON.stringify(prevStored)) {
         await AsyncStorage.setItem(
-          "user-location",
+          USER_LOCATION_STORAGE_KEY,
           JSON.stringify(newLocation)
         );
         setLocation(newLocation);
@@ -131,7 +133,10 @@ export const LocationProvider = ({ children }) => {
   };
 
   const updateLocation = async (locationObject) => {
-    await AsyncStorage.setItem("user-location", JSON.stringify(locationObject));
+    await AsyncStorage.setItem(
+      USER_LOCATION_STORAGE_KEY,
+      JSON.stringify(locationObject)
+    );
     setLocation(locationObject);
   };
 

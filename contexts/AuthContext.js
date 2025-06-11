@@ -22,6 +22,8 @@ const defaultAuthUser = {
   token: null,
 };
 
+const AUTHENTICATION_STORAGE_KEY = "auth-user";
+
 export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [authUser, setAuthUser] = useState(defaultAuthUser);
@@ -30,7 +32,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const loadAuthUser = async () => {
       try {
-        const storedUser = await AsyncStorage.getItem("authUser");
+        const storedUser = await AsyncStorage.getItem(
+          AUTHENTICATION_STORAGE_KEY
+        );
         if (storedUser) {
           setAuthUser(JSON.parse(storedUser));
         }
@@ -61,7 +65,10 @@ export const AuthProvider = ({ children }) => {
     setAuthUser(userData);
 
     try {
-      await AsyncStorage.setItem("authUser", JSON.stringify(userData));
+      await AsyncStorage.setItem(
+        AUTHENTICATION_STORAGE_KEY,
+        JSON.stringify(userData)
+      );
       router.replace(ROUTE_PATH.APP.HOME);
     } catch (error) {
       console.error("Failed to save auth user:", error);
@@ -72,7 +79,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setAuthUser(defaultAuthUser);
     try {
-      await AsyncStorage.removeItem("authUser");
+      await AsyncStorage.removeItem(AUTHENTICATION_STORAGE_KEY);
       await AsyncStorage.clear();
     } catch (error) {
       console.error("Failed to remove auth user:", error);
@@ -91,7 +98,10 @@ export const AuthProvider = ({ children }) => {
     setAuthUser(updatedUser);
 
     try {
-      await AsyncStorage.setItem("authUser", JSON.stringify(updatedUser));
+      await AsyncStorage.setItem(
+        AUTHENTICATION_STORAGE_KEY,
+        JSON.stringify(updatedUser)
+      );
     } catch (err) {
       console.error("Failed to update user in storage:", err);
     }
