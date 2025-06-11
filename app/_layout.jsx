@@ -1,4 +1,4 @@
-import { Stack, usePathname } from "expo-router";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -32,7 +32,6 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import { LocationProvider } from "@/contexts/LocationContext";
 import { NavigationHistoryProvider } from "@/contexts/NavigationHistoryContext";
 import { ConfigProvider } from "@/contexts/ConfigContext";
-import { helpers } from "@/utils/helpers";
 
 import "./global.css";
 
@@ -40,7 +39,6 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const pathname = usePathname();
 
   const [fontsLoaded] = useFonts({
     LexendDeca_100Thin,
@@ -57,19 +55,6 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded) SplashScreen.hideAsync();
   }, [fontsLoaded]);
-
-  useEffect(() => {
-    if (__DEV__) {
-      console.log("[DEV] Current Pathname:", pathname);
-
-      (async () => {
-        console.log(
-          "[DEV] App Async Storage:",
-          await helpers.logAsyncStorage()
-        );
-      })();
-    }
-  }, [pathname]);
 
   if (!fontsLoaded) return null;
 
