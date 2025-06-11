@@ -33,12 +33,21 @@ import { LocationProvider } from "@/contexts/LocationContext";
 import { NavigationHistoryProvider } from "@/contexts/NavigationHistoryContext";
 import { ConfigProvider } from "@/contexts/ConfigContext";
 
+import { useRef } from "react";
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from "@react-navigation/native";
+import { useDevPerfLogger } from "@/hooks/useDevPerfLogger";
+
 import "./global.css";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const navigationRef = useNavigationContainerRef(); // ← Step 1
+  useDevPerfLogger(navigationRef); // ← Step 2
 
   const [fontsLoaded] = useFonts({
     LexendDeca_100Thin,
