@@ -31,7 +31,7 @@ export default function DiagnosticsOrderCard({ order }) {
   return (
     <Pressable
       onPress={handlePress}
-      className="bg-white rounded-2xl px-5 py-4 mb-4 shadow-sm border border-gray-100 active:opacity-90"
+      className="bg-white rounded-2xl p-4 border border-gray-200 active:opacity-90"
     >
       {/* Top Row: Title + Date */}
       <View className="flex-row justify-between items-center mb-3">

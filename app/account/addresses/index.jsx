@@ -10,6 +10,7 @@ import UserAddressCard from "@/components/cards/UserAddressCard";
 import CTAButton from "@/components/common/CTAButton";
 import ROUTE_PATH from "@/routes/route.constants";
 import { Ionicons } from "@expo/vector-icons";
+import LoadingDots from "@/components/common/LoadingDots";
 
 export default function MyAddressesScreen() {
   const [addresses, setAddresses] = useState([]);
@@ -126,10 +127,11 @@ export default function MyAddressesScreen() {
       />
 
       {loadingAddresses ? (
-        <View className="flex gap-2 my-4">
-          {Array.from({ length: 3 }, (_, index) => (
-            <SkeletonAddressCard key={`skeleton-${index}`} />
-          ))}
+        <View className="flex-1 justify-center items-center mt-10">
+          <LoadingDots
+            title={"Loading Addresses... "}
+            subtitle={"Please wait..."}
+          />
         </View>
       ) : addresses.length === 0 ? (
         <View className="flex-1 items-center justify-center">

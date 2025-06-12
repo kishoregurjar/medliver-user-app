@@ -25,7 +25,7 @@ export default function OrderCard({ order }) {
   return (
     <Pressable
       onPress={handlePress}
-      className="bg-white rounded-2xl p-4 mb-4 border border-gray-200 active:opacity-80"
+      className="bg-white rounded-2xl p-4 border border-gray-200 active:opacity-80"
     >
       {/* Order Header */}
       <View className="flex-row justify-between items-center mb-3">

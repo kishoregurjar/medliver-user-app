@@ -95,13 +95,13 @@ export default function MyDiagnosticsScreen() {
   return (
     <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="My Diagnostics" />
-      <View className="px-4">
+      <View>
         {/* Search Bar */}
         <TextInput
           placeholder="Search diagnostics..."
           value={search}
           onChangeText={handleSearchChange}
-          className="my-4 px-4 py-4 bg-white rounded-xl border border-background-soft text-gray-700"
+          className="my-4 px-4 py-4 bg-white rounded-2xl border border-background-soft text-gray-700"
         />
       </View>
 
@@ -127,9 +127,8 @@ export default function MyDiagnosticsScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 32,
-          gap: 12,
-          paddingHorizontal: 16,
         }}
+        contentContainerClassName="bg-white p-4 rounded-2xl gap-4"
         ListEmptyComponent={
           !initialLoading &&
           orders.length === 0 && (

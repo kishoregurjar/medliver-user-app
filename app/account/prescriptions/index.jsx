@@ -17,6 +17,7 @@ import UserPrescriptionCard from "@/components/cards/UserPrescriptionCard";
 import { useRouter } from "expo-router";
 import debounce from "lodash.debounce";
 import CTAButton from "@/components/common/CTAButton";
+import LoadingDots from "@/components/common/LoadingDots";
 
 export default function MyPrescriptionScreen() {
   const [prescriptions, setPrescriptions] = useState([]);
@@ -122,9 +123,12 @@ export default function MyPrescriptionScreen() {
         />
 
         {initialLoading ? (
-          Array.from({ length: 3 }).map((_, index) => (
-            <SkeletonPrescriptionCard key={index} />
-          ))
+          <View className="flex-1 justify-center items-center mt-10">
+            <LoadingDots
+              title={"Loading Prescriptions... "}
+              subtitle={"Please wait..."}
+            />
+          </View>
         ) : prescriptions.length === 0 ? (
           <View className="flex-1 justify-center items-center mt-20">
             <Ionicons name="document-text-outline" size={64} color="#ccc" />
@@ -152,6 +156,7 @@ export default function MyPrescriptionScreen() {
             }
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 32 }}
+            contentContainerClassName="bg-white p-4 rounded-2xl gap-4"
             ListFooterComponent={
               currentPage <= totalPages && prescriptions.length > 0 ? (
                 <CTAButton

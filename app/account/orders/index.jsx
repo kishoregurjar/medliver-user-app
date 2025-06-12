@@ -137,8 +137,8 @@ export default function MyOrdersScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingBottom: 32,
-            gap: 12,
           }}
+          contentContainerClassName="bg-white p-4 rounded-2xl gap-4"
           ListFooterComponent={
             !isSearching &&
             !initialLoading &&

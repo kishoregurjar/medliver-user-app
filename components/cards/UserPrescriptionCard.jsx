@@ -21,7 +21,7 @@ export default function UserPrescriptionCard({ item, onPress, onDelete }) {
   const prescriptionImage = item.prescriptions?.[0]?.path;
 
   return (
-    <View className="bg-white p-4 rounded-2xl mb-4 border border-gray-200">
+    <View className="bg-white p-4 rounded-2xl border border-gray-200">
       {/* Top Row: ID + Status */}
       <View className="flex-row justify-between items-start">
         <View className="flex-1">
