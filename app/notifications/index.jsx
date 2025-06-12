@@ -14,6 +14,7 @@ import { useNotification } from "@/contexts/NotificationContext";
 import NotificationCard from "@/components/cards/NotificationCard";
 import SkeletonNotificationCard from "@/components/skeletons/SkeletonNotificationCard";
 import ROUTE_PATH from "@/routes/route.constants";
+import LoadingDots from "@/components/common/LoadingDots";
 
 const tabs = ["All", "Unread", "Read"];
 
@@ -144,9 +145,9 @@ export default function NotificationsScreen() {
       </View>
 
       {loading ? (
-        Array.from({ length: 6 }).map((_, index) => (
-          <SkeletonNotificationCard key={index} />
-        ))
+        <View className="flex-1 justify-center items-center mt-10">
+          <LoadingDots title={"Loading notifications..."} subtitle={"Please wait..."} />
+        </View>
       ) : (
         <FlatList
           data={filteredNotifications}
