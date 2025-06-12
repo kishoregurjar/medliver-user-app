@@ -1,105 +1,146 @@
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 
-const LOG_FILENAME = "perf-log.txt";
-const CSV_FILENAME = "perf-log.csv";
-
-const perfLogFile = FileSystem.documentDirectory + LOG_FILENAME;
-const perfCSVFile = FileSystem.documentDirectory + CSV_FILENAME;
+const perfLogFile = FileSystem.documentDirectory + "perf-log.json";
+const perfCSVFile = FileSystem.documentDirectory + "perf-log.csv";
 
 let perfMarks = {};
 
-// Start perf timer
+// Format timestamp as `YYYY-MM-DD HH:mm:ss`
+const formatTimestamp = () => {
+  const now = new Date();
+  return now.toISOString().replace("T", " ").split(".")[0];
+};
+
+// Read JSON file (or return empty object)
+const readLogsJSON = async () => {
+  try {
+    const info = await FileSystem.getInfoAsync(perfLogFile);
+    if (!info.exists) return {};
+    const content = await FileSystem.readAsStringAsync(perfLogFile);
+    return JSON.parse(content);
+  } catch {
+    return {};
+  }
+};
+
+// Save updated JSON log
+const writeLogsJSON = async (data) => {
+  await FileSystem.writeAsStringAsync(
+    perfLogFile,
+    JSON.stringify(data, null, 2)
+  );
+};
+
 export const markPerfStart = (label) => {
   perfMarks[label] = performance.now();
 };
 
-// End perf timer and log
 export const markPerfEnd = async (label, extra = {}) => {
   const end = performance.now();
   const start = perfMarks[label];
   if (!start) return;
 
   const duration = end - start;
+  const timestamp = formatTimestamp();
   const extraInfo = Object.entries(extra)
     .map(([key, val]) => `${key}: ${val}`)
     .join(", ");
 
-  const message = `[🟢 PERF] ${label}: ${duration.toFixed(2)} ms${
-    extraInfo ? ` (${extraInfo})` : ""
-  }\n`;
+  const logEntry = {
+    label,
+    duration: +duration.toFixed(2),
+    timestamp,
+    extra: extraInfo || null,
+  };
 
-  console.log(message);
-  await FileSystem.writeAsStringAsync(perfLogFile, message, { append: true });
+  const logs = await readLogsJSON();
+
+  if (!logs[label]) logs[label] = [];
+  logs[label].unshift(logEntry); // Add newest on top
+
+  if (logs[label].length > 5) logs[label] = logs[label].slice(0, 5); // Keep max 5
+
+  await writeLogsJSON(logs);
+
+  console.log(
+    `[🟢 PERF] ${label}: ${logEntry.duration} ms at ${timestamp}${
+      extraInfo ? ` (${extraInfo})` : ""
+    }`
+  );
+
   delete perfMarks[label];
 };
 
-// Export all logs to console
 export const exportPerfLogsToConsole = async () => {
-  try {
-    const logs = await getAllPerfLogs();
-    console.log("[📦 EXPORTING PERF LOGS]\n" + logs);
-  } catch (e) {
-    console.error("❌ Error reading logs for console export:", e);
-  }
-};
-
-// Export logs to CSV format
-export const exportPerfLogsToCSV = async () => {
-  try {
-    const logs = await getAllPerfLogs();
-    const lines = logs
-      .trim()
-      .split("\n")
-      .map((line) => line.replace("[🟢 PERF] ", "").trim());
-
-    const csv = lines.map((line) => {
-      const [label, durationWithExtra] = line.split(":");
-      const [duration, ...extra] = durationWithExtra.trim().split(" ");
-      return `${label},${duration.replace("ms", "")},${extra.join(" ")}`;
+  const logs = await readLogsJSON();
+  console.log("[📦 EXPORTING PERF LOGS]");
+  Object.entries(logs).forEach(([label, entries]) => {
+    console.log(`\n📌 ${label}`);
+    entries.forEach((entry, index) => {
+      console.log(
+        `#${index + 1} ➤ ${entry.duration} ms @ ${entry.timestamp}${
+          entry.extra ? ` (${entry.extra})` : ""
+        }`
+      );
     });
-
-    const csvContent = "Label,Duration (ms),Extra\n" + csv.join("\n");
-
-    await FileSystem.writeAsStringAsync(perfCSVFile, csvContent);
-    console.log("✅ CSV exported to:", perfCSVFile);
-    return perfCSVFile;
-  } catch (e) {
-    console.error("❌ Error exporting CSV:", e);
-  }
+  });
 };
 
-// Clear logs
+export const exportPerfLogsToCSV = async () => {
+  const logs = await readLogsJSON();
+
+  const csvLines = [["Label", "Duration (ms)", "Timestamp", "Extra"]];
+  Object.entries(logs).forEach(([label, entries]) => {
+    entries.forEach((entry) => {
+      csvLines.push([
+        label,
+        entry.duration,
+        entry.timestamp,
+        entry.extra || "",
+      ]);
+    });
+  });
+
+  const csvContent = csvLines.map((line) => line.join(",")).join("\n");
+  await FileSystem.writeAsStringAsync(perfCSVFile, csvContent);
+  console.log("✅ CSV exported to:", perfCSVFile);
+  return perfCSVFile;
+};
+
 export const clearPerfLogs = async () => {
-  await FileSystem.writeAsStringAsync(perfLogFile, "");
+  await FileSystem.writeAsStringAsync(perfLogFile, "{}");
 };
 
-// Read logs
 export const getAllPerfLogs = async () => {
-  try {
-    const fileInfo = await FileSystem.getInfoAsync(perfLogFile);
-    if (!fileInfo.exists) return "No logs yet.";
-    return await FileSystem.readAsStringAsync(perfLogFile);
-  } catch (e) {
-    console.error("❌ Failed to read logs:", e);
-    return "Error reading logs.";
-  }
+  const logs = await readLogsJSON();
+  let output = "";
+
+  Object.entries(logs).forEach(([label, entries]) => {
+    output += `📂 ${label}\n`;
+    entries.forEach((entry, i) => {
+      output += `#${i + 1} ➤ ${entry.duration} ms @ ${entry.timestamp}${
+        entry.extra ? ` (${entry.extra})` : ""
+      }\n`;
+    });
+    output += "\n";
+  });
+
+  return output || "No logs yet.";
 };
 
-// Optional: Share CSV file using system UI
 export const shareCSVFile = async () => {
   const uri = await exportPerfLogsToCSV();
   if (await Sharing.isAvailableAsync()) {
     await Sharing.shareAsync(uri, { mimeType: "text/csv" });
-  } else {
-    console.warn("Sharing not available on this device");
   }
 };
 
-// Optional: Share TXT file using system UI
 export const shareTxtFile = async () => {
-  const fileInfo = await FileSystem.getInfoAsync(perfLogFile);
-  if (fileInfo.exists && (await Sharing.isAvailableAsync())) {
-    await Sharing.shareAsync(perfLogFile, { mimeType: "text/plain" });
+  const txtPath = FileSystem.documentDirectory + "perf-log.txt";
+  const content = await getAllPerfLogs();
+  await FileSystem.writeAsStringAsync(txtPath, content);
+  if (await Sharing.isAvailableAsync()) {
+    await Sharing.shareAsync(txtPath, { mimeType: "text/plain" });
   }
 };

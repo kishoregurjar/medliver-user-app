@@ -75,6 +75,7 @@
     "expo-location": "~18.1.5",
     "expo-notifications": "~0.31.2",
     "expo-router": "~5.0.7",
+    "expo-sharing": "~13.1.5",
     "expo-splash-screen": "~0.30.8",
     "expo-status-bar": "~2.2.3",
     "expo-symbols": "~0.4.4",
@@ -90,6 +91,7 @@
     "react-dom": "19.0.0",
     "react-hook-form": "^7.56.1",
     "react-native": "0.79.2",
+    "react-native-chart-kit": "^6.12.0",
     "react-native-css-interop": "^0.1.22",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-modal": "^14.0.0-rc.1",
@@ -99,13 +101,13 @@
     "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.10.0",
-    "react-native-svg": "15.11.2",
+    "react-native-svg": "^15.11.2",
     "react-native-uuid": "^2.0.3",
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
     "tailwindcss": "^3.4.17",
     "yup": "^1.6.1",
-    "expo-sharing": "~13.1.5"
+    "expo-print": "~14.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
