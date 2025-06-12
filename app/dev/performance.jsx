@@ -99,6 +99,13 @@ export default function PerfDevScreen() {
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
+              ListEmptyComponent={() => (
+                <View className="py-10 items-center justify-center">
+                  <Text className="text-xs text-gray-600 font-lexend">
+                    No logs found.
+                  </Text>
+                </View>
+              )}
             />
           )}
         </View>
