@@ -1,16 +1,12 @@
 import React, { useMemo } from "react";
-import {
-  ScrollView,
-  View,
-  useWindowDimensions,
-  ActivityIndicator,
-  Text,
-} from "react-native";
+import { ScrollView, View, useWindowDimensions, Text } from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useConfig } from "@/contexts/ConfigContext";
 import RenderHTML from "react-native-render-html";
+import LoadingDots from "@/components/common/LoadingDots";
+import { defaultHTMLTagsStyles } from "@/utils/htmlStyles";
 
 const PrivacyPolicyScreen = () => {
   const insets = useSafeAreaInsets();
@@ -31,20 +27,22 @@ const PrivacyPolicyScreen = () => {
 
       {isLoading ? (
         <View className="flex-1 justify-center items-center mt-10">
-          <ActivityIndicator size="large" color="#4F46E5" />
-          <Text className="mt-2 text-text-muted font-lexend-medium">
-            Loading policy...
-          </Text>
+          <LoadingDots title="Loading..." subtitle="Please wait..." />
         </View>
       ) : (
         <ScrollView
-          className="mt-4 px-4"
+          className="flex-1 mt-4"
           contentContainerStyle={{
-            paddingBottom: insets.bottom + 24,
+            paddingBottom: insets.bottom + 20,
+            paddingHorizontal: 16,
           }}
           showsVerticalScrollIndicator={false}
         >
-          <RenderHTML contentWidth={width} source={{ html: htmlContent }} />
+          <RenderHTML
+            contentWidth={width}
+            source={{ html: htmlContent }}
+            tagsStyles={defaultHTMLTagsStyles}
+          />
         </ScrollView>
       )}
     </AppLayout>
