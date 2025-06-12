@@ -7,8 +7,8 @@ export default function NotificationCard({ item, onPress }) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={`p-4 border-b border-gray-100 flex-row justify-between items-start ${
-        !item.isRead ? "bg-gray-50" : ""
+      className={`p-4 flex-row justify-between items-start rounded-lg ${
+        !item.isRead ? "bg-gray-100" : ""
       }`}
       activeOpacity={0.6}
       // testID={`notification-card-${item._id}`}

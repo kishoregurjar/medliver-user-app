@@ -17,7 +17,6 @@ import { useAuthUser } from "./AuthContext";
 const NotificationContext = createContext();
 export const useNotification = () => useContext(NotificationContext);
 
-// 🔧 Global Notification Handler (Required by Expo)
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -36,7 +35,6 @@ export const NotificationProvider = ({ children }) => {
   const { authUser } = useAuthUser();
   const { request } = useAxios();
 
-  // ✅ Register push tokens (runs for ALL users)
   const registerPushTokens = useCallback(async () => {
     if (!Device.isDevice) {
       Alert.alert("Push notifications require a physical device.");
@@ -63,29 +61,27 @@ export const NotificationProvider = ({ children }) => {
           projectId: Constants.expoConfig.extra?.eas?.projectId,
         }
       );
-      setExpoToken(expoPushToken);
 
+      setExpoToken(expoPushToken);
       if (__DEV__) console.log("[DEV] Expo Push Token:", expoPushToken);
 
-      // FCM (Android)
+      let _fcmToken = null;
       if (Platform.OS === "android") {
         const fcmData = await Notifications.getDevicePushTokenAsync({
           type: "fcm",
         });
-        setFcmToken(fcmData?.data || null);
-        if (__DEV__) console.log("[DEV] FCM Token:", fcmData?.data);
-      } else {
-        setFcmToken(null);
+        _fcmToken = fcmData?.data || null;
+        setFcmToken(_fcmToken);
+        if (__DEV__) console.log("[DEV] FCM Token:", _fcmToken);
       }
 
-      // Send token to server if user is authenticated
       if (authUser?.isAuthenticated) {
         await request({
           method: "POST",
           url: "/user/save-device-token",
           data: {
             expoToken: expoPushToken,
-            fcmToken: Platform.OS === "android" ? fcmToken : null,
+            fcmToken: Platform.OS === "android" ? _fcmToken : null,
             platform: Platform.OS,
           },
           authRequired: true,
@@ -94,7 +90,6 @@ export const NotificationProvider = ({ children }) => {
         if (__DEV__) console.log("[DEV] Device tokens sent to server");
       }
 
-      // Setup Android channel
       if (Platform.OS === "android") {
         await Notifications.setNotificationChannelAsync("default", {
           name: "default",
@@ -104,10 +99,10 @@ export const NotificationProvider = ({ children }) => {
     } catch (err) {
       console.error("❌ Error registering push tokens:", err);
     }
-  }, [authUser?.isAuthenticated, request, fcmToken]);
+  }, [authUser?.isAuthenticated, request]);
 
-  // ✅ Fetch notifications (runs for ALL users — backend must support guest mode)
   const fetchNotifications = useCallback(async () => {
+    if (loading) return; // prevent overlapping fetch
     setLoading(true);
     setError(null);
 
@@ -137,9 +132,8 @@ export const NotificationProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [request, authUser?.isAuthenticated]);
+  }, [request, authUser?.isAuthenticated, loading]);
 
-  // ✅ Mark notification as read
   const markAsRead = useCallback(
     async (notificationId) => {
       if (!authUser?.isAuthenticated) return false;
@@ -166,19 +160,18 @@ export const NotificationProvider = ({ children }) => {
     [request, authUser?.isAuthenticated]
   );
 
-  // ✅ Unread count memoized
   const unreadCount = useMemo(
     () => notifications.filter((n) => !n.isRead).length,
     [notifications]
   );
 
-  // ✅ Run once on mount (no deps)
+  // Run on mount
   useEffect(() => {
     registerPushTokens();
     fetchNotifications();
   }, []);
 
-  // ✅ Re-fetch notifications after login
+  // Re-fetch on login
   useEffect(() => {
     if (authUser?.isAuthenticated) {
       fetchNotifications();
@@ -186,7 +179,7 @@ export const NotificationProvider = ({ children }) => {
     }
   }, [authUser?.isAuthenticated]);
 
-  // ✅ Foreground notification listener
+  // Foreground notifications
   useEffect(() => {
     const subscription = Notifications.addNotificationReceivedListener(
       (notification) => {
@@ -202,7 +195,7 @@ export const NotificationProvider = ({ children }) => {
     return () => subscription.remove();
   }, [fetchNotifications]);
 
-  // ✅ Background notification tap
+  // Background notification taps
   useEffect(() => {
     const responseSubscription =
       Notifications.addNotificationResponseReceivedListener((response) => {
@@ -212,19 +205,30 @@ export const NotificationProvider = ({ children }) => {
     return () => responseSubscription.remove();
   }, [fetchNotifications]);
 
+  const contextValue = useMemo(() => {
+    return {
+      notifications,
+      fetchNotifications,
+      markAsRead,
+      unreadCount,
+      loading,
+      error,
+      expoToken,
+      fcmToken,
+    };
+  }, [
+    notifications,
+    fetchNotifications,
+    markAsRead,
+    unreadCount,
+    loading,
+    error,
+    expoToken,
+    fcmToken,
+  ]);
+
   return (
-    <NotificationContext.Provider
-      value={{
-        notifications,
-        fetchNotifications,
-        markAsRead,
-        unreadCount,
-        loading,
-        error,
-        expoToken,
-        fcmToken,
-      }}
-    >
+    <NotificationContext.Provider value={contextValue}>
       {children}
     </NotificationContext.Provider>
   );

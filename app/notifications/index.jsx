@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -31,81 +31,77 @@ export default function NotificationsScreen() {
     fcmToken,
   } = useNotification();
 
-  console.log("NotificationsScreen - expoToken:", expoToken);
-  console.log("NotificationsScreen - fcmToken:", fcmToken);
+  if (__DEV__) {
+    console.log("NotificationsScreen - expoToken:", expoToken);
+    console.log("NotificationsScreen - fcmToken:", fcmToken);
+  }
 
   const onRefresh = async () => {
     await fetchNotifications();
   };
 
-  const counts = {
-    All: notifications.length,
-    Unread: notifications.filter((n) => !n.isRead).length,
-    Read: notifications.filter((n) => n.isRead).length,
-  };
+  const counts = useMemo(
+    () => ({
+      All: notifications.length,
+      Unread: notifications.filter((n) => !n.isRead).length,
+      Read: notifications.filter((n) => n.isRead).length,
+    }),
+    [notifications]
+  );
 
-  const filteredNotifications = notifications.filter((n) => {
-    if (activeTab === "Unread") return !n.isRead;
-    if (activeTab === "Read") return n.isRead;
-    return true;
-  });
+  const filteredNotifications = useMemo(() => {
+    if (activeTab === "Unread") return notifications.filter((n) => !n.isRead);
+    if (activeTab === "Read") return notifications.filter((n) => n.isRead);
+    return notifications;
+  }, [notifications, activeTab]);
 
-  const handleNotificationPress = (notification) => {
-    console.log("Notification pressed:", notification);
+  const handleNotificationPress = useCallback(
+    (notification) => {
+      if (__DEV__) console.log("Notification pressed:", notification);
 
-    // Dynamic navigation based on notificationType
-    switch (notification.notificationType) {
-      case "pharmacy_order":
-        router.push({
-          pathname: ROUTE_PATH.APP.ORDERS.ORDER_DETAILS,
-          params: { orderId: notification._id },
-        });
-        break;
+      // Dynamic navigation
+      const navigate = (pathname, params) => router.push({ pathname, params });
 
-      case "pathology_order":
-        router.push({
-          pathname: ROUTE_PATH.APP.PATHOLOGY.ORDER_DETAILS,
-          params: { orderId: notification._id },
-        });
-        break;
+      switch (notification.notificationType) {
+        case "pharmacy_order":
+          navigate(ROUTE_PATH.APP.ORDERS.ORDER_DETAILS, {
+            orderId: notification._id,
+          });
+          break;
+        case "pathology_order":
+          navigate(ROUTE_PATH.APP.PATHOLOGY.ORDER_DETAILS, {
+            orderId: notification._id,
+          });
+          break;
+        case "prescription":
+          navigate(ROUTE_PATH.APP.PRESCRIPTIONS.PRESCRIPTION_DETAILS, {
+            prescriptionId: notification._id,
+          });
+          break;
+        default:
+          navigate(ROUTE_PATH.APP.NOTIFICATIONS.NOTIFICATION_DETAILS, {
+            notificationId: notification._id,
+          });
+      }
 
-      case "prescription":
-        router.push({
-          pathname: ROUTE_PATH.APP.PRESCRIPTIONS.PRESCRIPTION_DETAILS,
-          params: { prescriptionId: notification._id },
-        });
-        break;
+      Alert.alert(
+        `Notification - ${notification.title}`,
+        notification.message,
+        [{ text: "OK", onPress: () => {} }]
+      );
+    },
+    [router]
+  );
 
-      case "global_notification":
-        // Maybe go to a generic notifications details screen
-        router.push({
-          pathname: ROUTE_PATH.APP.NOTIFICATIONS.NOTIFICATION_DETAILS,
-          params: { notificationId: notification._id },
-        });
-        break;
-
-      default:
-        // fallback for unknown types
-        router.push({
-          pathname: ROUTE_PATH.APP.NOTIFICATIONS.NOTIFICATION_DETAILS,
-          params: { notificationId: notification._id },
-        });
-    }
-
-    // Show the alert
-    Alert.alert(
-      `Notification - ${notification.title}`,
-      `${notification.message}`,
-      [
-        {
-          text: "OK",
-          onPress: () => {
-            console.log("OK Pressed");
-          },
-        },
-      ]
-    );
-  };
+  const renderItem = useCallback(
+    ({ item }) => (
+      <NotificationCard
+        item={item}
+        onPress={() => handleNotificationPress(item)}
+      />
+    ),
+    [handleNotificationPress]
+  );
 
   return (
     <AppLayout scroll={false}>
@@ -158,12 +154,12 @@ export default function NotificationsScreen() {
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={onRefresh} />
           }
-          renderItem={({ item }) => (
-            <NotificationCard
-              item={item}
-              onPress={() => handleNotificationPress(item)}
-            />
-          )}
+          renderItem={renderItem}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          removeClippedSubviews
+          contentContainerClassName="flex-1 bg-white p-4 rounded-xl gap-2"
           ListEmptyComponent={
             <Text className="text-center text-text-muted font-lexend mt-10">
               No {activeTab.toLowerCase()} notifications.
