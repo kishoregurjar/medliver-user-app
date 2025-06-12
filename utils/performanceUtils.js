@@ -41,47 +41,60 @@ export const markPerfStart = (label) => {
   perfMarks[label] = performance.now();
 };
 
-const getDeviceExtraInfo = async () => {
-  const result = {
-    device: Device.modelName ?? "Unknown Device",
+export const getDeviceExtraInfo = async () => {
+  const info = {
+    device: Device.modelName ?? "Unknown",
+    brand: Device.brand ?? "Unknown",
+    manufacturer: Device.manufacturer ?? "Unknown",
     os: Device.osName ?? Platform.OS,
     osVersion: Device.osVersion ?? "N/A",
     platform: Platform.OS,
-    batteryLevel: "Unavailable",
-    networkType: "Unavailable",
-    isForeground: false,
+    deviceYearClass: Device.deviceYearClass ?? "N/A",
+    totalMemory: Device.totalMemory ?? "N/A",
+    isPhysicalDevice: Device.isDevice ?? false,
+    appName: Application.applicationName ?? "UnknownApp",
+    appVersion: Application.nativeApplicationVersion ?? "N/A",
+    buildNumber: Application.nativeBuildVersion ?? "N/A",
+    appOwnership: Application.applicationName || "Unknown", // fallback if needed
+    batteryLevel: "N/A",
+    powerMode: "N/A",
+    networkType: "N/A",
+    isConnected: "N/A",
+    isInternetReachable: "N/A",
+    isForeground: Application.applicationId,
   };
 
-  // Fetch battery and network info in parallel
   try {
-    const [battery, network] = await Promise.allSettled([
-      Battery.getBatteryLevelAsync(),
-      Network.getNetworkStateAsync(),
-    ]);
+    const [batteryLevelRes, powerStateRes, networkStateRes, appInfoRes] =
+      await Promise.allSettled([
+        Battery.getBatteryLevelAsync(),
+        Battery.getPowerStateAsync(),
+        Network.getNetworkStateAsync(),
+      ]);
 
-    if (battery.status === "fulfilled" && battery.value != null) {
-      result.batteryLevel = (battery.value * 100).toFixed(0) + "%";
-    } else {
-      console.warn("❌ Battery error:", battery.reason);
+    if (
+      batteryLevelRes.status === "fulfilled" &&
+      batteryLevelRes.value != null
+    ) {
+      info.batteryLevel = (batteryLevelRes.value * 100).toFixed(0) + "%";
     }
 
-    if (network.status === "fulfilled" && network.value) {
-      result.networkType = network.value.type ?? "Unavailable";
-    } else {
-      console.warn("❌ Network error:", network.reason);
+    if (powerStateRes.status === "fulfilled") {
+      const state = powerStateRes.value;
+      info.powerMode = state.lowPowerMode ? "low" : "normal";
+    }
+
+    if (networkStateRes.status === "fulfilled") {
+      const net = networkStateRes.value;
+      info.networkType = net.type;
+      info.isConnected = net.isConnected;
+      info.isInternetReachable = net.isInternetReachable;
     }
   } catch (e) {
-    console.warn("❌ Unexpected error during battery/network fetch:", e);
+    console.warn("⚠️ Error gathering device extra info:", e);
   }
 
-  // Foreground state
-  try {
-    result.isForeground = Application.applicationState === "foreground";
-  } catch (e) {
-    console.warn("❌ Foreground state error:", e);
-  }
-
-  return result;
+  return info;
 };
 
 export const markPerfEnd = async (label, extra = {}) => {
@@ -92,8 +105,6 @@ export const markPerfEnd = async (label, extra = {}) => {
   const duration = end - start;
   const timestamp = formatTimestamp();
   const deviceInfo = await getDeviceExtraInfo();
-
-  console.log(deviceInfo, "deviceInfo");
 
   const combinedExtra = { ...extra, ...deviceInfo };
 
