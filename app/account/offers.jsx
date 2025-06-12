@@ -23,7 +23,7 @@ const OfferCard = React.memo(({ offer, onPress }) => (
   <TouchableOpacity
     onPress={() => onPress(offer)}
     activeOpacity={0.8}
-    className="p-4 mb-4 border-b border-text-muted/50"
+    className="p-4 mb-4 border-b border-gray-200"
   >
     <View className="flex-row items-start">
       <Image
@@ -170,6 +170,7 @@ const OffersScreen = () => {
                 No active offers available.
               </Text>
             }
+            contentContainerClassName="bg-white p-4 rounded-xl gap-2"
             ListFooterComponent={renderFooter}
             showsVerticalScrollIndicator={false}
           />
