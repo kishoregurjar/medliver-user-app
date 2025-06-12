@@ -21,12 +21,21 @@ export default function PerfDevScreen() {
 
   const exportCSVAndNotify = async () => {
     const path = await exportPerfLogsToCSV();
-    Alert.alert("CSV Exported", `File saved at:\n${path}`);
+    Alert.alert("✅ CSV Exported", `File saved at:\n${path}`);
   };
 
   useEffect(() => {
     fetchLogs();
   }, []);
+
+  const ActionButton = ({ label, onPress, className }) => (
+    <TouchableOpacity
+      onPress={onPress}
+      className={`px-4 py-3 rounded-xl mb-2 ${className}`}
+    >
+      <Text className="text-center font-lexend text-sm">{label}</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <AppLayout scroll={false}>
@@ -37,41 +46,76 @@ export default function PerfDevScreen() {
           Performance Logs
         </Text>
 
-        <TouchableOpacity onPress={fetchLogs} className="mb-2">
-          <Text className="text-blue-600 font-lexend">🔄 Refresh Logs</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => {
-            clearPerfLogs();
-            setLogs("");
-          }}
-          className="mb-2"
-        >
-          <Text className="text-red-600 font-lexend">🗑️ Clear Logs</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={exportCSVAndNotify} className="mb-2">
-          <Text className="text-green-600 font-lexend">📁 Export to CSV</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={exportPerfLogsToConsole} className="mb-2">
-          <Text className="text-indigo-600 font-lexend">
-            🖨️ Export to Console
+        {/* Logs Actions */}
+        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm">
+          <Text className="text-sm font-lexend-bold mb-2 text-gray-800">
+            🔄 Log Actions
           </Text>
-        </TouchableOpacity>
 
-        <TouchableOpacity onPress={shareCSVFile} className="mb-2">
-          <Text className="text-yellow-600 font-lexend">📤 Share CSV File</Text>
-        </TouchableOpacity>
+          <ActionButton
+            label="🔁 Refresh Logs"
+            onPress={fetchLogs}
+            className="bg-blue-100 text-blue-700"
+          />
 
-        <TouchableOpacity onPress={shareTxtFile} className="mb-4">
-          <Text className="text-purple-600 font-lexend">📤 Share TXT File</Text>
-        </TouchableOpacity>
+          <ActionButton
+            label="🗑️ Clear Logs"
+            onPress={() => {
+              clearPerfLogs();
+              setLogs("");
+            }}
+            className="bg-red-100 text-red-700"
+          />
+        </View>
 
-        <Text className="text-xs whitespace-pre-line text-gray-800 font-lexend">
-          {logs}
+        {/* Export Actions */}
+        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm">
+          <Text className="text-sm font-lexend-bold mb-2 text-gray-800">
+            📁 Export Options
+          </Text>
+
+          <ActionButton
+            label="🧾 Export to Console"
+            onPress={exportPerfLogsToConsole}
+            className="bg-indigo-100 text-indigo-700"
+          />
+
+          <ActionButton
+            label="📊 Export to CSV"
+            onPress={exportCSVAndNotify}
+            className="bg-green-100 text-green-700"
+          />
+        </View>
+
+        {/* Share Actions */}
+        <View className="bg-white rounded-xl p-4 mb-4 shadow-sm">
+          <Text className="text-sm font-lexend-bold mb-2 text-gray-800">
+            📤 Share Logs
+          </Text>
+
+          <ActionButton
+            label="📄 Share CSV File"
+            onPress={shareCSVFile}
+            className="bg-yellow-100 text-yellow-700"
+          />
+
+          <ActionButton
+            label="📝 Share TXT File"
+            onPress={shareTxtFile}
+            className="bg-purple-100 text-purple-700"
+          />
+        </View>
+
+        {/* Logs Display */}
+        <Text className="text-sm font-lexend-bold mb-1 text-gray-700">
+          🧾 Logs Output:
         </Text>
+
+        <ScrollView className="bg-gray-100 p-3 rounded-lg max-h-96" horizontal>
+          <Text className="text-xs font-mono text-gray-800 whitespace-pre">
+            {logs || "No logs available. Try refreshing."}
+          </Text>
+        </ScrollView>
       </ScrollView>
     </AppLayout>
   );
