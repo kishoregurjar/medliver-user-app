@@ -37,7 +37,10 @@ export const NotificationProvider = ({ children }) => {
 
   const registerPushTokens = useCallback(async () => {
     if (!Device.isDevice) {
-      Alert.alert("Push notifications require a physical device.");
+      Alert.alert(
+        "Notification",
+        "Push notifications require a physical device."
+      );
       return;
     }
 
