@@ -1,5 +1,10 @@
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
+import * as Device from "expo-device";
+import * as Battery from "expo-battery";
+import * as Network from "expo-network";
+import * as Application from "expo-application";
+import { Platform } from "react-native";
 
 const perfLogFile = FileSystem.documentDirectory + "perf-log.json";
 const perfCSVFile = FileSystem.documentDirectory + "perf-log.csv";
@@ -36,6 +41,49 @@ export const markPerfStart = (label) => {
   perfMarks[label] = performance.now();
 };
 
+const getDeviceExtraInfo = async () => {
+  const result = {
+    device: Device.modelName ?? "Unknown Device",
+    os: Device.osName ?? Platform.OS,
+    osVersion: Device.osVersion ?? "N/A",
+    platform: Platform.OS,
+    batteryLevel: "Unavailable",
+    networkType: "Unavailable",
+    isForeground: false,
+  };
+
+  // Fetch battery and network info in parallel
+  try {
+    const [battery, network] = await Promise.allSettled([
+      Battery.getBatteryLevelAsync(),
+      Network.getNetworkStateAsync(),
+    ]);
+
+    if (battery.status === "fulfilled" && battery.value != null) {
+      result.batteryLevel = (battery.value * 100).toFixed(0) + "%";
+    } else {
+      console.warn("❌ Battery error:", battery.reason);
+    }
+
+    if (network.status === "fulfilled" && network.value) {
+      result.networkType = network.value.type ?? "Unavailable";
+    } else {
+      console.warn("❌ Network error:", network.reason);
+    }
+  } catch (e) {
+    console.warn("❌ Unexpected error during battery/network fetch:", e);
+  }
+
+  // Foreground state
+  try {
+    result.isForeground = Application.applicationState === "foreground";
+  } catch (e) {
+    console.warn("❌ Foreground state error:", e);
+  }
+
+  return result;
+};
+
 export const markPerfEnd = async (label, extra = {}) => {
   const end = performance.now();
   const start = perfMarks[label];
@@ -43,7 +91,13 @@ export const markPerfEnd = async (label, extra = {}) => {
 
   const duration = end - start;
   const timestamp = formatTimestamp();
-  const extraInfo = Object.entries(extra)
+  const deviceInfo = await getDeviceExtraInfo();
+
+  console.log(deviceInfo, "deviceInfo");
+
+  const combinedExtra = { ...extra, ...deviceInfo };
+
+  const extraInfo = Object.entries(combinedExtra)
     .map(([key, val]) => `${key}: ${val}`)
     .join(", ");
 
@@ -55,11 +109,9 @@ export const markPerfEnd = async (label, extra = {}) => {
   };
 
   const logs = await readLogsJSON();
-
   if (!logs[label]) logs[label] = [];
-  logs[label].unshift(logEntry); // Add newest on top
-
-  if (logs[label].length > 5) logs[label] = logs[label].slice(0, 5); // Keep max 5
+  logs[label].unshift(logEntry);
+  if (logs[label].length > 5) logs[label] = logs[label].slice(0, 5);
 
   await writeLogsJSON(logs);
 
