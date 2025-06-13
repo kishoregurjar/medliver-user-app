@@ -16,12 +16,7 @@ import "./global.css";
 import * as SplashScreen from "expo-splash-screen";
 import AppProviders from "@/contexts/AppProviders";
 import { useLoadFonts } from "@/hooks/useLoadFonts";
-import { enableScreens, screensEnabled } from "react-native-screens";
-
-SplashScreen.preventAutoHideAsync();
-enableScreens();
-
-if (__DEV__) console.log("Screens enabled?", screensEnabled());
+SplashScreen.preventAutoHideAsync(); // move to top level
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
