@@ -1,82 +1,84 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 
 export default function UserPrescriptionCard({ item, onPress, onDelete }) {
-  const createdDate = format(new Date(item.created_at), "dd MMM yyyy, hh:mm a");
+  const createdDate = item?.created_at
+    ? format(new Date(item.created_at), "dd MMM yyyy, hh:mm a")
+    : "N/A";
+
+  const prescriptionId =
+    item?.prescriptionNumber || `#${item._id.slice(-4).toUpperCase()}`;
+  const prescriptionImage = item?.prescriptions?.[0]?.path;
+  const totalAmount = Number(item?.total_amount || 0).toFixed(2);
 
   const getStatusStyles = () => {
-    switch (item.status) {
+    const status = item.status?.toLowerCase();
+    switch (status) {
       case "pending":
         return { badge: "bg-yellow-100", text: "text-yellow-800" };
       case "completed":
         return { badge: "bg-green-100", text: "text-green-700" };
+      case "assigned_to_pharmacy":
+        return { badge: "bg-blue-100", text: "text-blue-700" };
       default:
         return { badge: "bg-gray-200", text: "text-gray-600" };
     }
   };
 
   const { badge, text } = getStatusStyles();
-  const prescriptionImage = item.prescriptions?.[0]?.path;
 
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View className="bg-white p-4 rounded-2xl border border-gray-200">
-        {/* Top Row: ID + Status */}
-        <View className="flex-row justify-between items-start">
-          <View className="flex-1">
-            <Text className="text-base font-lexend-semibold text-gray-800">
-              Prescription #{item._id.slice(-4).toUpperCase()}
+    <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
+      <View className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+        {/* Header */}
+        <View className="flex-row justify-between items-center mb-2">
+          <View>
+            <Text className="text-base font-lexend-semibold text-black">
+              Order #{prescriptionId}
             </Text>
-            <Text className="text-xs text-gray-500 mt-1">{createdDate}</Text>
-          </View>
-
-          <View className={`px-3 py-1 rounded-full ${badge}`}>
-            <Text className={`text-xs font-medium ${text}`}>
-              {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+            <Text className="text-xs text-gray-500 mt-1">
+              Placed on {createdDate}
             </Text>
           </View>
         </View>
 
-        {/* Prescription Thumbnail */}
-        {prescriptionImage && (
-          <View className="mt-4 rounded-xl overflow-hidden border border-gray-100">
-            <Image
-              source={{ uri: prescriptionImage }}
-              className="w-full h-40"
-              resizeMode="cover"
-            />
+        {/* --- Prescription Image --- */}
+        <View className="rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
+          <Image
+            source={{
+              uri:
+                prescriptionImage ||
+                "https://via.placeholder.com/300x200.png?text=Prescription",
+            }}
+            className="w-full h-40"
+            resizeMode="cover"
+          />
+        </View>
+
+        {/* --- Delivery Info --- */}
+
+        {item.deliveryAddress?.street && (
+          <View className="mt-4">
+            <Text className="text-xs text-gray-500 font-lexend mb-1">
+              Delivery Address
+            </Text>
+            <Text className="text-sm text-gray-800 font-lexend-semibold">
+              {item.deliveryAddress.street}, {item.deliveryAddress.city} -{" "}
+              {item.deliveryAddress.pincode}
+            </Text>
           </View>
         )}
 
-        {/* Total + Actions */}
-        <View className="mt-4 flex-row items-center justify-between">
-          <Text className="text-sm text-gray-700">
-            Total Amount:{" "}
-            <Text className="font-semibold text-brand-primary">
-              ₹{item.total_amount?.toFixed(2) || "0.00"}
+        {/* --- Footer Section --- */}
+        <View className="mt-5 flex-row justify-between items-center">
+          <Text className="text-sm text-gray-700 font-lexend">
+            Total:{" "}
+            <Text className="text-brand-primary font-lexend-semibold">
+              ₹{totalAmount}
             </Text>
           </Text>
-
-          <View className="flex-row space-x-4 items-center">
-            <TouchableOpacity
-              className="flex-row items-center px-2 py-1"
-              onPress={onPress}
-            >
-              <Text className="text-brand-primary font-medium text-sm">
-                View
-              </Text>
-              <Ionicons name="chevron-forward" size={16} color="#4F46E5" />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className="p-2 rounded-full bg-red-50"
-              onPress={onDelete}
-            >
-              <Ionicons name="trash-outline" size={18} color="#FF4C4C" />
-            </TouchableOpacity>
-          </View>
         </View>
       </View>
     </TouchableOpacity>

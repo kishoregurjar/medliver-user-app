@@ -55,11 +55,13 @@ export default function ViewPrescriptionScreen() {
   };
 
   const getStatusBadgeStyle = (status) => {
-    switch (status) {
+    switch (status?.toLowerCase()) {
       case "pending":
         return { bg: "bg-yellow-100", text: "text-yellow-800" };
       case "completed":
         return { bg: "bg-green-100", text: "text-green-700" };
+      case "assigned_to_pharmacy":
+        return { bg: "bg-blue-100", text: "text-blue-700" };
       default:
         return { bg: "bg-gray-200", text: "text-gray-600" };
     }
@@ -70,7 +72,10 @@ export default function ViewPrescriptionScreen() {
       <AppLayout scroll={false}>
         <HeaderWithBack showBackButton title="Prescription Details" />
         <View className="flex-1 justify-center items-center mt-10">
-          <LoadingDots title="Loading Prescription..." subtitle="Please wait..." />
+          <LoadingDots
+            title="Loading Prescription..."
+            subtitle="Please wait while we fetch your data"
+          />
         </View>
       </AppLayout>
     );
@@ -80,11 +85,13 @@ export default function ViewPrescriptionScreen() {
     status,
     created_at,
     bill_path,
-    prescriptions: images = [],
+    prescriptions = [],
     remarks,
     total_amount,
     assigned_delivery_partner,
     assigned_pharmacy,
+    deliveryAddress,
+    prescriptionNumber,
   } = prescription;
 
   const { bg, text } = getStatusBadgeStyle(status);
@@ -92,51 +99,77 @@ export default function ViewPrescriptionScreen() {
   return (
     <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="Prescription Details" />
+
       <ScrollView
         contentContainerStyle={{ paddingBottom: 24 }}
+        contentContainerClassName="bg-white p-4 rounded-xl gap-4"
         showsVerticalScrollIndicator={false}
       >
-        <View className="bg-white rounded-2xl p-4 mt-4 gap-4">
-          {/* Status */}
-          <View className="flex-row items-center justify-between">
-            <Text className="text-lg font-lexend-semibold">Status</Text>
+        {/* --- Meta Info Block --- */}
+        <View className="bg-white rounded-2xl p-4 gap-4 border border-gray-200">
+          {/* Header */}
+          <View className="flex-row justify-between items-center">
+            <Text className="text-base font-lexend-semibold text-gray-800">
+              {prescriptionNumber}
+            </Text>
             <View className={`px-3 py-1 rounded-full ${bg}`}>
-              <Text className={`text-sm font-medium capitalize ${text}`}>
-                {status}
+              <Text
+                className={`text-xs font-lexend-semibold capitalize ${text}`}
+              >
+                {status?.replaceAll("_", " ")}
               </Text>
             </View>
           </View>
 
-          {/* Submission Time */}
+          {/* Created Time */}
           <View>
-            <Text className="text-sm text-gray-500 mb-1">Submitted On</Text>
-            <Text className="font-lexend-medium text-gray-800">
+            <Text className="text-sm font-lexend-semibold text-gray-500 mb-1">
+              Submitted On
+            </Text>
+            <Text className="text-sm font-lexend-medium text-gray-800">
               {formatDate(created_at)}
             </Text>
           </View>
 
-          {/* Amount */}
+          {/* Total Amount */}
           <View>
-            <Text className="text-sm text-gray-500 mb-1">Total Amount</Text>
-            <Text className="font-lexend-medium text-gray-800">
+            <Text className="text-sm font-lexend-semibold text-gray-500 mb-1">
+              Total Amount
+            </Text>
+            <Text className="text-sm font-lexend-medium text-gray-800">
               ₹{total_amount ? total_amount.toFixed(2) : "0.00"}
             </Text>
           </View>
 
-          {/* Pharmacy Info */}
+          {/* Delivery Address */}
+          {deliveryAddress?.street && (
+            <View>
+              <Text className="text-sm font-lexend-semibold text-gray-500 mb-1">
+                Delivery Address
+              </Text>
+              <Text className="text-sm font-lexend-medium text-gray-800">
+                {deliveryAddress.street}, {deliveryAddress.city} -{" "}
+                {deliveryAddress.pincode}
+              </Text>
+            </View>
+          )}
+
+          {/* Assigned Pharmacy */}
           <View>
-            <Text className="text-sm text-gray-500 mb-1">
+            <Text className="text-sm font-lexend-semibold text-gray-500 mb-1">
               Assigned Pharmacy
             </Text>
-            <Text className="font-lexend-medium text-gray-800">
+            <Text className="text-sm font-lexend-medium text-gray-800">
               {assigned_pharmacy?.name || "Not Assigned"}
             </Text>
           </View>
 
-          {/* Delivery Partner Info */}
+          {/* Assigned Delivery Partner */}
           <View>
-            <Text className="text-sm text-gray-500 mb-1">Delivery Partner</Text>
-            <Text className="font-lexend-medium text-gray-800">
+            <Text className="text-sm font-lexend-semibold text-gray-500 mb-1">
+              Delivery Partner
+            </Text>
+            <Text className="text-sm font-lexend-medium text-gray-800">
               {assigned_delivery_partner?.name || "Not Assigned"}
             </Text>
           </View>
@@ -145,7 +178,7 @@ export default function ViewPrescriptionScreen() {
           {remarks && (
             <View>
               <Text className="text-sm text-gray-500 mb-1">Remarks</Text>
-              <Text className="font-lexend-regular text-gray-800">
+              <Text className="text-sm font-lexend-regular text-gray-800">
                 {remarks}
               </Text>
             </View>
@@ -155,7 +188,7 @@ export default function ViewPrescriptionScreen() {
           {bill_path && (
             <TouchableOpacity
               onPress={() => openLink(bill_path)}
-              className="flex-row items-center space-x-2 mt-2"
+              className="flex-row items-center gap-2 mt-1"
             >
               <Ionicons
                 name="document-text-outline"
@@ -169,13 +202,13 @@ export default function ViewPrescriptionScreen() {
           )}
         </View>
 
-        {/* Images */}
-        <View className="bg-white rounded-2xl p-4 mt-6 gap-4">
-          <Text className="text-lg font-lexend-semibold mb-3">
+        {/* --- Prescription Images Block --- */}
+        <View className="bg-white rounded-2xl p-4 border border-gray-200">
+          <Text className="text-lg font-lexend-semibold text-gray-800 mb-3">
             Prescription Images
           </Text>
 
-          {images.length === 0 ? (
+          {prescriptions.length === 0 ? (
             <View className="p-4 bg-gray-50 rounded-xl items-center">
               <MaterialIcons
                 name="image-not-supported"
@@ -183,11 +216,11 @@ export default function ViewPrescriptionScreen() {
                 color="#999"
               />
               <Text className="text-gray-500 mt-2 text-sm">
-                No images uploaded.
+                No prescription images uploaded.
               </Text>
             </View>
           ) : (
-            images.map((img, index) => (
+            prescriptions.map((img, index) => (
               <Image
                 key={index}
                 source={{ uri: img.path }}
