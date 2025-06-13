@@ -32,7 +32,7 @@ export default function PathologyTestsByCategoryScreen() {
   }, [categoryId]);
 
   const renderTestCard = ({ item }) => (
-    <View className="bg-white rounded-2xl p-4 mb-4 shadow-sm">
+    <View className="bg-white rounded-2xl p-4 mb-4">
       <View className="flex-row items-center mb-2">
         <Ionicons name="flask-outline" size={20} color="#5C59FF" />
         <Text className="ml-2 text-base font-lexend-semibold text-text-primary" numberOfLines={2}>

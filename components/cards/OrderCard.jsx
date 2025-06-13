@@ -125,7 +125,7 @@ export default function OrderCard({ order }) {
       <View className="border-t border-gray-100 my-4" />
 
       {/* Summary */}
-      <View className="space-y-4">
+      <View>
         <Section
           title="Total Amount"
           value={`₹${order.totalAmount.toFixed(2)}`}

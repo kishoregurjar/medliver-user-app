@@ -1,11 +1,50 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, ScrollView, RefreshControl } from "react-native";
 import { useLocalSearchParams } from "expo-router";
+import { format } from "date-fns";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
-import { format } from "date-fns";
 import useAxios from "@/hooks/useAxios";
 import SkeletonTestOrderDetails from "@/components/skeletons/SkeletonTestOrderDetails";
+
+const Card = ({ title, children }) => (
+  <View className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+    <Text className="text-base font-lexend-semibold text-gray-900 mb-4">
+      {title}
+    </Text>
+    <View className="gap-3">{children}</View>
+  </View>
+);
+
+const TextRow = ({ label, value }) => (
+  <View className="flex-row justify-between items-center">
+    <Text className="text-sm text-gray-500 font-lexend">{label}</Text>
+    <Text className="text-sm text-gray-900 font-lexend-medium">
+      {value || "N/A"}
+    </Text>
+  </View>
+);
+
+const DetailRow = ({ label, value }) => (
+  <View className="flex-row justify-between items-center">
+    <Text className="text-sm text-gray-500 font-lexend">{label}</Text>
+    <Text className="text-sm text-gray-900 font-lexend-medium">{value}</Text>
+  </View>
+);
+
+const Badge = ({ text, type = "pending" }) => {
+  const colors = {
+    delivered: "bg-green-100 text-green-700",
+    cancelled: "bg-red-100 text-red-600",
+    pending: "bg-yellow-100 text-yellow-700",
+  };
+
+  return (
+    <View className={`px-3 py-1 rounded-full ${colors[type]} shadow-sm`}>
+      <Text className="text-xs font-lexend-medium">{text}</Text>
+    </View>
+  );
+};
 
 export default function TestOrderDetailsScreen() {
   const { testOrderId } = useLocalSearchParams();
@@ -24,15 +63,12 @@ export default function TestOrderDetailsScreen() {
     if (!error && data?.status === 200) {
       setOrderDetails(data.data);
     } else {
-      console.error("Failed to fetch order details:", error);
       setOrderDetails(null);
     }
   };
 
   useEffect(() => {
-    if (testOrderId) {
-      fetchOrderDetails();
-    }
+    if (testOrderId) fetchOrderDetails();
   }, [testOrderId]);
 
   const onRefresh = useCallback(() => {
@@ -40,11 +76,11 @@ export default function TestOrderDetailsScreen() {
     fetchOrderDetails().finally(() => setRefreshing(false));
   }, []);
 
-  const getStatusColor = (status) => {
-    const s = status?.toLowerCase();
-    if (s?.includes("delivered")) return "text-green-600";
-    if (s?.includes("cancelled")) return "text-red-500";
-    return "text-yellow-600";
+  const getBadgeType = (status) => {
+    const s = status?.toLowerCase() || "";
+    if (s.includes("delivered")) return "delivered";
+    if (s.includes("cancelled")) return "cancelled";
+    return "pending";
   };
 
   const {
@@ -59,78 +95,70 @@ export default function TestOrderDetailsScreen() {
   } = orderDetails || {};
 
   return (
-    <AppLayout>
-      <HeaderWithBack showBackButton title="Test Order Details" />
+    <AppLayout scroll={false}>
+      <HeaderWithBack title="Test Order Details" showBackButton />
 
       <ScrollView
-        className="p-4 space-y-4"
+        className="bg-white rounded-xl p-4"
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {/* Loading State */}
         {isLoading && <SkeletonTestOrderDetails />}
 
-        {/* No Data State */}
         {!isLoading && !orderDetails && (
-          <View className="flex-1 items-center justify-center my-10">
-            <Text className="text-base font-lexend text-text-muted text-center">
+          <View className="flex-1 justify-center items-center py-20">
+            <Text className="text-base text-gray-500 font-lexend text-center">
               No order details found.
             </Text>
           </View>
         )}
 
-        {/* Main Content */}
         {!isLoading && orderDetails && (
-          <View className="flex-1 gap-3">
-            {/* Patient Info */}
+          <View className="gap-4">
             <Card title="Patient Info">
               <TextRow label="Name" value={customer?.fullName} />
               <TextRow label="Email" value={customer?.email} />
               <TextRow label="Phone" value={customer?.phoneNumber} />
             </Card>
 
-            {/* Selected Tests */}
             <Card title="Selected Tests">
-              {selectedTests.length ? (
-                selectedTests.map((test, index) => (
-                  <View
-                    key={test._id}
-                    className="flex-row justify-between py-2 border-b border-gray-300"
-                  >
-                    <Text className="text-sm font-lexend-medium text-text-primary">
-                      # {index + 1}
+              {selectedTests.length > 0 ? (
+                <>
+                  {selectedTests.map((test, idx) => (
+                    <View
+                      key={test._id}
+                      className="flex-row justify-between items-center"
+                    >
+                      <Text className="text-sm text-gray-400">#{idx + 1}</Text>
+                      <Text className="text-sm text-gray-800 flex-1 ml-3">
+                        {test.name}
+                      </Text>
+                      <Text className="text-sm text-gray-900 font-lexend-semibold">
+                        ₹{test.price}
+                      </Text>
+                    </View>
+                  ))}
+                  <View className="border-t border-gray-200 mt-2 pt-2 flex-row justify-between">
+                    <Text className="text-sm text-gray-500 font-lexend">
+                      Total
                     </Text>
-                    <Text className="text-sm text-text-primary">
-                      {test.name}
-                    </Text>
-                    <Text className="text-sm font-lexend-medium text-text-primary">
-                      ₹{test.price}
+                    <Text className="text-sm font-lexend-semibold text-gray-900">
+                      ₹
+                      {selectedTests.reduce(
+                        (acc, test) => acc + (test.price || 0),
+                        0
+                      )}
                     </Text>
                   </View>
-                ))
+                </>
               ) : (
-                <Text className="text-sm font-lexend text-text-muted">
-                  No tests selected
+                <Text className="text-sm text-gray-400 font-lexend">
+                  No tests selected.
                 </Text>
-              )}
-              {selectedTests.length > 0 && (
-                <View className="flex-row justify-between py-2">
-                  <Text className="text-sm font-lexend text-text-primary">
-                    Total
-                  </Text>
-                  <Text className="text-sm font-lexend-medium text-text-primary">
-                    ₹
-                    {selectedTests.reduce(
-                      (acc, test) => acc + (test.price || 0),
-                      0
-                    )}
-                  </Text>
-                </View>
               )}
             </Card>
 
-            {/* Order Summary */}
             <Card title="Order Summary">
               <DetailRow
                 label="Order Date"
@@ -156,46 +184,19 @@ export default function TestOrderDetailsScreen() {
                 label="Report Status"
                 value={reportStatus?.replaceAll("_", " ") || "N/A"}
               />
-              <DetailRow
-                label="Order Status"
-                value={orderStatus?.replaceAll("_", " ") || "N/A"}
-                valueStyle={getStatusColor(orderStatus)}
-              />
+              <View className="flex-row justify-between items-center pt-1">
+                <Text className="text-sm text-gray-500 font-lexend">
+                  Order Status
+                </Text>
+                <Badge
+                  text={orderStatus?.replaceAll("_", " ") || "Pending"}
+                  type={getBadgeType(orderStatus)}
+                />
+              </View>
             </Card>
           </View>
         )}
       </ScrollView>
     </AppLayout>
-  );
-}
-
-// Reusable Components
-function Card({ title, children }) {
-  return (
-    <View className="bg-white rounded-2xl p-4 border border-gray-100 flex-1 gap-2">
-      <Text className="text-lg font-lexend-semibold text-black mb-2">
-        {title}
-      </Text>
-      {children}
-    </View>
-  );
-}
-
-function TextRow({ label, value }) {
-  return (
-    <Text className="text-sm font-lexend text-text-muted">
-      {label}: {value || "N/A"}
-    </Text>
-  );
-}
-
-function DetailRow({ label, value, valueStyle = "text-gray-800" }) {
-  return (
-    <View className="flex-row justify-between">
-      <Text className="text-sm font-lexend text-gray-600">{label}</Text>
-      <Text className={`text-sm font-lexend-medium ${valueStyle}`}>
-        {value}
-      </Text>
-    </View>
   );
 }

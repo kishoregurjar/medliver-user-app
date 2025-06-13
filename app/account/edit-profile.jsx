@@ -249,7 +249,7 @@ export default function EditProfileScreen() {
               <TouchableOpacity
                 onPress={openAvatarOptions}
                 disabled={uploading}
-                className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-sm"
+                className="absolute bottom-0 right-0 bg-white p-2 rounded-full"
               >
                 <Ionicons name="pencil" size={18} color="#B31F24" />
               </TouchableOpacity>

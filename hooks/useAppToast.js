@@ -88,7 +88,7 @@ export const useAppToast = () => {
           nativeID={`toast-${id}`}
           className={
             isCustom
-              ? `flex-row items-center gap-3 px-4 py-3 rounded-xl shadow-md ${className}`
+              ? `flex-row items-center gap-3 px-4 py-3 rounded-xl ${className}`
               : undefined
           }
           style={isCustom ? containerStyle : undefined}
@@ -112,7 +112,7 @@ export const useAppToast = () => {
     const renderNotification = () => (
       <Toast
         nativeID={`toast-${id}`}
-        className={`flex-row justify-between gap-4 px-4 py-3 rounded-xl shadow-md ${
+        className={`flex-row justify-between gap-4 px-4 py-3 rounded-xl ${
           className || "bg-background-900"
         }`}
         style={containerStyle}
