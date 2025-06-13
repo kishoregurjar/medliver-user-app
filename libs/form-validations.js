@@ -19,7 +19,9 @@ const FORM_VALIDATIONS = {
       .string()
       .oneOf([yup.ref("password")], "Passwords must match")
       .required("Confirm your password"),
-    agree: yup.boolean().oneOf([true], "You must agree to the terms and conditions"),
+    agree: yup
+      .boolean()
+      .oneOf([true], "You must agree to the terms and conditions"),
   }),
   LOGIN: yup.object().shape({
     email: yup.string().email("Invalid email").required("Email is required"),
@@ -59,6 +61,30 @@ const FORM_VALIDATIONS = {
         "Phone number must be a valid 10-digit Indian number"
       )
       .required("Phone number is required"),
+    height: yup
+      .number()
+      .transform((value, originalValue) =>
+        String(originalValue).trim() === "" ? null : Number(originalValue)
+      )
+      .nullable()
+      .positive("Height must be positive")
+      .integer("Height must be an integer"),
+    weight: yup
+      .number()
+      .transform((value, originalValue) =>
+        String(originalValue).trim() === "" ? null : Number(originalValue)
+      )
+      .nullable()
+      .positive("Weight must be positive")
+      .integer("Weight must be an integer"),
+    bloodGroup: yup
+      .string()
+      .transform((value) => (value?.trim() === "" ? null : value))
+      .nullable()
+      .oneOf(
+        [null, "A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
+        "Invalid blood group"
+      ),
   }),
   INSURANCE_SUBMIT_ENQUIRY: yup.object().shape({
     full_name: yup.string().required("Full name is required"),
@@ -102,7 +128,12 @@ const FORM_VALIDATIONS = {
     nominee_name: yup.string().required("Nominee name is required"),
     nominee_relation: yup.string().required("Nominee relation is required"),
     lead_source: yup.string().required("Lead source is required"),
-    agree: yup.boolean().oneOf([true], "You must confirm the information & agree to the terms and conditions"),
+    agree: yup
+      .boolean()
+      .oneOf(
+        [true],
+        "You must confirm the information & agree to the terms and conditions"
+      ),
   }),
   BOOK_CAB: yup.object().shape({
     patient_name: yup.string().required("Patient name is required"),
@@ -117,7 +148,12 @@ const FORM_VALIDATIONS = {
     address: yup.string().required("Pickup address is required"),
     destination_hospital: yup.string().required("Destination is required"),
     vehicle_type: yup.string().required("Vehicle type is required"),
-    agree: yup.boolean().oneOf([true], "You must confirm the information & agree to the terms and conditions"),
+    agree: yup
+      .boolean()
+      .oneOf(
+        [true],
+        "You must confirm the information & agree to the terms and conditions"
+      ),
   }),
   BOOK_APPOINTMENT_DOCTOR: yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -131,7 +167,12 @@ const FORM_VALIDATIONS = {
       )
       .required("Phone number is required"),
     disease: yup.string().required("Disease details are required"),
-    agree: yup.boolean().oneOf([true], "You must confirm the information & agree to the terms and conditions"),
+    agree: yup
+      .boolean()
+      .oneOf(
+        [true],
+        "You must confirm the information & agree to the terms and conditions"
+      ),
   }),
 };
 
