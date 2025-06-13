@@ -41,7 +41,8 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  useDevPerfLogger();
+
+  if (__DEV__) useDevPerfLogger();
 
   const [fontsLoaded] = useFonts({
     LexendDeca_100Thin,

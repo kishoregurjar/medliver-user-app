@@ -2,28 +2,45 @@ import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
-  Alert,
-  ActivityIndicator,
   FlatList,
   RefreshControl,
+  Alert,
+  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-import {
-  getAllPerfLogs,
-  clearPerfLogs,
-  exportPerfLogsToCSV,
-  exportPerfLogsToConsole,
-  shareCSVFile,
-  shareTxtFile,
-} from "@/utils/performanceUtils";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import AppLayout from "@/components/layouts/AppLayout";
 
-export default function PerfDevScreen() {
+// ✅ Production-safe fallback screen
+function DevOnlyPlaceholder() {
+  return (
+    <AppLayout scroll={false}>
+      <HeaderWithBack showBackButton title="Dev Performance Logs" />
+      <View className="flex-1 items-center justify-center px-4">
+        <Text className="text-xl font-bold text-red-500">Access Denied</Text>
+        <Text className="text-sm text-gray-600 text-center mt-2">
+          This screen is only available in development mode.
+        </Text>
+      </View>
+    </AppLayout>
+  );
+}
+
+// ✅ Main Dev screen
+function DevPerfScreen() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+
+  const {
+    getAllPerfLogs,
+    clearPerfLogs,
+    exportPerfLogsToCSV,
+    exportPerfLogsToConsole,
+    shareCSVFile,
+    shareTxtFile,
+  } = require("@/utils/performanceUtils");
 
   const fetchLogs = useCallback(async () => {
     try {
@@ -37,19 +54,17 @@ export default function PerfDevScreen() {
     }
   }, []);
 
-  const onRefresh = () => {
-    setRefreshing(true);
+  useEffect(() => {
     fetchLogs();
-  };
+  }, []);
 
   const exportCSVAndNotify = async () => {
     const path = await exportPerfLogsToCSV();
     Alert.alert("CSV Exported", `File saved at:\n${path}`);
   };
 
-  useEffect(() => {
-    fetchLogs();
-  }, [fetchLogs]);
+  const formatTime = (date) =>
+    date ? `${date.toLocaleDateString()} ${date.toLocaleTimeString()}` : "";
 
   const ActionButton = ({ label, onPress, className }) => (
     <TouchableOpacity
@@ -60,19 +75,13 @@ export default function PerfDevScreen() {
     </TouchableOpacity>
   );
 
-  const formatTime = (date) =>
-    date ? `${date.toLocaleDateString()} ${date.toLocaleTimeString()}` : "";
-
   return (
     <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="Dev Performance Logs" />
-
       <View className="flex-1 p-4">
-        {/* Logs Output */}
         <Text className="text-sm font-lexend-bold mb-1 text-gray-700">
           Logs Output:
         </Text>
-
         {lastUpdated && (
           <Text className="text-xs text-gray-500 mb-2">
             Last updated: {formatTime(lastUpdated)}
@@ -90,14 +99,20 @@ export default function PerfDevScreen() {
           ) : (
             <FlatList
               data={logs}
-              keyExtractor={(item, index) => index.toString()}
+              keyExtractor={(_, index) => index.toString()}
               renderItem={({ item }) => (
                 <Text className="text-[10px] text-gray-800 font-mono mb-1">
                   {item}
                 </Text>
               )}
               refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => {
+                    setRefreshing(true);
+                    fetchLogs();
+                  }}
+                />
               }
               ListEmptyComponent={() => (
                 <View className="py-10 items-center justify-center">
@@ -110,9 +125,7 @@ export default function PerfDevScreen() {
           )}
         </View>
 
-        {/* All Actions Grouped */}
         <View className="bg-white rounded-2xl p-4">
-          {/* Log Actions */}
           <Text className="text-sm font-lexend-bold mb-2 text-gray-800">
             🔄 Log Actions
           </Text>
@@ -133,7 +146,6 @@ export default function PerfDevScreen() {
             />
           </View>
 
-          {/* Export Options */}
           <Text className="text-sm font-lexend-bold mb-2 text-gray-800">
             📁 Export Options
           </Text>
@@ -150,7 +162,6 @@ export default function PerfDevScreen() {
             />
           </View>
 
-          {/* Share Logs */}
           <Text className="text-sm font-lexend-bold mb-2 text-gray-800">
             📤 Share Logs
           </Text>
@@ -171,3 +182,6 @@ export default function PerfDevScreen() {
     </AppLayout>
   );
 }
+
+// ✅ Export safely based on dev mode
+export default __DEV__ ? DevPerfScreen : DevOnlyPlaceholder;
