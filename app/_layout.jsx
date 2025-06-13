@@ -20,7 +20,8 @@ import { enableScreens, screensEnabled } from "react-native-screens";
 
 SplashScreen.preventAutoHideAsync();
 enableScreens();
-console.log("Screens enabled?", screensEnabled());
+
+if (__DEV__) console.log("Screens enabled?", screensEnabled());
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

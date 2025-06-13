@@ -32,7 +32,7 @@ export const uploadFiles = async (
     ? files.map((file) => file.originFileObj || file)
     : [files.originFileObj || files];
 
-  console.log("Extracted Files:", extractFiles);
+  if (__DEV__) console.log("Extracted Files:", extractFiles);
 
   if (allowedTypes.length) {
     const invalidFiles = extractFiles.filter(
@@ -58,7 +58,7 @@ export const uploadFiles = async (
     });
   }
 
-  console.log("FormData:", formData);
+  if (__DEV__) console.log("FormData:", formData);
 
   try {
     const response = await makeRequest(

@@ -32,10 +32,8 @@ export default function NotificationsScreen() {
     fcmToken,
   } = useNotification();
 
-  if (__DEV__) {
-    console.log("NotificationsScreen - expoToken:", expoToken);
-    console.log("NotificationsScreen - fcmToken:", fcmToken);
-  }
+  if (__DEV__) console.log("NotificationsScreen - expoToken:", expoToken);
+  if (__DEV__) console.log("NotificationsScreen - fcmToken:", fcmToken);
 
   const onRefresh = async () => {
     await fetchNotifications();
@@ -146,7 +144,10 @@ export default function NotificationsScreen() {
 
       {loading ? (
         <View className="flex-1 justify-center items-center mt-10">
-          <LoadingDots title={"Loading notifications..."} subtitle={"Please wait..."} />
+          <LoadingDots
+            title={"Loading notifications..."}
+            subtitle={"Please wait..."}
+          />
         </View>
       ) : (
         <FlatList

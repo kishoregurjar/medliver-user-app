@@ -36,14 +36,18 @@ const otherTopics = [
     subtitle:
       "Times frames and subscriptions control, transfer, and currency exchange",
     icon: "compare-arrows",
-    onPress: () => console.log("Payment help tapped"),
+    onPress: () => {
+      if (__DEV__) console.log("Payment help tapped");
+    },
   },
   {
     title: "Cards & Account",
     subtitle:
       "Information on cards details, PIN and limits, available cards, managing your account and top up",
     icon: "credit-card",
-    onPress: () => console.log("Cards help tapped"),
+    onPress: () => {
+      if (__DEV__) console.log("Cards help tapped");
+    },
   },
   {
     title: "Call Support",
@@ -65,7 +69,10 @@ export default function HelpScreen() {
     <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="Help & Support" />
 
-      <ScrollView className="flex-1 pt-4 pb-10 gap-4" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        className="flex-1 pt-4 pb-10 gap-4"
+        showsVerticalScrollIndicator={false}
+      >
         {/* Greeting */}
         <View className="mb-4">
           <Text className="text-2xl font-lexend-bold text-gray-900">

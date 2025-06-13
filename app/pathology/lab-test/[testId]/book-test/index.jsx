@@ -125,7 +125,7 @@ export default function BookTestScreen() {
 
         <UserAddressSelection
           onSelectDeliveryAddress={(id) => {
-            console.log("Selected address ID:", id);
+            if (__DEV__) console.log("Selected address ID:", id);
             setSelectedAddress(id);
           }}
           onAddAddressPress={() =>

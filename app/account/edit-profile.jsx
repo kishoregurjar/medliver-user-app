@@ -199,17 +199,12 @@ export default function EditProfileScreen() {
       profilePicture,
     };
 
-    console.log("Edit profile body:", body);
-
     const { data, error } = await editProfile({
       url: "/user/update-user-profile",
       method: "PATCH",
       authRequired: true,
       payload: body,
     });
-
-    console.log("Edit profile response:", data);
-    console.log("Edit profile error:", error);
 
     if (error) {
       showToast("error", error || "Failed to update profile");

@@ -32,10 +32,10 @@ const paymentMethods = [
 
 export default function UserPaymentOptions({
   onSelectPaymentMethod = (id) => {
-    console.log("Payment method selected:", id);
+    if (__DEV__) console.log("Payment method selected:", id);
   },
   onPlaceOrder = (method) => {
-    console.log("Placing order with method:", method);
+    if (__DEV__) console.log("Placing order with method:", method);
   },
   isInitiatingOrder = false,
   type = "pharmacy",

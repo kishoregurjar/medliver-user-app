@@ -29,7 +29,7 @@ const AppCategories = ({ type = "pharmacy" }) => {
           : "/user/get-all-test-category-pathology",
     });
 
-    console.log(`fetching ${type} categories`, data.data, error);
+    if (__DEV__) console.log(`fetching ${type} categories`, data.data, error);
     if (!error && data?.status === 200 && data?.data) {
       setPathologyCategories(data.data.categories || []);
     } else {

@@ -126,26 +126,28 @@ export const markPerfEnd = async (label, extra = {}) => {
 
   await writeLogsJSON(logs);
 
-  console.log(
-    `[🟢 PERF] ${label}: ${logEntry.duration} ms at ${timestamp}${
-      extraInfo ? ` (${extraInfo})` : ""
-    }`
-  );
+  if (__DEV__)
+    console.log(
+      `[🟢 PERF] ${label}: ${logEntry.duration} ms at ${timestamp}${
+        extraInfo ? ` (${extraInfo})` : ""
+      }`
+    );
 
   delete perfMarks[label];
 };
 
 export const exportPerfLogsToConsole = async () => {
   const logs = await readLogsJSON();
-  console.log("[📦 EXPORTING PERF LOGS]");
+  if (__DEV__) console.log("[📦 EXPORTING PERF LOGS]");
   Object.entries(logs).forEach(([label, entries]) => {
-    console.log(`\n📌 ${label}`);
+    if (__DEV__) console.log(`\n📌 ${label}`);
     entries.forEach((entry, index) => {
-      console.log(
-        `#${index + 1} ➤ ${entry.duration} ms @ ${entry.timestamp}${
-          entry.extra ? ` (${entry.extra})` : ""
-        }`
-      );
+      if (__DEV__)
+        console.log(
+          `#${index + 1} ➤ ${entry.duration} ms @ ${entry.timestamp}${
+            entry.extra ? ` (${entry.extra})` : ""
+          }`
+        );
     });
   });
 };
@@ -167,7 +169,7 @@ export const exportPerfLogsToCSV = async () => {
 
   const csvContent = csvLines.map((line) => line.join(",")).join("\n");
   await FileSystem.writeAsStringAsync(perfCSVFile, csvContent);
-  console.log("✅ CSV exported to:", perfCSVFile);
+  if (__DEV__) console.log("✅ CSV exported to:", perfCSVFile);
   return perfCSVFile;
 };
 

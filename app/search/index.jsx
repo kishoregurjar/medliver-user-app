@@ -153,9 +153,11 @@ export default function SearchMedicineScreen() {
                 maxFileSize={5}
                 maxFiles={5}
                 onSuccess={(data) => {
-                  console.log("File Upload Success:", data);
+                  if (__DEV__) console.log("File Upload Success:", data);
                 }}
-                onError={(err) => console.log("File Upload Error:", err)}
+                onError={(err) => {
+                  if (__DEV__) console.log("File Upload Error:", err);
+                }}
               />
             </View>
           </>

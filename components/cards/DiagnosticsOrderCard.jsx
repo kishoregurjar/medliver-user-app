@@ -111,7 +111,9 @@ export default function DiagnosticsOrderCard({ order }) {
       {/* Report CTA */}
       {isReportAvailable && (
         <Pressable
-          onPress={() => console.log("Download report for", order._id)}
+          onPress={() => {
+            if (__DEV__) console.log("Download report for", order._id);
+          }}
           className="mt-4 px-4 py-2 bg-blue-600 rounded-xl self-start"
         >
           <Text className="text-sm font-semibold text-white">

@@ -49,7 +49,7 @@ export default function LivvieChatScreen() {
       const history = res.data?.data || [];
       setMessages(history);
     } catch (err) {
-      console.log("Fetch chat error:", err);
+      if (__DEV__) console.log("Fetch chat error:", err);
     }
   };
 
@@ -60,10 +60,12 @@ export default function LivvieChatScreen() {
         sessionId: newId,
       });
       const history = res.data?.history || [];
-      const filtered = history.filter((msg) => msg.content.toLowerCase() !== "hi");
+      const filtered = history.filter(
+        (msg) => msg.content.toLowerCase() !== "hi"
+      );
       setMessages(filtered);
     } catch (err) {
-      console.log("Initial greeting error:", err);
+      if (__DEV__) console.log("Initial greeting error:", err);
     }
   };
 
@@ -90,14 +92,16 @@ export default function LivvieChatScreen() {
       const newMessages = fullHistory.slice(updatedMessages.length); // Only new bot responses
       setMessages([...updatedMessages, ...newMessages]);
     } catch (err) {
-      console.log("Send message error:", err);
+      if (__DEV__) console.log("Send message error:", err);
     }
   };
 
   const renderItem = ({ item }) => (
     <View
       className={`mb-2 px-3 py-2 rounded-2xl max-w-[80%] ${
-        item.role === "user" ? "bg-brand-primary self-end" : "bg-background-soft self-start"
+        item.role === "user"
+          ? "bg-brand-primary self-end"
+          : "bg-background-soft self-start"
       }`}
     >
       <Text

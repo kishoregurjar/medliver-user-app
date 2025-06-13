@@ -9,10 +9,10 @@ import CTAButton from "../common/CTAButton";
 
 export default function UserAddressSelection({
   onSelectDeliveryAddress = () => {
-    console.log("Address selected:", id);
+    if (__DEV__) console.log("Address selected:", id);
   }, // Callback when an address is selected
   onAddAddressPress = () => {
-    console.log("Add address pressed");
+    if (__DEV__) console.log("Add address pressed");
   }, // Optional: to navigate to Add Address screen
 }) {
   const [addresses, setAddresses] = useState([]);
