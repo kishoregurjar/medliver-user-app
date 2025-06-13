@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, FlatList, TextInput, RefreshControl } from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
@@ -7,56 +7,51 @@ import useAxios from "@/hooks/useAxios";
 import SkeletonOrderCard from "@/components/skeletons/SkeletonOrderCard";
 import DiagnosticsOrderCard from "@/components/cards/DiagnosticsOrderCard";
 import debounce from "lodash.debounce";
+import LoadingDots from "@/components/common/LoadingDots";
 
 export default function MyDiagnosticsScreen() {
   const [orders, setOrders] = useState([]);
   const [search, setSearch] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-
   const [initialLoading, setInitialLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const { request: fetchDiagnosticsOrders, loading: loadingDiagnostics } =
-    useAxios();
-  const { request: searchDiagnosticsOrders, loading: loadingSearch } =
-    useAxios();
+  const { request: fetchDiagnosticsOrders } = useAxios();
+  const { request: searchDiagnosticsOrders } = useAxios();
 
-  // 🔍 Fetch all diagnostics
   const fetchOrders = async () => {
-    const { data, error } = await fetchDiagnosticsOrders({
-      method: "GET",
-      url: "/user/get-orders-pathology",
-      authRequired: true,
-    });
+    try {
+      const { data } = await fetchDiagnosticsOrders({
+        method: "GET",
+        url: "/user/get-orders-pathology",
+        authRequired: true,
+      });
 
-    if (!error && data?.status === 200) {
-      setOrders(data.data ?? []);
-    } else {
+      setOrders(data?.data ?? []);
+    } catch (error) {
       console.error("Diagnostics fetch error:", error);
       setOrders([]);
+    } finally {
+      setInitialLoading(false);
     }
-
-    setInitialLoading(false);
   };
 
-  // 🔍 Search diagnostics by keyword
   const fetchSearchResults = async (query) => {
-    const { data, error } = await searchDiagnosticsOrders({
-      method: "GET",
-      url: `/user/search-orders-pathology`,
-      authRequired: true,
-      params: { value: query },
-    });
+    try {
+      const { data } = await searchDiagnosticsOrders({
+        method: "GET",
+        url: `/user/search-orders-pathology`,
+        authRequired: true,
+        params: { value: query },
+      });
 
-    if (!error && data?.status === 200) {
-      setOrders(data.data?.orders ?? []);
-    } else {
+      setOrders(data?.data?.orders ?? []);
+    } catch (error) {
       console.error("Diagnostics search error:", error);
       setOrders([]);
     }
   };
 
-  // 🕵️‍♂️ Debounced search handler
   const debouncedSearch = useCallback(
     debounce((value) => {
       if (value.trim()) {
@@ -66,7 +61,7 @@ export default function MyDiagnosticsScreen() {
         setIsSearching(false);
         fetchOrders();
       }
-    }, 500),
+    }, 400),
     []
   );
 
@@ -89,14 +84,19 @@ export default function MyDiagnosticsScreen() {
     useCallback(() => {
       setInitialLoading(true);
       fetchOrders();
+
+      return () => debouncedSearch.cancel(); // cleanup debounce on unmount
     }, [])
   );
+
+  const isLoading = initialLoading || (isSearching && !orders.length);
 
   return (
     <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="My Diagnostics" />
+
+      {/* Search Input */}
       <View>
-        {/* Search Bar */}
         <TextInput
           placeholder="Search diagnostics..."
           value={search}
@@ -105,41 +105,40 @@ export default function MyDiagnosticsScreen() {
         />
       </View>
 
-      <FlatList
-        data={
-          (initialLoading || loadingSearch) && orders.length === 0
-            ? Array.from({ length: 5 })
-            : orders
-        }
-        keyExtractor={(item, index) =>
-          item?._id ? item._id : `skeleton-${index}`
-        }
-        renderItem={({ item }) =>
-          item?._id ? (
-            <DiagnosticsOrderCard order={item} />
-          ) : (
-            <SkeletonOrderCard />
-          )
-        }
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: 32,
-        }}
-        contentContainerClassName="bg-white p-4 rounded-2xl gap-4"
-        ListEmptyComponent={
-          !initialLoading &&
-          orders.length === 0 && (
+      {isLoading && (
+        <View className="flex-1 justify-center items-center mt-10">
+          <LoadingDots
+            title="Loading Diagnostics..."
+            subtitle="Please wait..."
+          />
+        </View>
+      )}
+
+      {!isLoading && (
+        <FlatList
+          data={orders.length > 0 ? orders : []}
+          keyExtractor={(item, index) => item?._id ?? `skeleton-${index}`}
+          renderItem={({ item }) =>
+            item?._id ? (
+              <DiagnosticsOrderCard order={item} />
+            ) : (
+              <SkeletonOrderCard />
+            )
+          }
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          showsVerticalScrollIndicator={false}
+          contentContainerClassName="bg-white p-4 rounded-2xl gap-4"
+          ListEmptyComponent={
             <View className="flex-1 items-center justify-center mt-20">
               <Text className="text-gray-500 text-base">
                 No diagnostics found.
               </Text>
             </View>
-          )
-        }
-      />
+          }
+        />
+      )}
     </AppLayout>
   );
 }
