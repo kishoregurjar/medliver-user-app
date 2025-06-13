@@ -1,40 +1,59 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import useAxios from "@/hooks/useAxios";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import dayjs from "dayjs";
 import LoadingDots from "@/components/common/LoadingDots";
+import { useCart } from "@/contexts/CartContext"; // if you have it
+import CTAButton from "@/components/common/CTAButton";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+function Section({ title, children }) {
+  return (
+    <View className="bg-white p-4 rounded-xl mb-4 border border-gray-200">
+      <Text className="text-base font-lexend-semibold text-gray-800 mb-2">
+        {title}
+      </Text>
+      {children}
+    </View>
+  );
+}
+
+function KeyValueRow({ label, value }) {
+  return (
+    <View className="flex-row justify-between mb-1">
+      <Text className="text-sm text-gray-500">{label}</Text>
+      <Text className="text-sm font-lexend-medium text-gray-800">{value}</Text>
+    </View>
+  );
+}
 
 export default function ViewOrderScreen() {
   const { orderId } = useLocalSearchParams();
+  const router = useRouter();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const { request: fetchOrderById } = useAxios();
-
-  const getOrder = async () => {
-    setLoading(true);
-    const { data, error } = await fetchOrderById({
-      url: `/user/get-order-by-id?orderId=${orderId}`,
-      method: "GET",
-      authRequired: true,
-    });
-
-    if (!error) {
-      setOrder(data?.data?.order ?? null);
-    }
-    setLoading(false);
-  };
+  const { addToCart } = useCart?.() ?? {};
 
   useEffect(() => {
-    if (orderId) getOrder();
+    if (orderId) {
+      setLoading(true);
+      fetchOrderById({
+        url: `/user/get-order-by-id?orderId=${orderId}`,
+        method: "GET",
+        authRequired: true,
+      }).then(({ data, error }) => {
+        if (!error) setOrder(data?.data?.order ?? null);
+        setLoading(false);
+      });
+    }
   }, [orderId]);
 
-  const renderAddress = (address) => {
-    if (!address) return null;
-    return (
+  const renderAddress = (address) =>
+    address && (
       <>
         <Text className="text-sm text-gray-700">{address.street}</Text>
         <Text className="text-sm text-gray-700">
@@ -42,136 +61,142 @@ export default function ViewOrderScreen() {
         </Text>
       </>
     );
+
+  const handleTrackOrder = () => {
+    router.push(`/track-order/${orderId}`);
+  };
+
+  const handleReorder = () => {
+    Alert.alert("Reorder", "Reorder feature coming soon!");
+  };
+
+  const handleRepeatOrder = () => {
+    if (!order?.items?.length) return;
+    order.items.forEach((item) => {
+      addToCart?.({
+        productId: item.medicineId,
+        quantity: item.quantity,
+      });
+    });
+    Alert.alert("Items added", "Items have been added to your cart.");
   };
 
   return (
     <AppLayout scroll={false}>
       <HeaderWithBack title="Order Details" showBackButton />
-      <View className="flex-1 py-3 px-4">
+      <View className="bg-white rounded-xl flex-1 p-4">
         {loading ? (
-          <View className="flex-1 items-center justify-center mt-10">
+          <View className="flex-1 justify-center items-center mt-10">
             <LoadingDots title="Fetching order..." subtitle="Please wait" />
           </View>
         ) : !order ? (
-          <View className="flex-1 items-center justify-center">
-            <Text className="text-gray-500 text-base">Order not found.</Text>
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-base text-gray-500">Order not found.</Text>
           </View>
         ) : (
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 40 }}
-          >
-            {/* 🧾 Order Info */}
-            <View className="bg-white p-4 rounded-xl mb-4 border border-gray-200">
-              <Text className="text-base font-semibold text-gray-800 mb-1">
-                Order Number
-              </Text>
-              <Text className="text-sm text-gray-600 mb-1">
-                {order.orderNumber}
-              </Text>
-              <Text className="text-xs text-gray-400">ID: {order._id}</Text>
-            </View>
+          <>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: 120 }}
+            >
+              <CTAButton
+                label={"Track Order"}
+                onPress={handleTrackOrder}
+                icon={<MaterialCommunityIcons name="map-marker" size={16} color={"white"} />}
+                className="mb-4"
+                size="sm"
+              />
 
-            {/* 📦 Status */}
-            <View className="bg-white p-4 rounded-xl mb-4 border border-gray-200 space-y-1">
-              <Text className="text-base font-semibold text-gray-800 mb-2">
-                Order Status
-              </Text>
-              <Text className="text-sm text-gray-700">
-                Status:{" "}
-                <Text className="font-semibold capitalize">
-                  {order.orderStatus}
-                </Text>
-              </Text>
-              <Text className="text-sm text-gray-700">
-                Payment:{" "}
-                <Text className="font-semibold capitalize">
-                  {order.paymentStatus}
-                </Text>
-              </Text>
-              <Text className="text-sm text-gray-700">
-                Method:{" "}
-                <Text className="font-semibold capitalize">
-                  {order.paymentMethod}
-                </Text>
-              </Text>
-              <Text className="text-sm text-gray-700">
-                Date: {dayjs(order.orderDate).format("DD MMM YYYY, hh:mm A")}
-              </Text>
-            </View>
+              <Section title="Order Summary">
+                <KeyValueRow label="Order Number" value={order.orderNumber} />
+                <KeyValueRow label="Order ID" value={order._id} />
+                <KeyValueRow
+                  label="Order Date"
+                  value={dayjs(order.orderDate).format("DD MMM YYYY, hh:mm A")}
+                />
+              </Section>
 
-            {/* 🧪 Items */}
-            <View className="bg-white p-4 rounded-xl mb-4 border border-gray-200">
-              <Text className="text-base font-semibold text-gray-800 mb-2">
-                Ordered Items
-              </Text>
-              {order.items?.length > 0 ? (
-                order.items.map((item, index) => (
-                  <View
-                    key={item._id || index}
-                    className="flex-row justify-between mb-2"
-                  >
-                    <View>
-                      <Text className="text-sm font-medium text-gray-700">
-                        {item.medicineName}
-                      </Text>
-                      <Text className="text-xs text-gray-500">
-                        Qty: {item.quantity}
+              <Section title="Status & Payment">
+                <KeyValueRow
+                  label="Order Status"
+                  value={order.orderStatus.replaceAll("_", " ")}
+                />
+                <KeyValueRow
+                  label="Payment Status"
+                  value={order.paymentStatus}
+                />
+                <KeyValueRow
+                  label="Payment Method"
+                  value={order.paymentMethod}
+                />
+              </Section>
+
+              <Section title="Ordered Items">
+                {order.items?.length > 0 ? (
+                  order.items.map((item, index) => (
+                    <View
+                      key={item._id || index}
+                      className="flex-row items-center mb-3"
+                    >
+                      <Image
+                        source={{
+                          uri:
+                            item.thumbnailUrl ||
+                            "https://via.placeholder.com/48x48.png?text=Item",
+                        }}
+                        className="w-12 h-12 rounded-md bg-gray-100 mr-3"
+                        resizeMode="cover"
+                      />
+                      <View className="flex-1">
+                        <Text className="text-sm font-lexend-semibold text-gray-800">
+                          {item.medicineName}
+                        </Text>
+                        <Text className="text-xs text-gray-500">
+                          Qty: {item.quantity}
+                        </Text>
+                      </View>
+                      <Text className="text-sm font-lexend text-gray-800">
+                        ₹ {(item.price * item.quantity).toFixed(2)}
                       </Text>
                     </View>
-                    <Text className="text-sm text-gray-700">
-                      ₹ {(item.price * item.quantity).toFixed(2)}
-                    </Text>
-                  </View>
-                ))
-              ) : (
-                <Text className="text-sm text-gray-500">No items found.</Text>
-              )}
-            </View>
+                  ))
+                ) : (
+                  <Text className="text-sm text-gray-500">No items found.</Text>
+                )}
+              </Section>
 
-            {/* 💰 Total */}
-            <View className="bg-white p-4 rounded-xl mb-4 border border-gray-200">
-              <Text className="text-base font-semibold text-gray-800">
-                Total Amount
-              </Text>
-              <Text className="text-xl text-brand-primary font-bold mt-1">
-                ₹ {order.totalAmount?.toFixed(2) ?? "0.00"}
-              </Text>
-            </View>
-
-            {/* 📍 Address */}
-            <View className="bg-white p-4 rounded-xl mb-4 border border-gray-200">
-              <Text className="text-base font-semibold text-gray-800 mb-2">
-                Delivery Address
-              </Text>
-              {renderAddress(order.deliveryAddress)}
-            </View>
-
-            {/* 🏥 Pharmacy Attempts */}
-            {order.pharmacyAttempts?.length > 0 && (
-              <View className="bg-white p-4 rounded-xl mb-4 border border-gray-200">
-                <Text className="text-base font-semibold text-gray-800 mb-2">
-                  Pharmacy Attempts
+              <Section title="Total Amount">
+                <Text className="text-xl font-lexend-bold text-brand-primary">
+                  ₹ {order.totalAmount?.toFixed(2) ?? "0.00"}
                 </Text>
-                {order.pharmacyAttempts.map((attempt, index) => (
-                  <View key={attempt._id || index} className="mb-2">
-                    <Text className="text-sm text-gray-700">
-                      {index + 1}. Status:{" "}
-                      <Text className="font-semibold capitalize">
-                        {attempt.status}
+              </Section>
+
+              <Section title="Delivery Address">
+                {renderAddress(order.deliveryAddress)}
+              </Section>
+
+              {order.pharmacyAttempts?.length > 0 && (
+                <Section title="Pharmacy Attempts">
+                  {order.pharmacyAttempts.map((attempt, index) => (
+                    <View key={attempt._id || index} className="mb-2">
+                      <Text className="text-sm text-gray-700">
+                        {index + 1}. Status:{" "}
+                        <Text className="font-lexend-medium capitalize">
+                          {attempt.status}
+                        </Text>
                       </Text>
-                    </Text>
-                    <Text className="text-sm text-gray-500">
-                      At:{" "}
-                      {dayjs(attempt.attemptedAt).format(
-                        "DD MMM YYYY, hh:mm A"
-                      )}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            )}
-          </ScrollView>
+                      <Text className="text-sm text-gray-500">
+                        At:{" "}
+                        {dayjs(attempt.attemptedAt).format(
+                          "DD MMM YYYY, hh:mm A"
+                        )}
+                      </Text>
+                    </View>
+                  ))}
+                </Section>
+              )}
+            </ScrollView>
+          </>
         )}
       </View>
     </AppLayout>

@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { format } from "date-fns";
@@ -80,18 +80,34 @@ export default function OrderCard({ order }) {
 
       {/* Items */}
       <View className="mb-3">
-        <Text className="text-sm font-lexend text-gray-600 mb-1">
+        <Text className="text-sm font-lexend text-gray-600 mb-2">
           Ordered Items
         </Text>
+
         {items.map((item, index) => (
-          <InfoRow
-            key={index}
-            icon={<MaterialIcons name="medication" size={16} color="#6B7280" />}
-            value={`${item.medicineName} × ${item.quantity}`}
-          />
+          <View key={index} className="flex-row items-center gap-3 mb-2 ml-1">
+            <Image
+              source={{
+                uri:
+                  item.thumbnailUrl ||
+                  "https://via.placeholder.com/40x40.png?text=%20",
+              }}
+              className="w-10 h-10 rounded-md bg-gray-100"
+              resizeMode="cover"
+            />
+            <View className="flex-1">
+              <Text className="text-sm text-gray-800 font-lexend-semibold">
+                {item.medicineName}
+              </Text>
+              <Text className="text-xs text-gray-500">
+                Qty: {item.quantity}
+              </Text>
+            </View>
+          </View>
         ))}
+
         {items.length > 1 && (
-          <Text className="text-xs text-gray-500 ml-6">
+          <Text className="text-xs text-gray-500 ml-1">
             Total {items.length} items
           </Text>
         )}
