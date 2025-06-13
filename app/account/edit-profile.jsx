@@ -89,7 +89,6 @@ export default function EditProfileScreen() {
         height: user.height || "",
         weight: user.weight || "",
         bloodGroup: user.bloodGroup || "",
-        dob: user.dob || "",
       };
       reset(defaultValues);
       setProfilePicture(user.profilePicture ?? null);
@@ -201,7 +200,6 @@ export default function EditProfileScreen() {
     };
 
     console.log("Edit profile body:", body);
-    
 
     const { data, error } = await editProfile({
       url: "/user/update-user-profile",
@@ -227,7 +225,10 @@ export default function EditProfileScreen() {
 
       {isLoading ? (
         <View className="flex-1 justify-center items-center mt-10">
-          <LoadingDots title={"Loading profile..."} subtitle={"Please wait..."} />
+          <LoadingDots
+            title={"Loading profile..."}
+            subtitle={"Please wait..."}
+          />
         </View>
       ) : (
         <>
