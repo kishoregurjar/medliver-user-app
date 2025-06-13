@@ -160,7 +160,8 @@ export default function NotificationsScreen() {
           maxToRenderPerBatch={10}
           windowSize={5}
           removeClippedSubviews
-          contentContainerClassName="flex-1 bg-white p-4 rounded-xl gap-2"
+          contentContainerClassName="bg-white p-4 rounded-xl gap-4"
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <Text className="text-center text-text-muted font-lexend mt-10">
               No {activeTab.toLowerCase()} notifications.

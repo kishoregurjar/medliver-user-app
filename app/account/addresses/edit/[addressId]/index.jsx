@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -13,6 +13,7 @@ import { useAppToast } from "@/hooks/useAppToast";
 import SkeletonFormField from "@/components/skeletons/SkeletonFormField";
 import CTAButton from "@/components/common/CTAButton";
 import { MaterialIcons } from "@expo/vector-icons";
+import LoadingDots from "@/components/common/LoadingDots";
 
 const schema = yup.object().shape({
   address_type: yup.string().required("Address type is required"),
@@ -184,9 +185,12 @@ export default function EditAddressScreen() {
 
       {fetching ? (
         <>
-          {addressFields.map((_, index) => (
-            <SkeletonFormField key={index} />
-          ))}
+          <View className="flex-1 justify-center items-center mt-10">
+            <LoadingDots
+              title={"Loading Address... "}
+              subtitle={"Please wait..."}
+            />
+          </View>
         </>
       ) : (
         <ScrollView

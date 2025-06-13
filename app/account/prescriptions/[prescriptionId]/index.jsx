@@ -13,29 +13,34 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import useAxios from "@/hooks/useAxios";
+import LoadingDots from "@/components/common/LoadingDots";
 
 export default function ViewPrescriptionScreen() {
   const { prescriptionId } = useLocalSearchParams();
-  const { request, loading } = useAxios();
+  const { request, loading: isLoading } = useAxios();
   const [prescription, setPrescription] = useState(null);
 
   const fetchPrescription = async () => {
-    const { data } = await request({
-      method: "GET",
-      url: `/user/get-prescription-details-by-id`,
-      authRequired: true,
-      params: { prescriptionId },
-    });
+    try {
+      const { data } = await request({
+        method: "GET",
+        url: `/user/get-prescription-details-by-id`,
+        authRequired: true,
+        params: { prescriptionId },
+      });
 
-    if (data?.status === 200 && data?.data) {
-      setPrescription(data.data.prescription);
-    } else {
+      if (data?.status === 200 && data?.data) {
+        setPrescription(data.data.prescription);
+      } else {
+        throw new Error("Invalid response");
+      }
+    } catch (error) {
       Alert.alert("Error", "Failed to fetch prescription.");
     }
   };
 
   useEffect(() => {
-    fetchPrescription();
+    if (prescriptionId) fetchPrescription();
   }, [prescriptionId]);
 
   const openLink = (url) => {
@@ -60,17 +65,12 @@ export default function ViewPrescriptionScreen() {
     }
   };
 
-  if (loading || !prescription) {
+  if (isLoading || !prescription) {
     return (
-      <AppLayout>
+      <AppLayout scroll={false}>
         <HeaderWithBack showBackButton title="Prescription Details" />
-        <View className="m-4 p-4 bg-white rounded-xl space-y-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <View
-              key={i}
-              className="h-4 bg-gray-200 rounded w-1/2 animate-pulse"
-            />
-          ))}
+        <View className="flex-1 justify-center items-center mt-10">
+          <LoadingDots title="Loading Prescription..." subtitle="Please wait..." />
         </View>
       </AppLayout>
     );
@@ -90,10 +90,13 @@ export default function ViewPrescriptionScreen() {
   const { bg, text } = getStatusBadgeStyle(status);
 
   return (
-    <AppLayout>
+    <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="Prescription Details" />
-      <ScrollView>
-        <View className="bg-white rounded-2xl p-4">
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: 24 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="bg-white rounded-2xl p-4 mt-4 gap-4">
           {/* Status */}
           <View className="flex-row items-center justify-between">
             <Text className="text-lg font-lexend-semibold">Status</Text>
@@ -116,7 +119,7 @@ export default function ViewPrescriptionScreen() {
           <View>
             <Text className="text-sm text-gray-500 mb-1">Total Amount</Text>
             <Text className="font-lexend-medium text-gray-800">
-              ₹{total_amount?.toFixed(2) ?? "0.00"}
+              ₹{total_amount ? total_amount.toFixed(2) : "0.00"}
             </Text>
           </View>
 
@@ -167,7 +170,7 @@ export default function ViewPrescriptionScreen() {
         </View>
 
         {/* Images */}
-        <View className="mt-6">
+        <View className="bg-white rounded-2xl p-4 mt-6 gap-4">
           <Text className="text-lg font-lexend-semibold mb-3">
             Prescription Images
           </Text>
