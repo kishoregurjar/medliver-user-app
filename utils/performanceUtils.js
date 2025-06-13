@@ -1,23 +1,28 @@
-import * as FileSystem from "expo-file-system";
-import * as Sharing from "expo-sharing";
-import * as Device from "expo-device";
-import * as Battery from "expo-battery";
-import * as Network from "expo-network";
-import * as Application from "expo-application";
-import { Platform } from "react-native";
+let FileSystem, Sharing, Device, Battery, Network, Application, Platform;
+if (__DEV__) {
+  FileSystem = require("expo-file-system");
+  Sharing = require("expo-sharing");
+  Device = require("expo-device");
+  Battery = require("expo-battery");
+  Network = require("expo-network");
+  Application = require("expo-application");
+  Platform = require("react-native").Platform;
+}
 
-const perfLogFile = FileSystem.documentDirectory + "perf-log.json";
-const perfCSVFile = FileSystem.documentDirectory + "perf-log.csv";
+const perfLogFile = __DEV__
+  ? FileSystem?.documentDirectory + "perf-log.json"
+  : null;
+const perfCSVFile = __DEV__
+  ? FileSystem?.documentDirectory + "perf-log.csv"
+  : null;
 
 let perfMarks = {};
 
-// Format timestamp as `YYYY-MM-DD HH:mm:ss`
 const formatTimestamp = () => {
   const now = new Date();
   return now.toISOString().replace("T", " ").split(".")[0];
 };
 
-// Read JSON file (or return empty object)
 const readLogsJSON = async () => {
   try {
     const info = await FileSystem.getInfoAsync(perfLogFile);
@@ -29,7 +34,6 @@ const readLogsJSON = async () => {
   }
 };
 
-// Save updated JSON log
 const writeLogsJSON = async (data) => {
   await FileSystem.writeAsStringAsync(
     perfLogFile,
@@ -38,57 +42,57 @@ const writeLogsJSON = async (data) => {
 };
 
 export const markPerfStart = (label) => {
+  if (!__DEV__) return;
   perfMarks[label] = performance.now();
 };
 
 export const getDeviceExtraInfo = async () => {
+  if (!__DEV__) return {};
+
   const info = {
-    device: Device.modelName ?? "Unknown",
-    brand: Device.brand ?? "Unknown",
-    manufacturer: Device.manufacturer ?? "Unknown",
-    os: Device.osName ?? Platform.OS,
-    osVersion: Device.osVersion ?? "N/A",
+    device: Device?.modelName ?? "Unknown",
+    brand: Device?.brand ?? "Unknown",
+    manufacturer: Device?.manufacturer ?? "Unknown",
+    os: Device?.osName ?? Platform.OS,
+    osVersion: Device?.osVersion ?? "N/A",
     platform: Platform.OS,
-    deviceYearClass: Device.deviceYearClass ?? "N/A",
-    totalMemory: Device.totalMemory ?? "N/A",
-    isPhysicalDevice: Device.isDevice ?? false,
-    appName: Application.applicationName ?? "UnknownApp",
-    appVersion: Application.nativeApplicationVersion ?? "N/A",
-    buildNumber: Application.nativeBuildVersion ?? "N/A",
-    appOwnership: Application.applicationName || "Unknown", // fallback if needed
+    deviceYearClass: Device?.deviceYearClass ?? "N/A",
+    totalMemory: Device?.totalMemory ?? "N/A",
+    isPhysicalDevice: Device?.isDevice ?? false,
+    appName: Application?.applicationName ?? "UnknownApp",
+    appVersion: Application?.nativeApplicationVersion ?? "N/A",
+    buildNumber: Application?.nativeBuildVersion ?? "N/A",
+    appOwnership: Application?.applicationName || "Unknown",
     batteryLevel: "N/A",
     powerMode: "N/A",
     networkType: "N/A",
     isConnected: "N/A",
     isInternetReachable: "N/A",
-    isForeground: Application.applicationId,
+    isForeground: Application?.applicationId,
   };
 
   try {
-    const [batteryLevelRes, powerStateRes, networkStateRes, appInfoRes] =
+    const [batteryLevelRes, powerStateRes, networkStateRes] =
       await Promise.allSettled([
-        Battery.getBatteryLevelAsync(),
-        Battery.getPowerStateAsync(),
-        Network.getNetworkStateAsync(),
+        Battery?.getBatteryLevelAsync?.(),
+        Battery?.getPowerStateAsync?.(),
+        Network?.getNetworkStateAsync?.(),
       ]);
 
-    if (
-      batteryLevelRes.status === "fulfilled" &&
-      batteryLevelRes.value != null
-    ) {
+    if (batteryLevelRes.status === "fulfilled") {
       info.batteryLevel = (batteryLevelRes.value * 100).toFixed(0) + "%";
     }
 
     if (powerStateRes.status === "fulfilled") {
       const state = powerStateRes.value;
-      info.powerMode = state.lowPowerMode ? "low" : "normal";
+      info.powerMode = state?.lowPowerMode ? "low" : "normal";
     }
 
     if (networkStateRes.status === "fulfilled") {
       const net = networkStateRes.value;
-      info.networkType = net.type;
-      info.isConnected = net.isConnected;
-      info.isInternetReachable = net.isInternetReachable;
+      info.networkType = net?.type ?? "unknown";
+      info.isConnected = net?.isConnected;
+      info.isInternetReachable = net?.isInternetReachable;
     }
   } catch (e) {
     console.warn("⚠️ Error gathering device extra info:", e);
@@ -98,6 +102,8 @@ export const getDeviceExtraInfo = async () => {
 };
 
 export const markPerfEnd = async (label, extra = {}) => {
+  if (!__DEV__) return;
+
   const end = performance.now();
   const start = perfMarks[label];
   if (!start) return;
@@ -126,33 +132,35 @@ export const markPerfEnd = async (label, extra = {}) => {
 
   await writeLogsJSON(logs);
 
-  if (__DEV__)
-    console.log(
-      `[🟢 PERF] ${label}: ${logEntry.duration} ms at ${timestamp}${
-        extraInfo ? ` (${extraInfo})` : ""
-      }`
-    );
+  console.log(
+    `[🟢 PERF] ${label}: ${logEntry.duration} ms at ${timestamp}${
+      extraInfo ? ` (${extraInfo})` : ""
+    }`
+  );
 
   delete perfMarks[label];
 };
 
 export const exportPerfLogsToConsole = async () => {
+  if (!__DEV__) return;
+
   const logs = await readLogsJSON();
-  if (__DEV__) console.log("[📦 EXPORTING PERF LOGS]");
+  console.log("[📦 EXPORTING PERF LOGS]");
   Object.entries(logs).forEach(([label, entries]) => {
-    if (__DEV__) console.log(`\n📌 ${label}`);
+    console.log(`\n📌 ${label}`);
     entries.forEach((entry, index) => {
-      if (__DEV__)
-        console.log(
-          `#${index + 1} ➤ ${entry.duration} ms @ ${entry.timestamp}${
-            entry.extra ? ` (${entry.extra})` : ""
-          }`
-        );
+      console.log(
+        `#${index + 1} ➤ ${entry.duration} ms @ ${entry.timestamp}${
+          entry.extra ? ` (${entry.extra})` : ""
+        }`
+      );
     });
   });
 };
 
 export const exportPerfLogsToCSV = async () => {
+  if (!__DEV__) return null;
+
   const logs = await readLogsJSON();
 
   const csvLines = [["Label", "Duration (ms)", "Timestamp", "Extra"]];
@@ -169,15 +177,17 @@ export const exportPerfLogsToCSV = async () => {
 
   const csvContent = csvLines.map((line) => line.join(",")).join("\n");
   await FileSystem.writeAsStringAsync(perfCSVFile, csvContent);
-  if (__DEV__) console.log("✅ CSV exported to:", perfCSVFile);
+  console.log("✅ CSV exported to:", perfCSVFile);
   return perfCSVFile;
 };
 
 export const clearPerfLogs = async () => {
+  if (!__DEV__) return;
   await FileSystem.writeAsStringAsync(perfLogFile, "{}");
 };
 
 export const getAllPerfLogs = async () => {
+  if (!__DEV__) return "Not available in production.";
   const logs = await readLogsJSON();
   let output = "";
 
@@ -195,6 +205,8 @@ export const getAllPerfLogs = async () => {
 };
 
 export const shareCSVFile = async () => {
+  if (!__DEV__) return;
+
   const uri = await exportPerfLogsToCSV();
   if (await Sharing.isAvailableAsync()) {
     await Sharing.shareAsync(uri, { mimeType: "text/csv" });
@@ -202,6 +214,8 @@ export const shareCSVFile = async () => {
 };
 
 export const shareTxtFile = async () => {
+  if (!__DEV__) return;
+
   const txtPath = FileSystem.documentDirectory + "perf-log.txt";
   const content = await getAllPerfLogs();
   await FileSystem.writeAsStringAsync(txtPath, content);
