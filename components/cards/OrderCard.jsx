@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { format } from "date-fns";
@@ -27,27 +27,6 @@ function Section({ title, value }) {
   );
 }
 
-function StatusBadge({ status }) {
-  const statusLabel = status.replaceAll("_", " ");
-  const getColor = () => {
-    switch (status) {
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "delivered":
-        return "bg-green-100 text-green-800";
-      case "cancelled":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
-  };
-  return (
-    <View className={`px-2 py-1 rounded-full ${getColor()}`}>
-      <Text className="text-xs font-lexend-medium">{statusLabel}</Text>
-    </View>
-  );
-}
-
 export default function OrderCard({ order }) {
   const router = useRouter();
   const orderDate = format(new Date(order.orderDate), "dd MMM yyyy, hh:mm a");
@@ -60,7 +39,7 @@ export default function OrderCard({ order }) {
   };
 
   const handleReorder = () => {
-    // you can implement a reorder logic here
+    // Reorder logic here
     console.log("Reorder", order._id);
   };
 
@@ -74,23 +53,36 @@ export default function OrderCard({ order }) {
       className="bg-white rounded-2xl p-4 border border-gray-200 active:opacity-80"
     >
       {/* Header */}
-      <View className="flex-row justify-between items-center mb-1">
-        <Text className="text-base font-lexend-semibold text-black">
-          Order #{order.orderNumber}
-        </Text>
+      <View className="flex-row justify-between items-center mb-2">
+        <View>
+          <Text className="text-base font-lexend-semibold text-black">
+            Order #{order.orderNumber}
+          </Text>
+          <Text className="text-xs text-gray-500 mt-1">
+            Placed on {orderDate}
+          </Text>
+        </View>
       </View>
-      <Text className="text-sm font-lexend text-text-muted mb-3">
-        Placed on {orderDate}
-      </Text>
 
-      {/* Address */}
-      <InfoRow
-        icon={<Ionicons name="location-outline" size={18} color="#6B7280" />}
-        value={`${address.street}, ${address.city} - ${address.pincode}`}
-      />
+      {/* Divider */}
+      <View className="border-t border-gray-100 my-3" />
 
-      {/* All Items */}
+      {/* Delivery Address */}
       <View className="mb-3">
+        <Text className="text-sm font-lexend text-gray-600 mb-1">
+          Delivery Address
+        </Text>
+        <InfoRow
+          icon={<Ionicons name="location-outline" size={18} color="#6B7280" />}
+          value={`${address.street}, ${address.city} - ${address.pincode}`}
+        />
+      </View>
+
+      {/* Items */}
+      <View className="mb-3">
+        <Text className="text-sm font-lexend text-gray-600 mb-1">
+          Ordered Items
+        </Text>
         {items.map((item, index) => (
           <InfoRow
             key={index}
@@ -100,12 +92,12 @@ export default function OrderCard({ order }) {
         ))}
         {items.length > 1 && (
           <Text className="text-xs text-gray-500 ml-6">
-            {items.length} items in total
+            Total {items.length} items
           </Text>
         )}
       </View>
 
-      {/* Route */}
+      {/* Route Info */}
       {route?.distance && route?.duration && (
         <InfoRow
           icon={<Ionicons name="navigate-outline" size={16} color="#6B7280" />}
@@ -114,9 +106,9 @@ export default function OrderCard({ order }) {
       )}
 
       {/* Divider */}
-      <View className="border-t border-gray-200 my-4" />
+      <View className="border-t border-gray-100 my-4" />
 
-      {/* Summary Sections */}
+      {/* Summary */}
       <View className="space-y-4">
         <Section
           title="Total Amount"
@@ -129,9 +121,9 @@ export default function OrderCard({ order }) {
         />
       </View>
 
-      {/* Action Buttons */}
+      {/* Actions */}
       <View className="flex-row gap-3 mt-5">
-        {order.orderStatus === "pending" && (
+        {order.orderStatus.toLowerCase() === "pending" && (
           <Pressable
             onPress={handleTrack}
             className="flex-1 py-2 px-3 bg-blue-50 border border-blue-600 rounded-xl"
