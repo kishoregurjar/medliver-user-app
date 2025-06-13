@@ -32,7 +32,6 @@ const TermsOfUseScreen = () => {
           className="flex-1 mt-4"
           contentContainerStyle={{
             paddingBottom: insets.bottom + 20,
-            paddingHorizontal: 16,
           }}
           showsVerticalScrollIndicator={false}
         >
