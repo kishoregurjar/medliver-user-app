@@ -60,7 +60,6 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "expo": "^53.0.0",
-    "expo-blur": "~14.1.4",
     "expo-checkbox": "~4.1.4",
     "expo-constants": "~17.1.6",
     "expo-dev-client": "~5.1.8",
@@ -79,7 +78,6 @@
     "expo-splash-screen": "~0.30.8",
     "expo-status-bar": "~2.2.3",
     "expo-symbols": "~0.4.4",
-    "expo-system-ui": "~5.0.8",
     "expo-web-browser": "~14.1.6",
     "firebase": "^11.6.0",
     "lodash": "^4.17.21",
@@ -91,7 +89,6 @@
     "react-dom": "19.0.0",
     "react-hook-form": "^7.56.1",
     "react-native": "0.79.2",
-    "react-native-chart-kit": "^6.12.0",
     "react-native-css-interop": "^0.1.22",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-modal": "^14.0.0-rc.1",
@@ -106,11 +103,7 @@
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
     "tailwindcss": "^3.4.17",
-    "yup": "^1.6.1",
-    "expo-print": "~14.1.4",
-    "expo-battery": "~9.1.4",
-    "expo-network": "~7.1.5",
-    "expo-application": "~6.1.4"
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

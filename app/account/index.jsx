@@ -96,22 +96,6 @@ const AccountScreen = () => {
               />
             </View>
           )}
-          {__DEV__ && (
-            <CTAButton
-              label="PerfDev Tools"
-              onPress={() => router.push(`/dev/performance`)}
-              size="sm"
-              className={"mt-4"}
-              icon={
-                <Ionicons
-                  name="construct-outline"
-                  size={16}
-                  color="white"
-                  className="mr-2"
-                />
-              }
-            />
-          )}
         </View>
 
         <View className="h-px bg-gray-200 my-4" />

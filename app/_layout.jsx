@@ -33,16 +33,12 @@ import { LocationProvider } from "@/contexts/LocationContext";
 import { NavigationHistoryProvider } from "@/contexts/NavigationHistoryContext";
 import { ConfigProvider } from "@/contexts/ConfigContext";
 
-import { useDevPerfLogger } from "@/hooks/useDevPerfLogger";
-
 import "./global.css";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-
-  if (__DEV__) useDevPerfLogger();
 
   const [fontsLoaded] = useFonts({
     LexendDeca_100Thin,
