@@ -312,6 +312,81 @@ const FORM_FIELD_TYPES = {
       type: "text",
     },
   ],
+  USER_ADD_ADDRESS: [
+    {
+      label: "Address Type",
+      name: "address_type",
+      placeholder: "Select address type",
+      type: "radio",
+      options: [
+        { label: "Home", value: "home" },
+        { label: "Work", value: "work" },
+        { label: "Other", value: "other" },
+      ],
+    },
+    {
+      label: "House Number",
+      name: "house_number",
+      placeholder: "Enter house number",
+      required: true,
+    },
+    { label: "Street", name: "street", placeholder: "Enter street" },
+    { label: "Landmark", name: "landmark", placeholder: "Enter landmark" },
+    { label: "City", name: "city", placeholder: "Enter city", required: true },
+    { label: "State", name: "state", placeholder: "Enter state" },
+    {
+      label: "Pincode",
+      name: "pincode",
+      placeholder: "Enter pincode",
+      keyboardType: "number-pad",
+      required: true,
+    },
+    {
+      label: "Country",
+      name: "country",
+      placeholder: "Enter country",
+    },
+    {
+      label: "Default Address",
+      name: "is_default",
+      type: "checkbox",
+    },
+  ],
+  USER_EDIT_ADDRESS: [
+    {
+      label: "Address Type",
+      name: "address_type",
+      placeholder: "Select address type",
+      type: "radio",
+      options: [
+        { label: "Home", value: "home" },
+        { label: "Work", value: "work" },
+        { label: "Other", value: "other" },
+      ],
+    },
+    {
+      label: "House Number",
+      name: "house_number",
+      placeholder: "Enter house number",
+      required: true,
+    },
+    { label: "Street", name: "street", placeholder: "Enter street" },
+    { label: "Landmark", name: "landmark", placeholder: "Enter landmark" },
+    { label: "City", name: "city", placeholder: "Enter city", required: true },
+    { label: "State", name: "state", placeholder: "Enter state" },
+    {
+      label: "Pincode",
+      name: "pincode",
+      placeholder: "Enter pincode",
+      keyboardType: "number-pad",
+      required: true,
+    },
+    {
+      label: "Country",
+      name: "country",
+      placeholder: "Enter country",
+    },
+  ],
 };
 
 export default FORM_FIELD_TYPES;

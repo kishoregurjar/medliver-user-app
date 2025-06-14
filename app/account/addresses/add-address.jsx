@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { ScrollView } from "react-native";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import * as Location from "expo-location";
 
 import AppLayout from "@/components/layouts/AppLayout";
@@ -13,61 +12,8 @@ import { useRouter } from "expo-router";
 import { useAppToast } from "@/hooks/useAppToast";
 import CTAButton from "@/components/common/CTAButton";
 import { MaterialIcons } from "@expo/vector-icons";
-
-const schema = yup.object().shape({
-  address_type: yup.string().required("Address type is required"),
-  house_number: yup.string().required("House number is required"),
-  street: yup.string(),
-  landmark: yup.string(),
-  city: yup.string().required("City is required"),
-  state: yup.string(),
-  pincode: yup
-    .string()
-    .required("Pincode is required")
-    .matches(/^\d{6}$/, "Pincode must be 6 digits"),
-  country: yup.string().required("Country is required"),
-});
-
-const addressFields = [
-  {
-    label: "Address Type",
-    name: "address_type",
-    placeholder: "Select address type",
-    type: "radio",
-    options: [
-      { label: "Home", value: "home" },
-      { label: "Work", value: "work" },
-      { label: "Other", value: "other" },
-    ],
-  },
-  {
-    label: "House Number",
-    name: "house_number",
-    placeholder: "Enter house number",
-    required: true,
-  },
-  { label: "Street", name: "street", placeholder: "Enter street" },
-  { label: "Landmark", name: "landmark", placeholder: "Enter landmark" },
-  { label: "City", name: "city", placeholder: "Enter city", required: true },
-  { label: "State", name: "state", placeholder: "Enter state" },
-  {
-    label: "Pincode",
-    name: "pincode",
-    placeholder: "Enter pincode",
-    keyboardType: "number-pad",
-    required: true,
-  },
-  {
-    label: "Country",
-    name: "country",
-    placeholder: "Enter country",
-  },
-  {
-    label: "Default Address",
-    name: "is_default",
-    type: "checkbox",
-  },
-];
+import FORM_VALIDATIONS from "@/libs/form-validations";
+import FORM_FIELD_TYPES from "@/libs/form-field-types";
 
 export default function AddAddressScreen() {
   const router = useRouter();
@@ -79,14 +25,12 @@ export default function AddAddressScreen() {
     control,
     handleSubmit,
     setValue,
-    watch,
-    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
       is_default: false,
     },
-    resolver: yupResolver(schema),
+    resolver: yupResolver(FORM_VALIDATIONS.USER_ADD_ADDRESS),
     mode: "onChange",
   });
 
@@ -151,7 +95,11 @@ export default function AddAddressScreen() {
   return (
     <AppLayout scroll={false}>
       <HeaderWithBack showBackButton title="Add Address" />
-      <ScrollView className="px-4 py-6" keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <CTAButton
           label="Use Current Location"
           icon={
@@ -175,7 +123,7 @@ export default function AddAddressScreen() {
         <FormFieldRenderer
           control={control}
           errors={errors}
-          fields={addressFields}
+          fields={FORM_FIELD_TYPES.USER_ADD_ADDRESS}
         />
 
         <CTAButton

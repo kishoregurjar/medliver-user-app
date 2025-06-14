@@ -174,6 +174,32 @@ const FORM_VALIDATIONS = {
         "You must confirm the information & agree to the terms and conditions"
       ),
   }),
+  USER_ADD_ADDRESS: yup.object().shape({
+    address_type: yup.string().required("Address type is required"),
+    house_number: yup.string().required("House number is required"),
+    street: yup.string(),
+    landmark: yup.string(),
+    city: yup.string().required("City is required"),
+    state: yup.string(),
+    pincode: yup
+      .string()
+      .required("Pincode is required")
+      .matches(/^\d{6}$/, "Pincode must be 6 digits"),
+    country: yup.string().required("Country is required"),
+  }),
+  USER_EDIT_ADDRESS: yup.object().shape({
+    address_type: yup.string().required("Address type is required"),
+    house_number: yup.string().required("House number is required"),
+    street: yup.string(),
+    landmark: yup.string(),
+    city: yup.string().required("City is required"),
+    state: yup.string(),
+    pincode: yup
+      .string()
+      .required("Pincode is required")
+      .matches(/^\d{6}$/, "Pincode must be 6 digits"),
+    country: yup.string().required("Country is required"),
+  }),
 };
 
 export default FORM_VALIDATIONS;

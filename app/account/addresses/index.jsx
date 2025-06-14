@@ -1,30 +1,28 @@
 import React, { useCallback, useState } from "react";
+import { View, Text, FlatList, Alert, RefreshControl } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { View, Text, ScrollView, Alert, RefreshControl } from "react-native";
+import { useRouter } from "expo-router";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
-import useAxios from "@/hooks/useAxios";
-import { useRouter } from "expo-router";
-import SkeletonAddressCard from "@/components/skeletons/SkeletonAddressCard";
-import UserAddressCard from "@/components/cards/UserAddressCard";
 import CTAButton from "@/components/common/CTAButton";
-import ROUTE_PATH from "@/routes/route.constants";
-import { Ionicons } from "@expo/vector-icons";
+import UserAddressCard from "@/components/cards/UserAddressCard";
 import LoadingDots from "@/components/common/LoadingDots";
+import ROUTE_PATH from "@/routes/route.constants";
+import useAxios from "@/hooks/useAxios";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function MyAddressesScreen() {
   const [addresses, setAddresses] = useState([]);
   const [defaultAddressId, setDefaultAddressId] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
   const [activeSetId, setActiveSetId] = useState(null);
-  const [refreshing, setRefreshing] = useState(false); // new
 
   const router = useRouter();
   const { request: getAllAddresses, loading: loadingAddresses } = useAxios();
-  const { request: deleteAddress, loading: deleting } = useAxios();
-  const { request: setDefaultAddress, loading: settingDefaultLoading } =
-    useAxios();
+  const { request: deleteAddress, loading: isDeleting } = useAxios();
+  const { request: setDefaultAddress, loading: settingDefault } = useAxios();
 
-  const fetchUserAddresses = async () => {
+  const fetchUserAddresses = useCallback(async () => {
     const { data, error } = await getAllAddresses({
       url: "/user/get-all-address",
       method: "GET",
@@ -32,133 +30,143 @@ export default function MyAddressesScreen() {
     });
 
     if (error) {
-      console.error("Error fetching user addresses:", error);
+      console.error("Fetch Error:", error);
       return;
     }
 
-    if (data?.data) {
-      setAddresses(data.data);
-      const defaultAddr = data.data.find((addr) => addr.is_default);
-      if (defaultAddr) setDefaultAddressId(defaultAddr._id);
-    }
-  };
+    const fetched = data?.data || [];
+    setAddresses(fetched);
+    const defaultAddr = fetched.find((a) => a.is_default);
+    setDefaultAddressId(defaultAddr?._id || null);
+  }, []);
+
+  // Fix: call only once when screen focuses
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserAddresses();
+    }, []) // empty array makes it stable
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchUserAddresses();
     setRefreshing(false);
-  }, []);
+  }, [fetchUserAddresses]);
 
-  const handleSetDefault = async (id) => {
-    if (id === defaultAddressId || settingDefaultLoading) return;
+  const handleSetDefault = useCallback(
+    async (id) => {
+      if (id === defaultAddressId || settingDefault) return;
+      setActiveSetId(id);
 
-    setActiveSetId(id);
+      const { error } = await setDefaultAddress({
+        url: `/user/set-default-address`,
+        method: "PUT",
+        authRequired: true,
+        payload: { addressId: id },
+      });
 
-    const { error } = await setDefaultAddress({
-      url: `/user/set-default-address`,
-      method: "PUT",
-      authRequired: true,
-      payload: { addressId: id },
-    });
+      setActiveSetId(null);
 
-    setActiveSetId(null);
+      if (error) {
+        Alert.alert("Failed", "Could not set default address.");
+        return;
+      }
 
-    if (error) {
-      Alert.alert("Failed", "Could not set default address.");
-      return;
-    }
-
-    setDefaultAddressId(id);
-    setAddresses((prev) =>
-      prev.map((addr) => ({
-        ...addr,
-        is_default: addr._id === id,
-      }))
-    );
-  };
-
-  const handleDelete = (id) => {
-    Alert.alert(
-      "Delete Address",
-      "Are you sure you want to delete this address?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            const { error } = await deleteAddress({
-              url: `/user/delete-address`,
-              method: "DELETE",
-              authRequired: true,
-              params: { addressId: id },
-            });
-
-            if (error) {
-              Alert.alert("Failed", "Could not delete address.");
-              return;
-            }
-
-            setAddresses((prev) => prev.filter((addr) => addr._id !== id));
-
-            if (defaultAddressId === id) {
-              setDefaultAddressId(null);
-            }
-          },
-        },
-      ]
-    );
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchUserAddresses();
-    }, [])
+      setDefaultAddressId(id);
+      setAddresses((prev) =>
+        prev.map((addr) => ({
+          ...addr,
+          is_default: addr._id === id,
+        }))
+      );
+    },
+    [defaultAddressId, settingDefault]
   );
 
+  const handleDelete = useCallback(
+    (id) => {
+      Alert.alert(
+        "Delete Address",
+        "Are you sure you want to delete this address?",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Delete",
+            style: "destructive",
+            onPress: async () => {
+              const { error } = await deleteAddress({
+                url: "/user/delete-address",
+                method: "DELETE",
+                authRequired: true,
+                params: { addressId: id },
+              });
+
+              if (error) {
+                Alert.alert("Failed", "Could not delete address.");
+                return;
+              }
+
+              setAddresses((prev) => prev.filter((addr) => addr._id !== id));
+
+              if (id === defaultAddressId) setDefaultAddressId(null);
+            },
+          },
+        ]
+      );
+    },
+    [defaultAddressId]
+  );
+
+  const renderAddress = useCallback(
+    ({ item }) => (
+      <UserAddressCard
+        address={item}
+        isDeleting={isDeleting}
+        settingDefault={settingDefault}
+        activeSetId={activeSetId}
+        onEdit={() => router.push(`/account/addresses/edit/${item._id}`)}
+        onSetDefault={handleSetDefault}
+        onDelete={handleDelete}
+      />
+    ),
+    [isDeleting, settingDefault, activeSetId, handleSetDefault, handleDelete]
+  );
+
+
   return (
-    <AppLayout>
-      <HeaderWithBack showBackButton title="My Addresses" />
+    <AppLayout scroll={false}>
+      <HeaderWithBack title="My Addresses" showBackButton />
 
       <CTAButton
         label="Add New Address"
         onPress={() => router.push(ROUTE_PATH.APP.ACCOUNT.ADD_ADDRESS)}
-        icon={<Ionicons name="add" size={24} color="white" className="mr-2" />}
+        icon={<Ionicons name="add" size={24} color="white" />}
+        className={"my-4"}
       />
 
       {loadingAddresses ? (
         <View className="flex-1 justify-center items-center mt-10">
-          <LoadingDots
-            title={"Loading Addresses... "}
-            subtitle={"Please wait..."}
-          />
-        </View>
-      ) : addresses.length === 0 ? (
-        <View className="flex-1 items-center justify-center">
-          <Text className="text-xl font-semibold text-gray-700">
-            No Address Found
-          </Text>
+          <LoadingDots title="Loading Addresses..." subtitle="Please wait..." />
         </View>
       ) : (
-        <ScrollView
-          className="py-4 pb-20"
+        <FlatList
+          data={addresses}
+          keyExtractor={(item) => item._id}
+          renderItem={renderAddress}
+          // ItemSeparatorComponent={renderSeparator}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <View className="flex-1 items-center justify-center mt-10">
+              <Text className="text-xl font-semibold text-gray-700">
+                No Address Found
+              </Text>
+            </View>
+          }
+          contentContainerClassName="pb-20"
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-        >
-          {addresses.map((addr) => (
-            <UserAddressCard
-              key={addr._id}
-              address={addr}
-              onEdit={(id) => router.push(`/account/addresses/edit/${id}`)}
-              onSetDefault={handleSetDefault}
-              onDelete={handleDelete}
-              settingDefault={settingDefaultLoading}
-              activeSetId={activeSetId}
-              isDeleting={deleting}
-            />
-          ))}
-        </ScrollView>
+        />
       )}
     </AppLayout>
   );

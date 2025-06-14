@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import * as Location from "expo-location";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
@@ -14,56 +13,8 @@ import SkeletonFormField from "@/components/skeletons/SkeletonFormField";
 import CTAButton from "@/components/common/CTAButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import LoadingDots from "@/components/common/LoadingDots";
-
-const schema = yup.object().shape({
-  address_type: yup.string().required("Address type is required"),
-  house_number: yup.string().required("House number is required"),
-  street: yup.string(),
-  landmark: yup.string(),
-  city: yup.string().required("City is required"),
-  state: yup.string(),
-  pincode: yup
-    .string()
-    .required("Pincode is required")
-    .matches(/^\d{6}$/, "Pincode must be 6 digits"),
-  country: yup.string().required("Country is required"),
-});
-
-const addressFields = [
-  {
-    label: "Address Type",
-    name: "address_type",
-    placeholder: "Select address type",
-    type: "radio",
-    options: [
-      { label: "Home", value: "home" },
-      { label: "Work", value: "work" },
-      { label: "Other", value: "other" },
-    ],
-  },
-  {
-    label: "House Number",
-    name: "house_number",
-    placeholder: "Enter house number",
-    required: true,
-  },
-  { label: "Street", name: "street", placeholder: "Enter street" },
-  { label: "Landmark", name: "landmark", placeholder: "Enter landmark" },
-  { label: "City", name: "city", placeholder: "Enter city", required: true },
-  { label: "State", name: "state", placeholder: "Enter state" },
-  {
-    label: "Pincode",
-    name: "pincode",
-    placeholder: "Enter pincode",
-    keyboardType: "number-pad",
-    required: true,
-  },
-  {
-    label: "Country",
-    name: "country",
-    placeholder: "Enter country",
-  },
-];
+import FORM_VALIDATIONS from "@/libs/form-validations";
+import FORM_FIELD_TYPES from "@/libs/form-field-types";
 
 export default function EditAddressScreen() {
   const { addressId } = useLocalSearchParams();
@@ -86,7 +37,7 @@ export default function EditAddressScreen() {
     defaultValues: {
       is_default: false,
     },
-    resolver: yupResolver(schema),
+    resolver: yupResolver(FORM_VALIDATIONS.USER_EDIT_ADDRESS),
     mode: "onChange",
   });
 
@@ -194,7 +145,6 @@ export default function EditAddressScreen() {
         </>
       ) : (
         <ScrollView
-          className="px-4 py-6"
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
@@ -221,7 +171,7 @@ export default function EditAddressScreen() {
           <FormFieldRenderer
             control={control}
             errors={errors}
-            fields={addressFields}
+            fields={FORM_FIELD_TYPES.USER_EDIT_ADDRESS}
           />
 
           <CTAButton
