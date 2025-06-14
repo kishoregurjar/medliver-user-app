@@ -8,7 +8,7 @@ import useAxios from "@/hooks/useAxios";
 import SkeletonTestOrderDetails from "@/components/skeletons/SkeletonTestOrderDetails";
 
 const Card = ({ title, children }) => (
-  <View className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+  <View className="bg-white rounded-2xl p-4 border border-gray-100">
     <Text className="text-base font-lexend-semibold text-gray-900 mb-4">
       {title}
     </Text>
@@ -40,7 +40,7 @@ const Badge = ({ text, type = "pending" }) => {
   };
 
   return (
-    <View className={`px-3 py-1 rounded-full ${colors[type]} shadow-sm`}>
+    <View className={`px-3 py-1 rounded-full ${colors[type]}`}>
       <Text className="text-xs font-lexend-medium">{text}</Text>
     </View>
   );

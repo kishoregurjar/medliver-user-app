@@ -82,7 +82,7 @@ export default function DiagnosticsOrderCard({ order }) {
   return (
     <Pressable
       onPress={handlePress}
-      className="bg-white rounded-2xl p-4 border border-gray-200 active:opacity-90 shadow-sm"
+      className="bg-white rounded-2xl p-4 border border-gray-200 active:opacity-90"
     >
       {/* Header */}
       <View className="mb-4">

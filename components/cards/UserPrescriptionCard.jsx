@@ -31,7 +31,7 @@ export default function UserPrescriptionCard({ item, onPress, onDelete }) {
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
-      <View className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+      <View className="bg-white border border-gray-200 rounded-2xl p-4">
         {/* Header */}
         <View className="flex-row justify-between items-center mb-2">
           <View>
