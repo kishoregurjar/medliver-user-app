@@ -63,7 +63,7 @@ export default function ViewOrderScreen() {
     );
 
   const handleTrackOrder = () => {
-    router.push(`/track-order/${orderId}`);
+    router.push(`/account/orders/${orderId}/track-order`);
   };
 
   const handleReorder = () => {
@@ -102,7 +102,13 @@ export default function ViewOrderScreen() {
               <CTAButton
                 label={"Track Order"}
                 onPress={handleTrackOrder}
-                icon={<MaterialCommunityIcons name="map-marker" size={16} color={"white"} />}
+                icon={
+                  <MaterialCommunityIcons
+                    name="map-marker"
+                    size={16}
+                    color={"white"}
+                  />
+                }
                 className="mb-4"
                 size="sm"
               />
