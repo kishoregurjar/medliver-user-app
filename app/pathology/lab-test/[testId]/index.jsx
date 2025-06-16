@@ -8,7 +8,6 @@ import CTAButton from "@/components/common/CTAButton";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ROUTE_PATH from "@/routes/route.constants";
 import { useAuthUser } from "@/contexts/AuthContext";
-import { useAppToast } from "@/hooks/useAppToast";
 
 export default function PathologyTestDetailsScreen() {
   const { testId } = useLocalSearchParams();
@@ -18,8 +17,21 @@ export default function PathologyTestDetailsScreen() {
   const router = useRouter();
 
   const { authUser } = useAuthUser();
-  const { showToast } = useAppToast();
   const { request: getTestDetails, loading: isLoading } = useAxios();
+  const { request: logTestClick, loading: isLogging } = useAxios();
+
+  const logUserEventTest = async () => {
+    const { data, error } = await logTestClick({
+      method: "POST",
+      url: "/user/test-log-click",
+      authRequired: true,
+      payload: { testId },
+    });
+
+    if (error) {
+      console.error("Error logging test click:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchTestDetails = async () => {
@@ -38,6 +50,10 @@ export default function PathologyTestDetailsScreen() {
 
     if (testId) {
       fetchTestDetails();
+    }
+
+    if (authUser.isAuthenticated && testId) {
+      logUserEventTest();
     }
   }, [testId]);
 
@@ -155,19 +171,10 @@ export default function PathologyTestDetailsScreen() {
                       label="Continue Booking"
                       size="sm"
                       onPress={() => {
-                        if (authUser?.isAuthenticated) {
-                          setShowWarningModal(false);
-                          router.push({
-                            pathname: ROUTE_PATH.APP.PATHOLOGY.LAB_TEST_BOOK,
-                            params: { testId: testDetails._id },
-                          });
-                        } else {
-                          showToast(
-                            "warning",
-                            "Please login to book the test."
-                          );
-                          setShowWarningModal(false);
-                        }
+                        router.push({
+                          pathname: ROUTE_PATH.APP.PATHOLOGY.LAB_TEST_BOOK,
+                          params: { testId: testDetails._id },
+                        });
                       }}
                     />
                   </View>

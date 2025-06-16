@@ -10,11 +10,15 @@ import { Image } from "react-native";
 import SkeletonTestDetailsBook from "@/components/skeletons/SkeletonTestDetailsBook";
 import { useAppToast } from "@/hooks/useAppToast";
 import ROUTE_PATH from "@/routes/route.constants";
+import { useAuthUser } from "@/contexts/AuthContext";
+import CTAButton from "@/components/common/CTAButton";
+import LoginRequiredModal from "@/components/modals/LoginRequiredModal";
 
 export default function BookTestScreen() {
   const router = useRouter();
   const { testId } = useLocalSearchParams();
 
+  const { authUser } = useAuthUser();
   const { showToast } = useAppToast();
 
   const { request: getTestDetails, loading: isLoading } = useAxios();
@@ -23,6 +27,8 @@ export default function BookTestScreen() {
   const [testDetails, setTestDetails] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
+
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handlePlaceOrder = async () => {
     let initiateBooking = {
@@ -123,21 +129,41 @@ export default function BookTestScreen() {
           <Text className="text-center text-gray-500 mt-4">Test not found</Text>
         )}
 
-        <UserAddressSelection
-          onSelectDeliveryAddress={(id) => {
-            if (__DEV__) console.log("Selected address ID:", id);
-            setSelectedAddress(id);
-          }}
-          onAddAddressPress={() =>
-            router.push(ROUTE_PATH.APP.ACCOUNT.ADD_ADDRESS)
-          }
-        />
-        <UserPaymentOptions
-          onSelectPaymentMethod={(method) => setSelectedPayment(method)}
-          onPlaceOrder={handlePlaceOrder}
-          isInitiatingOrder={initiateBookingLoading}
-          type="pathology"
-        />
+        {authUser?.isAuthenticated && authUser?.token && (
+          <>
+            <UserAddressSelection
+              onSelectDeliveryAddress={(id) => {
+                if (__DEV__) console.log("Selected address ID:", id);
+                setSelectedAddress(id);
+              }}
+              onAddAddressPress={() =>
+                router.push(ROUTE_PATH.APP.ACCOUNT.ADD_ADDRESS)
+              }
+            />
+
+            <UserPaymentOptions
+              onSelectPaymentMethod={(method) => setSelectedPayment(method)}
+              onPlaceOrder={handlePlaceOrder}
+              isInitiatingOrder={initiateBookingLoading}
+              type="pathology"
+            />
+          </>
+        )}
+
+        {!authUser?.isAuthenticated && (
+          <>
+            <CTAButton
+              label="Book Test"
+              onPress={() => setShowLoginModal(true)}
+              className="mt-4 mx-4 mb-6 bg-brand-primary rounded-xl py-3 px-6"
+              textClassName="text-white text-base font-lexend-medium"
+            />
+            <LoginRequiredModal
+              visible={showLoginModal}
+              onClose={() => setShowLoginModal(false)}
+            />
+          </>
+        )}
       </ScrollView>
     </AppLayout>
   );

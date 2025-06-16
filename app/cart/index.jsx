@@ -185,7 +185,6 @@ export default function CartScreen() {
                 <CTAButton
                   label="Place Order"
                   onPress={() => setShowLoginModal(true)}
-                  loading={initiateOrderLoading}
                   className="mt-4 mx-4 mb-6 bg-brand-primary rounded-xl py-3 px-6"
                   textClassName="text-white text-base font-lexend-medium"
                 />

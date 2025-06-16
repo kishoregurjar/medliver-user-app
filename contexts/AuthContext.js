@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
         AUTHENTICATION_STORAGE_KEY,
         JSON.stringify(userData)
       );
-      router.replace(ROUTE_PATH.APP.HOME);
+      // router.replace(ROUTE_PATH.APP.HOME);
     } catch (error) {
       console.error("Failed to save auth user:", error);
       router.replace(ROUTE_PATH.AUTH.LOGIN);

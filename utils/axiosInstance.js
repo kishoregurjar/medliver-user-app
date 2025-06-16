@@ -29,16 +29,14 @@ axiosInstance.interceptors.request.use((config) => {
 // Interceptor for response error handling (e.g., token refresh handling)
 axiosInstance.interceptors.response.use(
   (response) => {
-    // if (__DEV__) {
-    //   console.log(
-    //     `-------------------------- [DEV] API Response -------------------------`
-    //   );
-    //   console.log(
-    //     `API Response: METHOD - ${response.config.method} URL - ${response.config.url} STATUS - ${response.status} DATA - ${JSON.stringify(
-    //       response.data || "No Data"
-    //     )}`
-    //   );
-    // }
+    if (__DEV__) {
+      console.log(
+        `-------------------------- [DEV] API Response -------------------------`
+      );
+      console.log(
+        `API Response: METHOD - ${response.config.method} URL - ${response.config.url} STATUS - ${response.status}`
+      );
+    }
     return response;
   },
   async (error) => {
