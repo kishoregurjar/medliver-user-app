@@ -6,6 +6,8 @@ import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { enableScreens } from "react-native-screens";
+
 import {
   DarkTheme,
   DefaultTheme,
@@ -34,6 +36,9 @@ import { NavigationHistoryProvider } from "@/contexts/NavigationHistoryContext";
 import { ConfigProvider } from "@/contexts/ConfigContext";
 
 import "./global.css";
+
+// ✅ Enable native screen optimizations before rendering anything
+enableScreens(true);
 
 SplashScreen.preventAutoHideAsync();
 
