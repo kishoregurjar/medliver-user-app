@@ -79,7 +79,9 @@ export const accountOptions = [
 ];
 
 const ANIMATIONS = {
-  LETS_START: require("../assets/animations/medlivurr-animation.json"),
+  LETS_START_1: require("../assets/animations/animation-main.json"),
+  LETS_START_2: require("../assets/animations/animation-delivery.json"),
+  LETS_START_3: require("../assets/animations/animation-medical.json"),
 };
 
 const IMAGES = {

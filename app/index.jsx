@@ -22,19 +22,19 @@ const onboardingSteps = [
     title: "Your Health, Delivered\nFast & Safe",
     description:
       "We believe that getting the care you need shouldn't be complicated or time-consuming.",
-    animation: STATIC.ANIMATIONS.LETS_START,
+    animation: STATIC.ANIMATIONS.LETS_START_1,
   },
   {
     title: "Order Medicines in Minutes",
     description:
       "Browse thousands of medicines and order them instantly with doorstep delivery.",
-    animation: STATIC.ANIMATIONS.LETS_START,
+    animation: STATIC.ANIMATIONS.LETS_START_2,
   },
   {
     title: "Book Lab Tests Easily",
     description:
       "Schedule diagnostic tests at home with certified labs and real-time tracking.",
-    animation: STATIC.ANIMATIONS.LETS_START,
+    animation: STATIC.ANIMATIONS.LETS_START_3,
   },
 ];
 
@@ -175,7 +175,7 @@ export default function IndexScreen() {
         <View className="px-4 mb-6">
           <CTAButton
             label={step < onboardingSteps.length - 1 ? "Next" : "Get Started"}
-            icon={<AntDesign name="arrowright" size={20} color="white" />}
+            // icon={<AntDesign name="arrowright" size={20} color="white" className="ml-2" />}
             iconPosition="right"
             onPress={handleNext}
             className="w-full"
