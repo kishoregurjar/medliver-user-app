@@ -1,6 +1,12 @@
-// app/index.tsx
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Image, Animated, useWindowDimensions } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  useWindowDimensions,
+  Animated,
+  PanResponder,
+} from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,24 +27,26 @@ const onboardingSteps = [
     title: "Order Medicines in Minutes",
     description:
       "Browse thousands of medicines and order them instantly with doorstep delivery.",
-    image: STATIC.IMAGES.PAGES.LETS_START, // use a second image
+    image: STATIC.IMAGES.PAGES.LETS_START,
   },
   {
     title: "Book Lab Tests Easily",
     description:
       "Schedule diagnostic tests at home with certified labs and real-time tracking.",
-    image: STATIC.IMAGES.PAGES.LETS_START, // use a third image
+    image: STATIC.IMAGES.PAGES.LETS_START,
   },
 ];
 
 export default function IndexScreen() {
   const router = useRouter();
   const { width, height } = useWindowDimensions();
+
   const [isLoading, setIsLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [step, setStep] = useState(0);
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const translateX = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const checkOnboarding = async () => {
@@ -53,62 +61,89 @@ export default function IndexScreen() {
     checkOnboarding();
   }, []);
 
-  const handleNext = async () => {
+  const goToStep = (index) => {
     Animated.timing(fadeAnim, {
       toValue: 0,
-      duration: 300,
+      duration: 200,
       useNativeDriver: true,
     }).start(() => {
-      if (step < onboardingSteps.length - 1) {
-        setStep((prev) => prev + 1);
-        fadeAnim.setValue(0);
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }).start();
-      } else {
-        AsyncStorage.setItem("onboarding-done", "true");
-        router.replace(ROUTE_PATH.APP.HOME);
-      }
+      setStep(index);
+      fadeAnim.setValue(0);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
     });
   };
 
-  const current = onboardingSteps[step];
+  const handleNext = async () => {
+    if (step < onboardingSteps.length - 1) {
+      goToStep(step + 1);
+    } else {
+      await AsyncStorage.setItem("onboarding-done", "true");
+      router.replace(ROUTE_PATH.APP.HOME);
+    }
+  };
 
-  const dots = [
-    { top: "10%", left: "15%", size: 8, color: "bg-yellow-400", opacity: 70 },
-    { top: "20%", left: "70%", size: 6, color: "bg-blue-400", opacity: 60 },
-    { top: "35%", left: "30%", size: 6, color: "bg-green-400", opacity: 50 },
-    { top: "50%", left: "80%", size: 8, color: "bg-pink-400", opacity: 60 },
-    { top: "60%", left: "10%", size: 6, color: "bg-purple-400", opacity: 40 },
-    { top: "70%", left: "50%", size: 4, color: "bg-yellow-300", opacity: 50 },
-    { top: "80%", left: "25%", size: 6, color: "bg-cyan-400", opacity: 60 },
-  ];
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dx) > 10,
+      onPanResponderMove: (_, gesture) => {
+        translateX.setValue(gesture.dx);
+      },
+      onPanResponderRelease: (_, gesture) => {
+        if (gesture.dx < -80 && step < onboardingSteps.length - 1) {
+          goToStep(step + 1);
+        } else if (gesture.dx > 80 && step > 0) {
+          goToStep(step - 1);
+        } else {
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
 
   if (isLoading || !showOnboarding) return null;
 
+  const current = onboardingSteps[step];
+
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView className="flex-1 bg-white">
       <LinearGradient colors={["#e0f7fa", "#fce4ec"]} style={{ flex: 1 }}>
         <View className="absolute w-full h-full">
-          {dots.map((dot, index) => (
+          {/* Background Dots */}
+          {[...Array(7)].map((_, i) => (
             <View
-              key={index}
-              className={`absolute ${dot.color} opacity-${dot.opacity} rounded-full`}
+              key={i}
+              className={`absolute bg-opacity-50 rounded-full`}
               style={{
-                width: dot.size,
-                height: dot.size,
-                top: dot.top,
-                left: dot.left,
+                width: 6 + (i % 2) * 2,
+                height: 6 + (i % 2) * 2,
+                top: `${10 + i * 10}%`,
+                left: `${(i * 13) % 90}%`,
+                backgroundColor: ["#FDE68A", "#93C5FD", "#6EE7B7", "#F9A8D4"][
+                  i % 4
+                ],
+                opacity: 0.4,
               }}
             />
           ))}
         </View>
 
         <Animated.View
-          style={{ flex: 1, opacity: fadeAnim }}
-          className="flex-1 items-center justify-center px-4"
+          {...panResponder.panHandlers}
+          style={[
+            { flex: 1, opacity: fadeAnim, transform: [{ translateX }] },
+            {
+              justifyContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 16,
+            },
+          ]}
         >
           <Image
             source={current.image}
@@ -121,7 +156,7 @@ export default function IndexScreen() {
           />
 
           <Text
-            className="text-center text-text-primary mb-2 font-lexend-bold"
+            className="text-center text-text-primary font-lexend-bold mb-2"
             style={{
               fontSize: Math.min(width * 0.06, 26),
               lineHeight: Math.min(width * 0.075, 32),
@@ -131,16 +166,19 @@ export default function IndexScreen() {
           </Text>
 
           <Text
-            className="text-center text-text-muted mb-8 font-lexend"
+            className="text-center text-text-muted font-lexend mb-4"
             style={{
               fontSize: Math.min(width * 0.04, 16),
-              paddingHorizontal: 4,
               lineHeight: 20,
+              paddingHorizontal: 4,
             }}
           >
             {current.description}
           </Text>
+        </Animated.View>
 
+        {/* Bottom CTA + Indicators */}
+        <View className="px-4 mb-6">
           <CTAButton
             label={step < onboardingSteps.length - 1 ? "Next" : "Get Started"}
             icon={
@@ -157,8 +195,7 @@ export default function IndexScreen() {
             size="lg"
           />
 
-          {/* Optional step indicators */}
-          <View className="flex-row mt-6 gap-2">
+          <View className="flex-row justify-center mt-4 gap-2">
             {onboardingSteps.map((_, i) => (
               <View
                 key={i}
@@ -168,7 +205,7 @@ export default function IndexScreen() {
               />
             ))}
           </View>
-        </Animated.View>
+        </View>
       </LinearGradient>
     </SafeAreaView>
   );
