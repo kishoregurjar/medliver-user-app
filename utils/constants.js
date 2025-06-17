@@ -78,6 +78,10 @@ export const accountOptions = [
   },
 ];
 
+const ANIMATIONS = {
+  LETS_START: require("../assets/animations/medlivurr-animation.json"),
+};
+
 const IMAGES = {
   APP: {
     LOGO: require("../assets/logos/logo.png"),
@@ -110,6 +114,7 @@ const IMAGES = {
 };
 
 const STATIC = {
+  ANIMATIONS,
   IMAGES,
 };
 
