@@ -19,6 +19,10 @@ const SOCKET_SERVER_URL = process.env.EXPO_PUBLIC_SOCKET_SERVER_URL;
 
 export default function TrackOrderScreen() {
   const { orderId } = useLocalSearchParams();
+  console.log("orderId", orderId);
+  console.log("SOCKET_SERVER_URL", SOCKET_SERVER_URL);
+  console.log("GOOGLE_MAPS_APIKEY", GOOGLE_MAPS_APIKEY);
+
   const mapRef = useRef(null);
   const socketRef = useRef(null);
 
@@ -193,8 +197,6 @@ export default function TrackOrderScreen() {
         totalAmount: "₹0.00",
         items: [],
       };
-
-  console.log(orderDetails);
 
   if (loading || !dropLocation || !partnerLocation || !partnerAnimatedCoord) {
     return (
