@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "191356059052",
+    "project_id": "medliver-e0853",
+    "storage_bucket": "medliver-e0853.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191356059052:android:f4b7176b57ab7ed9d98e09",
+        "android_client_info": {
+          "package_name": "com.anonymous.medlivurr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqDuPo90lSVlxF1vvH3dZUOT3Camf0lUk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

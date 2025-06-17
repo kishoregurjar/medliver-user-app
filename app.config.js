@@ -20,6 +20,7 @@ export default {
     },
 
     ios: {
+      bundleIdentifier: "com.anonymous.medlivurr",
       supportsTablet: true,
       infoPlist: {
         UIBackgroundModes: ["location"],
