@@ -7,8 +7,11 @@ import {
   useMemo,
 } from "react";
 import useAxios from "@/hooks/useAxios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ConfigContext = createContext();
+
+const ONBOARDING_DONE_STORAGE_KEY = "onboarding-done";
 
 export const ConfigProvider = ({ children }) => {
   const [config, setConfig] = useState({
@@ -18,6 +21,7 @@ export const ConfigProvider = ({ children }) => {
     supportEmail: "medlivurr@support.com",
     supportPhone: "+1234567890",
   });
+  const [onboardingDone, setOnboardingDone] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
@@ -71,6 +75,19 @@ export const ConfigProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    const checkOnboarding = async () => {
+      const seen = await AsyncStorage.getItem(ONBOARDING_DONE_STORAGE_KEY);
+      if (seen === "true") setOnboardingDone(true);
+    };
+    checkOnboarding();
+  }, []);
+
+  const markOnboardingDone = async () => {
+    await AsyncStorage.setItem(ONBOARDING_DONE_STORAGE_KEY, "true");
+    setOnboardingDone(true);
+  };
+
+  useEffect(() => {
     if (!hasLoadedOnce && !loading) setHasLoadedOnce(true);
   }, [loading]);
 
@@ -80,8 +97,10 @@ export const ConfigProvider = ({ children }) => {
       loading,
       error,
       refetch: fetchConfig,
+      onboardingDone,
+      markOnboardingDone,
     }),
-    [config, loading, error, fetchConfig]
+    [config, loading, error, fetchConfig, onboardingDone]
   );
 
   return (
