@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { View, Animated, ToastAndroid } from "react-native";
+import { View, Animated, ToastAndroid, Text } from "react-native";
 import MapView, {
   Marker,
   AnimatedRegion,
@@ -14,6 +14,7 @@ import useAxios from "@/hooks/useAxios";
 import LoadingDots from "@/components/common/LoadingDots";
 import OrderTrackingInfoPanel from "@/components/common/OrderTrackingInfoPanel";
 import { throttle } from "lodash";
+import { FontAwesome5 } from "@expo/vector-icons"; // 👈 for shop icon
 
 const GOOGLE_MAPS_APIKEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 const SOCKET_SERVER_URL = process.env.EXPO_PUBLIC_SOCKET_SERVER_URL;
@@ -32,6 +33,7 @@ export default function TrackOrderScreen() {
   const [dropLocation, setDropLocation] = useState(null);
   const [partnerLocation, setPartnerLocation] = useState(null);
   const [partnerAnimatedCoord, setPartnerAnimatedCoord] = useState(null);
+  const [pharmacyLocation, setPharmacyLocation] = useState(null);
   const [eta, setEta] = useState("");
   const [prevEta, setPrevEta] = useState("");
   const [distance, setDistance] = useState("");
@@ -83,7 +85,6 @@ export default function TrackOrderScreen() {
           longitude: location.lng,
         };
 
-        // First-time setup of animated region
         if (!initialLocationSetRef.current) {
           const animatedRegion = new AnimatedRegion({
             ...liveLocation,
@@ -95,12 +96,10 @@ export default function TrackOrderScreen() {
           setPartnerAnimatedCoord(animatedRegion);
           initialLocationSetRef.current = true;
 
-          // Fetch ETA on first location update
           if (dropLocation) getEtaAndDistance(liveLocation, dropLocation);
           return;
         }
 
-        // Animate on update
         if (partnerAnimatedCoord) {
           partnerAnimatedCoord
             .timing({
@@ -131,8 +130,6 @@ export default function TrackOrderScreen() {
       });
 
       socket.on("location_update", (data) => {
-        console.log("Received location update:", data);
-
         const { orderId: incomingOrderId, location } = data;
         if (incomingOrderId === orderId && location?.lat && location?.lng) {
           handleLocationUpdate(location);
@@ -166,23 +163,27 @@ export default function TrackOrderScreen() {
         authRequired: true,
       });
 
-      console.log(data.data.order);
-      
       if (error || data?.status !== 200 || !data.data?.order) {
         console.error("Failed to fetch order data:", error || "Invalid data");
         return;
       }
 
       const order = data.data.order;
-      
       setOrderDetails(order);
 
       const drop = {
         latitude: order.deliveryAddress.coordinates.lat,
         longitude: order.deliveryAddress.coordinates.long,
       };
-
       setDropLocation(drop);
+
+      const pharmacy = order.assignedPharmacyCoordinates;
+      if (pharmacy?.lat && pharmacy?.long) {
+        setPharmacyLocation({
+          latitude: pharmacy.lat,
+          longitude: pharmacy.long,
+        });
+      }
 
       Animated.timing(bottomAnim, {
         toValue: 0,
@@ -213,7 +214,7 @@ export default function TrackOrderScreen() {
 
   const orderInfo = orderDetails
     ? {
-        pharmacyName: "Good Health Pharmacy",
+        pharmacyName: orderDetails.assigned_pharmacy_name || "Pharmacy",
         totalAmount: `₹${orderDetails.totalAmount.toFixed(2)}`,
         items: orderDetails.items.map((item) => ({
           name: item.medicineName,
@@ -222,12 +223,12 @@ export default function TrackOrderScreen() {
         })),
       }
     : {
-        pharmacyName: "Good Health Pharmacy",
+        pharmacyName: "Pharmacy",
         totalAmount: "₹0.00",
         items: [],
       };
 
-  if (loading || !dropLocation || !partnerLocation || !partnerAnimatedCoord) {
+  if (loading || !dropLocation) {
     return (
       <AppLayout>
         <HeaderWithBack showBackButton title="Track Your Order" />
@@ -264,11 +265,11 @@ export default function TrackOrderScreen() {
           onRegionChangeComplete={() => {
             setTimeout(() => {
               userInteractedRef.current = false;
-            }, 10000); // resume auto-follow after 10s
+            }, 10000);
           }}
         >
           <MapViewDirections
-            origin={partnerLocation}
+            origin={partnerLocation || pharmacyLocation}
             destination={dropLocation}
             apikey={GOOGLE_MAPS_APIKEY}
             strokeWidth={4}
@@ -281,12 +282,25 @@ export default function TrackOrderScreen() {
             }}
           />
 
-          <Marker.Animated
-            coordinate={partnerAnimatedCoord}
-            title="Delivery Partner"
-            pinColor="green"
-          />
+          {/* Partner Marker */}
+          {partnerLocation && partnerAnimatedCoord ? (
+            <Marker.Animated
+              coordinate={partnerAnimatedCoord}
+              title="Delivery Partner"
+              pinColor="green"
+            />
+          ) : pharmacyLocation ? (
+            <Marker coordinate={pharmacyLocation}>
+              <View className="items-center">
+                <FontAwesome5 name="store" size={26} color="#6D28D9" />
+                <Text className="text-xs mt-1 font-semibold text-black">
+                  {orderInfo.pharmacyName}
+                </Text>
+              </View>
+            </Marker>
+          ) : null}
 
+          {/* Drop Marker */}
           <Marker
             coordinate={dropLocation}
             title="Delivery Address"
