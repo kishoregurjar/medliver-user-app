@@ -13,18 +13,17 @@ import io from "socket.io-client";
 import useAxios from "@/hooks/useAxios";
 import LoadingDots from "@/components/common/LoadingDots";
 import OrderTrackingInfoPanel from "@/components/common/OrderTrackingInfoPanel";
+import { throttle } from "lodash";
 
 const GOOGLE_MAPS_APIKEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 const SOCKET_SERVER_URL = process.env.EXPO_PUBLIC_SOCKET_SERVER_URL;
 
 export default function TrackOrderScreen() {
   const { orderId } = useLocalSearchParams();
-  console.log("orderId", orderId);
-  console.log("SOCKET_SERVER_URL", SOCKET_SERVER_URL);
-  console.log("GOOGLE_MAPS_APIKEY", GOOGLE_MAPS_APIKEY);
-
   const mapRef = useRef(null);
   const socketRef = useRef(null);
+  const userInteractedRef = useRef(false);
+  const initialLocationSetRef = useRef(false);
 
   const bottomAnim = useRef(new Animated.Value(200)).current;
 
@@ -78,40 +77,84 @@ export default function TrackOrderScreen() {
 
       socketRef.current = socket;
 
+      const handleLocationUpdate = throttle((location) => {
+        const liveLocation = {
+          latitude: location.lat,
+          longitude: location.lng,
+        };
+
+        // First-time setup of animated region
+        if (!initialLocationSetRef.current) {
+          const animatedRegion = new AnimatedRegion({
+            ...liveLocation,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          });
+
+          setPartnerLocation(liveLocation);
+          setPartnerAnimatedCoord(animatedRegion);
+          initialLocationSetRef.current = true;
+
+          // Fetch ETA on first location update
+          if (dropLocation) getEtaAndDistance(liveLocation, dropLocation);
+          return;
+        }
+
+        // Animate on update
+        if (partnerAnimatedCoord) {
+          partnerAnimatedCoord
+            .timing({
+              latitude: liveLocation.latitude,
+              longitude: liveLocation.longitude,
+              duration: 1000,
+              useNativeDriver: false,
+            })
+            .start();
+
+          setPartnerLocation(liveLocation);
+
+          if (!userInteractedRef.current && mapRef.current) {
+            mapRef.current.animateCamera(
+              {
+                center: liveLocation,
+                zoom: 16,
+              },
+              { duration: 1000 }
+            );
+          }
+        }
+      }, 2000);
+
       socket.on("connect", () => {
         console.log("Socket connected");
         socket.emit("join_order_room", orderId);
       });
 
       socket.on("location_update", (data) => {
+        console.log("Received location update:", data);
+
         const { orderId: incomingOrderId, location } = data;
-        if (
-          incomingOrderId === orderId &&
-          location?.latitude &&
-          location?.longitude &&
-          partnerAnimatedCoord
-        ) {
-          partnerAnimatedCoord
-            .timing({
-              latitude: location.latitude,
-              longitude: location.longitude,
-              duration: 1000,
-              useNativeDriver: false,
-            })
-            .start();
-          setPartnerLocation(location);
+        if (incomingOrderId === orderId && location?.lat && location?.lng) {
+          handleLocationUpdate(location);
         }
+      });
+
+      socket.on("disconnect", () => {
+        ToastAndroid.show("Disconnected from tracking", ToastAndroid.SHORT);
+      });
+
+      socket.on("reconnect", () => {
+        ToastAndroid.show("Reconnected to tracking", ToastAndroid.SHORT);
+        socket.emit("join_order_room", orderId);
       });
 
       socket.on("connect_error", (err) => {
         console.error("Socket connection error:", err.message);
       });
 
-      return () => {
-        socket.disconnect();
-      };
+      return () => socket.disconnect();
     },
-    [partnerAnimatedCoord]
+    [dropLocation, partnerAnimatedCoord, getEtaAndDistance]
   );
 
   const fetchAndSetup = useCallback(async () => {
@@ -129,6 +172,7 @@ export default function TrackOrderScreen() {
       }
 
       const order = data.data.order;
+      
       setOrderDetails(order);
 
       const drop = {
@@ -136,24 +180,7 @@ export default function TrackOrderScreen() {
         longitude: order.deliveryAddress.coordinates.long,
       };
 
-      const partner = {
-        latitude: 22.7252, // Default / fallback coordinates
-        longitude: 75.865,
-      };
-
       setDropLocation(drop);
-      setPartnerLocation(partner);
-
-      const animatedRegion = new AnimatedRegion({
-        latitude: partner.latitude,
-        longitude: partner.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      });
-
-      setPartnerAnimatedCoord(animatedRegion);
-
-      await getEtaAndDistance(partner, drop);
 
       Animated.timing(bottomAnim, {
         toValue: 0,
@@ -167,7 +194,7 @@ export default function TrackOrderScreen() {
     } finally {
       setLoading(false);
     }
-  }, [getOrderDetails, getEtaAndDistance, initializeSocket]);
+  }, [getOrderDetails, initializeSocket]);
 
   useEffect(() => {
     if (!GOOGLE_MAPS_APIKEY) {
@@ -184,7 +211,7 @@ export default function TrackOrderScreen() {
 
   const orderInfo = orderDetails
     ? {
-        pharmacyName: "Good Health Pharmacy", // Replace if available in data
+        pharmacyName: "Good Health Pharmacy",
         totalAmount: `₹${orderDetails.totalAmount.toFixed(2)}`,
         items: orderDetails.items.map((item) => ({
           name: item.medicineName,
@@ -228,6 +255,14 @@ export default function TrackOrderScreen() {
             longitude: dropLocation.longitude,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
+          }}
+          onPanDrag={() => {
+            userInteractedRef.current = true;
+          }}
+          onRegionChangeComplete={() => {
+            setTimeout(() => {
+              userInteractedRef.current = false;
+            }, 10000); // resume auto-follow after 10s
           }}
         >
           <MapViewDirections
