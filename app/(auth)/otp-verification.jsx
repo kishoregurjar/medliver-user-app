@@ -12,6 +12,7 @@ import { useAppToast } from "../../hooks/useAppToast";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import CTAButton from "@/components/common/CTAButton";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuthUser } from "@/contexts/AuthContext";
 
 export default function OtpVerificationScreen() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function OtpVerificationScreen() {
   const { request: resendOtp, loading: resendLoading } = useAxios();
 
   const { showToast } = useAppToast();
+  const { login } = useAuthUser();
 
   const {
     control,
@@ -55,8 +57,10 @@ export default function OtpVerificationScreen() {
 
     if (!error && data?.status === 200) {
       showToast("success", data.message || "OTP verified successfully.");
-      type === "signup" && router.replace(ROUTE_PATH.APP.HOME);
-      type === "forgot" &&
+      if (type === "signup") {
+        await login(data.data);
+        router.replace(ROUTE_PATH.APP.HOME);
+      } else if (type === "forgot") {
         router.replace(
           generateDynamicRoute(
             ROUTE_PATH.AUTH.RESET_PASSWORD,
@@ -64,6 +68,7 @@ export default function OtpVerificationScreen() {
             "queryParams"
           )
         );
+      }
     } else {
       showToast("error", error || "Something went wrong");
       console.error(error);
