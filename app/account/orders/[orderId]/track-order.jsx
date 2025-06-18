@@ -166,6 +166,8 @@ export default function TrackOrderScreen() {
         authRequired: true,
       });
 
+      console.log(data.data.order);
+      
       if (error || data?.status !== 200 || !data.data?.order) {
         console.error("Failed to fetch order data:", error || "Invalid data");
         return;

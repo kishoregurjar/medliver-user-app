@@ -142,7 +142,7 @@ export default function MyOrdersScreen() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           showsVerticalScrollIndicator={false}
-          contentContainerClassName="bg-white px-4 py-4 rounded-2xl gap-4"
+          contentContainerClassName="bg-white h-full px-4 py-4 rounded-2xl gap-4"
           contentContainerStyle={{ paddingBottom: 32 }}
           ListFooterComponent={
             !isSearching &&
