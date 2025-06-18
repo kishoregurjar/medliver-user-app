@@ -163,7 +163,13 @@ export default function OtpVerificationScreen() {
       />
 
       <CTAButton
-        label="Back to Forgot Password"
+        label={`Back to ${
+          type === "signup"
+            ? "Signup"
+            : type === "forgot"
+            ? "Forgot Password"
+            : "Login"
+        }`}
         variant="transparent"
         icon={
           <Ionicons

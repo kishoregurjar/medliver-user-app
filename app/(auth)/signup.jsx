@@ -66,7 +66,6 @@ export default function SignupScreen() {
     }
 
     delete payload.confirmPassword;
-    delete payload.agree;
 
     const payloadToSend = {
       ...payload,
