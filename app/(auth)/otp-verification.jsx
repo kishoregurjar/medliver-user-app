@@ -17,11 +17,8 @@ export default function OtpVerificationScreen() {
   const router = useRouter();
   const { type, email } = useLocalSearchParams();
 
-  const {
-    request: verifyOtp,
-    loading: isLoading,
-    error: hasError,
-  } = useAxios();
+  const { request: verifyOtp, loading: isLoading } = useAxios();
+  const { request: resendOtp, loading: resendLoading } = useAxios();
 
   const { showToast } = useAppToast();
 
@@ -67,6 +64,23 @@ export default function OtpVerificationScreen() {
             "queryParams"
           )
         );
+    } else {
+      showToast("error", error || "Something went wrong");
+      console.error(error);
+    }
+  };
+
+  const onResendOtp = async () => {
+    const { data, error } = await resendOtp({
+      url: "/user/forget-password",
+      method: "POST",
+      payload: {
+        email,
+      },
+    });
+
+    if (!error && data?.status === 200) {
+      showToast("success", data.message || "OTP resent successfully.");
     } else {
       showToast("error", error || "Something went wrong");
       console.error(error);
@@ -149,7 +163,10 @@ export default function OtpVerificationScreen() {
         </Text>
         <CTAButton
           label="Resend Code"
-          onPress={() => {}}
+          onPress={onResendOtp}
+          loading={resendLoading}
+          loaderText="Resending..."
+          disabled={resendLoading}
           variant="transparent"
         />
       </View>
