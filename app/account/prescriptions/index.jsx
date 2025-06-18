@@ -156,7 +156,7 @@ export default function MyPrescriptionScreen() {
             }
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 32 }}
-            contentContainerClassName="bg-white p-4 rounded-2xl gap-4"
+            contentContainerClassName="bg-white h-full p-4 rounded-2xl gap-4"
             ListFooterComponent={
               currentPage <= totalPages && prescriptions.length > 0 ? (
                 <CTAButton

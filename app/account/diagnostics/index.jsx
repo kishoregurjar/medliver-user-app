@@ -129,7 +129,7 @@ export default function MyDiagnosticsScreen() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           showsVerticalScrollIndicator={false}
-          contentContainerClassName="bg-white p-4 rounded-2xl gap-4"
+          contentContainerClassName="bg-white h-full p-4 rounded-2xl gap-4"
           ListEmptyComponent={
             <View className="flex-1 items-center justify-center mt-20">
               <Text className="text-gray-500 text-base">

@@ -95,12 +95,12 @@ export default function DiagnosticsOrderCard({ order }) {
       </View>
 
       {/* Pathology Center */}
-      <View className="flex-row items-center mb-3">
+      {/* <View className="flex-row items-center mb-3">
         <Ionicons name="business-outline" size={14} color="#6B7280" />
         <Text className="ml-2 text-sm text-gray-700 font-medium">
           {pathologyCenter}
         </Text>
-      </View>
+      </View> */}
 
       {/* Pills */}
       <View className="flex-row flex-wrap gap-2 mb-4">
@@ -130,10 +130,10 @@ export default function DiagnosticsOrderCard({ order }) {
           value={`₹${Number(order?.totalAmount || 0).toFixed(2)}`}
         />
         <Section title="Payment Status" value={order?.paymentStatus || "N/A"} />
-        <Section
+        {/* <Section
           title="Order Status"
           value={order?.orderStatus?.replaceAll("_", " ") || "N/A"}
-        />
+        /> */}
       </View>
 
       {/* Status Badge (only visible for pending / delivered / cancelled) */}

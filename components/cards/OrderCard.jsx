@@ -58,17 +58,17 @@ export default function OrderCard({ order }) {
           <Text className="text-base font-lexend-semibold text-black">
             Order #{order.orderNumber}
           </Text>
-          <Text className="text-xs text-gray-500 mt-1">
+          <Text className="text-xs text-gray-500 mt-2">
             Placed on {orderDate}
           </Text>
         </View>
       </View>
 
       {/* Divider */}
-      <View className="border-t border-gray-100 my-3" />
+      <View className="border-t border-gray-100 my-2" />
 
       {/* Delivery Address */}
-      <View className="mb-3">
+      {/* <View className="mb-3">
         <Text className="text-sm font-lexend text-gray-600 mb-1">
           Delivery Address
         </Text>
@@ -76,10 +76,10 @@ export default function OrderCard({ order }) {
           icon={<Ionicons name="location-outline" size={18} color="#6B7280" />}
           value={`${address.street}, ${address.city} - ${address.pincode}`}
         />
-      </View>
+      </View> */}
 
       {/* Items */}
-      <View className="mb-3">
+      <View className="mb-2">
         <Text className="text-sm font-lexend text-gray-600 mb-2">
           Ordered Items
         </Text>
@@ -114,15 +114,15 @@ export default function OrderCard({ order }) {
       </View>
 
       {/* Route Info */}
-      {route?.distance && route?.duration && (
+      {/* {route?.distance && route?.duration && (
         <InfoRow
           icon={<Ionicons name="navigate-outline" size={16} color="#6B7280" />}
           value={`${route.distance} · ${route.duration}`}
         />
-      )}
+      )} */}
 
       {/* Divider */}
-      <View className="border-t border-gray-100 my-4" />
+      <View className="border-t border-gray-100 my-2" />
 
       {/* Summary */}
       <View>
@@ -130,7 +130,7 @@ export default function OrderCard({ order }) {
           title="Total Amount"
           value={`₹${order.totalAmount.toFixed(2)}`}
         />
-        <Section title="Payment Method" value={order.paymentMethod} />
+        {/* <Section title="Payment Method" value={order.paymentMethod} /> */}
         <Section
           title="Order Status"
           value={order.orderStatus.replaceAll("_", " ")}
@@ -138,7 +138,7 @@ export default function OrderCard({ order }) {
       </View>
 
       {/* Actions */}
-      <View className="flex-row gap-3 mt-5">
+      {/* <View className="flex-row gap-3 mt-5">
         {order.orderStatus.toLowerCase() === "pending" && (
           <Pressable
             onPress={handleTrack}
@@ -157,7 +157,7 @@ export default function OrderCard({ order }) {
             Reorder
           </Text>
         </Pressable>
-      </View>
+      </View> */}
     </Pressable>
   );
 }
