@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View, Text, FlatList, TextInput, RefreshControl } from "react-native";
 import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
@@ -8,6 +8,7 @@ import SkeletonOrderCard from "@/components/skeletons/SkeletonOrderCard";
 import DiagnosticsOrderCard from "@/components/cards/DiagnosticsOrderCard";
 import debounce from "lodash.debounce";
 import LoadingDots from "@/components/common/LoadingDots";
+import CTAButton from "@/components/common/CTAButton";
 
 export default function MyDiagnosticsScreen() {
   const [orders, setOrders] = useState([]);
@@ -16,38 +17,58 @@ export default function MyDiagnosticsScreen() {
   const [initialLoading, setInitialLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const { request: fetchDiagnosticsOrders } = useAxios();
-  const { request: searchDiagnosticsOrders } = useAxios();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  const fetchOrders = async () => {
-    try {
-      const { data } = await fetchDiagnosticsOrders({
-        method: "GET",
-        url: "/user/get-orders-pathology",
-        authRequired: true,
-      });
+  const { request: fetchDiagnosticsOrders, loading: loadingOrders } =
+    useAxios();
+  const { request: searchDiagnosticsOrders, loading: loadingSearch } =
+    useAxios();
 
-      setOrders(data?.data ?? []);
-    } catch (error) {
+  const fetchOrders = async (reset = false) => {
+    const pageToFetch = reset ? 1 : currentPage;
+    const { data, error } = await fetchDiagnosticsOrders({
+      method: "GET",
+      url: `/user/get-orders-pathology?page=${pageToFetch}`,
+      authRequired: true,
+    });
+
+    console.log(data.data);
+
+    const fetched = data?.data ?? [];
+    const totalFromApi = data?.data?.totalPages ?? 1;
+
+    if (error) {
       console.error("Diagnostics fetch error:", error);
-      setOrders([]);
-    } finally {
-      setInitialLoading(false);
+      if (reset) setOrders([]);
+      return;
     }
+
+    if (reset) {
+      setOrders(fetched);
+      setCurrentPage(2);
+    } else {
+      setOrders((prev) => [...prev, ...fetched]);
+      setCurrentPage((prev) => prev + 1);
+    }
+
+    setTotalPages(totalFromApi);
+    setInitialLoading(false);
   };
 
   const fetchSearchResults = async (query) => {
-    try {
-      const { data } = await searchDiagnosticsOrders({
-        method: "GET",
-        url: `/user/search-orders-pathology`,
-        authRequired: true,
-        params: { value: query },
-      });
+    const { data, error } = await searchDiagnosticsOrders({
+      method: "GET",
+      url: `/user/search-orders-pathology`,
+      authRequired: true,
+      params: { value: query },
+    });
 
-      setOrders(data?.data?.orders ?? []);
-    } catch (error) {
-      console.error("Diagnostics search error:", error);
+    if (!error && data?.status === 200) {
+      setOrders(data.data.orders ?? []);
+    } else {
+      console.error("Search error:", error);
       setOrders([]);
     }
   };
@@ -59,9 +80,9 @@ export default function MyDiagnosticsScreen() {
         fetchSearchResults(value.trim());
       } else {
         setIsSearching(false);
-        fetchOrders();
+        fetchOrders(true);
       }
-    }, 400),
+    }, 500),
     []
   );
 
@@ -75,7 +96,7 @@ export default function MyDiagnosticsScreen() {
     if (isSearching && search.trim()) {
       await fetchSearchResults(search.trim());
     } else {
-      await fetchOrders();
+      await fetchOrders(true);
     }
     setRefreshing(false);
   };
@@ -83,40 +104,39 @@ export default function MyDiagnosticsScreen() {
   useFocusEffect(
     useCallback(() => {
       setInitialLoading(true);
-      fetchOrders();
-
-      return () => debouncedSearch.cancel(); // cleanup debounce on unmount
+      fetchOrders(true);
+      return () => debouncedSearch.cancel();
     }, [])
   );
 
-  const isLoading = initialLoading || (isSearching && !orders.length);
+  const isLoading =
+    (initialLoading || (isSearching && loadingSearch)) && orders.length === 0;
 
   return (
-    <AppLayout scroll={false}>
+    <AppLayout scroll={false} className="flex-1">
       <HeaderWithBack showBackButton title="My Diagnostics" />
 
-      {/* Search Input */}
+      {/* 🔍 Search Input */}
       <View>
         <TextInput
           placeholder="Search diagnostics..."
           value={search}
           onChangeText={handleSearchChange}
-          className="my-4 px-4 py-4 bg-white rounded-2xl border border-background-soft text-gray-700"
+          className="my-4 px-4 py-4 bg-white rounded-xl border border-background-soft text-gray-700"
         />
       </View>
 
-      {isLoading && (
+      {/* 🧭 Loader */}
+      {isLoading ? (
         <View className="flex-1 justify-center items-center mt-10">
           <LoadingDots
             title="Loading Diagnostics..."
             subtitle="Please wait..."
           />
         </View>
-      )}
-
-      {!isLoading && (
+      ) : (
         <FlatList
-          data={orders.length > 0 ? orders : []}
+          data={orders}
           keyExtractor={(item, index) => item?._id ?? `skeleton-${index}`}
           renderItem={({ item }) =>
             item?._id ? (
@@ -129,7 +149,22 @@ export default function MyDiagnosticsScreen() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           showsVerticalScrollIndicator={false}
-          contentContainerClassName="bg-white h-full p-4 rounded-2xl gap-4"
+          contentContainerClassName="bg-white p-4 rounded-2xl gap-4"
+          contentContainerStyle={{ paddingBottom: 32 }}
+          ListFooterComponent={
+            !isSearching &&
+            currentPage <= totalPages &&
+            orders.length > 0 && (
+              <CTAButton
+                label="Load More"
+                onPress={() => fetchOrders()}
+                loaderText="Loading..."
+                loading={loadingOrders}
+                disabled={loadingOrders}
+                size="sm"
+              />
+            )
+          }
           ListEmptyComponent={
             <View className="flex-1 items-center justify-center mt-20">
               <Text className="text-gray-500 text-base">

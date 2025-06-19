@@ -110,10 +110,10 @@ export default function MyPrescriptionScreen() {
   };
 
   return (
-    <AppLayout scroll={false}>
+    <AppLayout scroll={false} className="flex-1">
       <HeaderWithBack showBackButton title="My Prescriptions" />
 
-      <View className="flex-1">
+      <View>
         {/* Search Bar */}
         <TextInput
           placeholder="Search Prescriptions..."
@@ -121,56 +121,64 @@ export default function MyPrescriptionScreen() {
           onChangeText={handleSearchChange}
           className="my-4 px-4 py-4 bg-white rounded-xl border border-background-soft text-gray-700"
         />
-
-        {initialLoading ? (
-          <View className="flex-1 justify-center items-center mt-10">
-            <LoadingDots
-              title={"Loading Prescriptions... "}
-              subtitle={"Please wait..."}
-            />
-          </View>
-        ) : prescriptions.length === 0 ? (
-          <View className="flex-1 justify-center items-center mt-20">
-            <Ionicons name="document-text-outline" size={64} color="#ccc" />
-            <Text className="text-lg text-gray-500 mt-4 font-lexend-medium">
-              No prescriptions found
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            data={prescriptions}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => {
-              return (
-                <UserPrescriptionCard
-                  item={item}
-                  onPress={() => {
-                    router.push(`/account/prescriptions/${item._id}`);
-                  }}
-                  onDelete={() => handleDelete(item._id)}
-                />
-              );
-            }}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 32 }}
-            contentContainerClassName="bg-white h-full p-4 rounded-2xl gap-4"
-            ListFooterComponent={
-              currentPage <= totalPages && prescriptions.length > 0 ? (
-                <CTAButton
-                  label="Load More"
-                  onPress={() => fetchMyPrescriptions()}
-                  loaderText="Loading..."
-                  loading={loading}
-                  disabled={loading}
-                />
-              ) : null
-            }
-          />
-        )}
       </View>
+
+      {initialLoading ? (
+        <View className="flex-1 justify-center items-center mt-10">
+          <LoadingDots
+            title={"Loading Prescriptions... "}
+            subtitle={"Please wait..."}
+          />
+        </View>
+      ) : prescriptions.length === 0 ? (
+        <View className="flex-1 justify-center items-center mt-20">
+          <Ionicons name="document-text-outline" size={64} color="#ccc" />
+          <Text className="text-lg text-gray-500 mt-4 font-lexend-medium">
+            No prescriptions found
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={prescriptions}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => {
+            return (
+              <UserPrescriptionCard
+                item={item}
+                onPress={() => {
+                  router.push(`/account/prescriptions/${item._id}`);
+                }}
+                onDelete={() => handleDelete(item._id)}
+              />
+            );
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 32 }}
+          contentContainerClassName="bg-white p-4 rounded-2xl gap-4"
+          ListFooterComponent={
+            currentPage <= totalPages && prescriptions.length > 0 ? (
+              <CTAButton
+                label="Load More"
+                onPress={() => fetchMyPrescriptions()}
+                loaderText="Loading..."
+                loading={loading}
+                disabled={loading}
+              />
+            ) : null
+          }
+          ListEmptyComponent={
+            <View className="flex-1 h-full justify-center items-center mt-20">
+              <Ionicons name="document-text-outline" size={64} color="#ccc" />
+              <Text className="text-lg text-gray-500 mt-4 font-lexend-medium">
+                No prescriptions found
+              </Text>
+            </View>
+          }
+        />
+      )}
     </AppLayout>
   );
 }
