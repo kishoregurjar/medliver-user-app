@@ -46,6 +46,8 @@ export default function ViewOrderScreen() {
         method: "GET",
         authRequired: true,
       }).then(({ data, error }) => {
+        console.log(data.data.order);
+
         if (!error) setOrder(data?.data?.order ?? null);
         setLoading(false);
       });
@@ -81,6 +83,14 @@ export default function ViewOrderScreen() {
     Alert.alert("Items added", "Items have been added to your cart.");
   };
 
+  const ORDER_STATUS_STEPS = [
+    { key: "order_received", label: "Order Received" },
+    { key: "order_accepted", label: "Order Accepted" },
+    { key: "assigned_to_delivery_partner", label: "Out for Delivery" },
+    { key: "delivered", label: "Delivered" },
+    { key: "cancelled", label: "Cancelled" }, // Optional
+  ];
+
   return (
     <AppLayout scroll={false}>
       <HeaderWithBack title="Order Details" showBackButton />
@@ -99,42 +109,70 @@ export default function ViewOrderScreen() {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingBottom: 120 }}
             >
-              <CTAButton
-                label={"Track Order"}
-                onPress={handleTrackOrder}
-                icon={
-                  <MaterialCommunityIcons
-                    name="map-marker"
-                    size={16}
-                    color={"white"}
-                  />
-                }
-                className="mb-4"
-                size="sm"
-              />
-
               <Section title="Order Summary">
                 <KeyValueRow label="Order Number" value={order.orderNumber} />
-                <KeyValueRow label="Order ID" value={order._id} />
                 <KeyValueRow
                   label="Order Date"
                   value={dayjs(order.orderDate).format("DD MMM YYYY, hh:mm A")}
                 />
               </Section>
 
-              <Section title="Status & Payment">
-                <KeyValueRow
-                  label="Order Status"
-                  value={order.orderStatus.replaceAll("_", " ")}
-                />
-                <KeyValueRow
-                  label="Payment Status"
-                  value={order.paymentStatus}
-                />
-                <KeyValueRow
-                  label="Payment Method"
-                  value={order.paymentMethod}
-                />
+              <Section title="Order Status">
+                <View className="pl-2 border-l-2 border-brand-primary">
+                  {ORDER_STATUS_STEPS.map((step, index) => {
+                    const isCompleted =
+                      ORDER_STATUS_STEPS.findIndex(
+                        (s) => s.key === order.orderStatus
+                      ) > index;
+                    const isActive = order.orderStatus === step.key;
+
+                    return (
+                      <View
+                        key={step.key}
+                        className="flex-row items-start mb-4 ml-2"
+                      >
+                        <View
+                          className={`w-3 h-3 rounded-full mt-1 ${
+                            isCompleted || isActive
+                              ? "bg-brand-primary"
+                              : "bg-gray-300"
+                          }`}
+                        />
+                        <View className="ml-3">
+                          <Text
+                            className={`text-sm font-lexend-medium ${
+                              isCompleted || isActive
+                                ? "text-gray-900"
+                                : "text-gray-400"
+                            }`}
+                          >
+                            {step.label}
+                          </Text>
+                          {isActive && (
+                            <Text className="text-xs text-brand-primary font-lexend mt-0.5">
+                              In Progress
+                            </Text>
+                          )}
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+                {order.orderStatus === "assigned_to_delivery_partner" && (
+                  <CTAButton
+                    label={"Track Order"}
+                    onPress={handleTrackOrder}
+                    icon={
+                      <MaterialCommunityIcons
+                        name="map-marker"
+                        size={16}
+                        color={"white"}
+                      />
+                    }
+                    className="my-4"
+                    size="sm"
+                  />
+                )}
               </Section>
 
               <Section title="Ordered Items">
@@ -171,6 +209,17 @@ export default function ViewOrderScreen() {
                 )}
               </Section>
 
+              <Section title="Payment Details">
+                <KeyValueRow
+                  label="Payment Status"
+                  value={order.paymentStatus}
+                />
+                <KeyValueRow
+                  label="Payment Method"
+                  value={order.paymentMethod}
+                />
+              </Section>
+
               <Section title="Total Amount">
                 <Text className="text-xl font-lexend-bold text-brand-primary">
                   ₹ {order.totalAmount?.toFixed(2) ?? "0.00"}
@@ -180,27 +229,6 @@ export default function ViewOrderScreen() {
               <Section title="Delivery Address">
                 {renderAddress(order.deliveryAddress)}
               </Section>
-
-              {order.pharmacyAttempts?.length > 0 && (
-                <Section title="Pharmacy Attempts">
-                  {order.pharmacyAttempts.map((attempt, index) => (
-                    <View key={attempt._id || index} className="mb-2">
-                      <Text className="text-sm text-gray-700">
-                        {index + 1}. Status:{" "}
-                        <Text className="font-lexend-medium capitalize">
-                          {attempt.status}
-                        </Text>
-                      </Text>
-                      <Text className="text-sm text-gray-500">
-                        At:{" "}
-                        {dayjs(attempt.attemptedAt).format(
-                          "DD MMM YYYY, hh:mm A"
-                        )}
-                      </Text>
-                    </View>
-                  ))}
-                </Section>
-              )}
             </ScrollView>
           </>
         )}
