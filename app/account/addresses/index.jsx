@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { View, Text, FlatList, Alert, RefreshControl } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import AppLayout from "@/components/layouts/AppLayout";
@@ -10,6 +10,7 @@ import LoadingDots from "@/components/common/LoadingDots";
 import ROUTE_PATH from "@/routes/route.constants";
 import useAxios from "@/hooks/useAxios";
 import { Ionicons } from "@expo/vector-icons";
+import PaginatedList from "@/components/common/PaginatedList";
 
 export default function MyAddressesScreen() {
   const [addresses, setAddresses] = useState([]);
@@ -40,11 +41,10 @@ export default function MyAddressesScreen() {
     setDefaultAddressId(defaultAddr?._id || null);
   }, []);
 
-  // Fix: call only once when screen focuses
   useFocusEffect(
     useCallback(() => {
       fetchUserAddresses();
-    }, []) // empty array makes it stable
+    }, [])
   );
 
   const onRefresh = useCallback(async () => {
@@ -107,7 +107,6 @@ export default function MyAddressesScreen() {
               }
 
               setAddresses((prev) => prev.filter((addr) => addr._id !== id));
-
               if (id === defaultAddressId) setDefaultAddressId(null);
             },
           },
@@ -116,22 +115,6 @@ export default function MyAddressesScreen() {
     },
     [defaultAddressId]
   );
-
-  const renderAddress = useCallback(
-    ({ item }) => (
-      <UserAddressCard
-        address={item}
-        isDeleting={isDeleting}
-        settingDefault={settingDefault}
-        activeSetId={activeSetId}
-        onEdit={() => router.push(`/account/addresses/edit/${item._id}`)}
-        onSetDefault={handleSetDefault}
-        onDelete={handleDelete}
-      />
-    ),
-    [isDeleting, settingDefault, activeSetId, handleSetDefault, handleDelete]
-  );
-
 
   return (
     <AppLayout scroll={false}>
@@ -144,30 +127,33 @@ export default function MyAddressesScreen() {
         className={"my-4"}
       />
 
-      {loadingAddresses ? (
-        <View className="flex-1 justify-center items-center mt-10">
-          <LoadingDots title="Loading Addresses..." subtitle="Please wait..." />
-        </View>
-      ) : (
-        <FlatList
-          data={addresses}
-          keyExtractor={(item) => item._id}
-          renderItem={renderAddress}
-          // ItemSeparatorComponent={renderSeparator}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <View className="flex-1 items-center justify-center mt-10">
-              <Text className="text-xl font-semibold text-gray-700">
-                No Address Found
-              </Text>
-            </View>
-          }
-          contentContainerClassName="pb-20"
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        />
-      )}
+      <PaginatedList
+        data={addresses}
+        renderItem={({ item }) => (
+          <UserAddressCard
+            address={item}
+            isDeleting={isDeleting}
+            settingDefault={settingDefault}
+            activeSetId={activeSetId}
+            onEdit={() => router.push(`/account/addresses/edit/${item._id}`)}
+            onSetDefault={handleSetDefault}
+            onDelete={handleDelete}
+          />
+        )}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        loading={loadingAddresses}
+        showSearch={false}
+        keyExtractor={(item) => item._id}
+        contentContainerClassName="pb-20"
+        ListEmptyComponent={
+          <View className="flex-1 items-center justify-center mt-10">
+            <Text className="text-xl font-semibold text-gray-700">
+              No Address Found
+            </Text>
+          </View>
+        }
+      />
     </AppLayout>
   );
 }

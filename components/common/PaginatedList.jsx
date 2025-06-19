@@ -13,7 +13,7 @@ import CTAButton from "@/components/common/CTAButton";
 
 export default function PaginatedList({
   data,
-  searchTerm,
+  searchTerm = "",
   onSearchChange,
   showSearch = true,
   renderItem,
