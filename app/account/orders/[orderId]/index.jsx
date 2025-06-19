@@ -9,6 +9,7 @@ import LoadingDots from "@/components/common/LoadingDots";
 import { useCart } from "@/contexts/CartContext"; // if you have it
 import CTAButton from "@/components/common/CTAButton";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import OrderStatusSteps from "@/components/common/OrderStatusSteps";
 
 function Section({ title, children }) {
   return (
@@ -46,9 +47,7 @@ export default function ViewOrderScreen() {
         method: "GET",
         authRequired: true,
       }).then(({ data, error }) => {
-        console.log(data.data.order);
-
-        if (!error) setOrder(data?.data?.order ?? null);
+        if (!error) setOrder(data?.data ?? null);
         setLoading(false);
       });
     }
@@ -122,61 +121,10 @@ export default function ViewOrderScreen() {
               </Section>
 
               <Section title="Order Status">
-                <View className="pl-2 border-l-2 border-brand-primary">
-                  {ORDER_STATUS_STEPS.map((step, index) => {
-                    const isCompleted =
-                      ORDER_STATUS_STEPS.findIndex(
-                        (s) => s.key === order.orderStatus
-                      ) > index;
-                    const isActive = order.orderStatus === step.key;
-
-                    return (
-                      <View
-                        key={step.key}
-                        className="flex-row items-start mb-4 ml-2"
-                      >
-                        <View
-                          className={`w-3 h-3 rounded-full mt-1 ${
-                            isCompleted || isActive
-                              ? "bg-brand-primary"
-                              : "bg-gray-300"
-                          }`}
-                        />
-                        <View className="ml-3">
-                          <Text
-                            className={`text-sm font-lexend-medium ${
-                              isCompleted || isActive
-                                ? "text-gray-900"
-                                : "text-gray-400"
-                            }`}
-                          >
-                            {step.label}
-                          </Text>
-                          {isActive && (
-                            <Text className="text-xs text-brand-primary font-lexend mt-0.5">
-                              In Progress
-                            </Text>
-                          )}
-                        </View>
-                      </View>
-                    );
-                  })}
-                </View>
-                {order.orderStatus === "assigned_to_delivery_partner" && (
-                  <CTAButton
-                    label={"Track Order"}
-                    onPress={handleTrackOrder}
-                    icon={
-                      <MaterialCommunityIcons
-                        name="map-marker"
-                        size={16}
-                        color={"white"}
-                      />
-                    }
-                    className="my-4"
-                    size="sm"
-                  />
-                )}
+                <OrderStatusSteps
+                  currentStatus={order.orderStatus}
+                  type="pharmacy"
+                />
               </Section>
 
               <Section title="Ordered Items">

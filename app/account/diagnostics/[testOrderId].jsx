@@ -6,6 +6,7 @@ import AppLayout from "@/components/layouts/AppLayout";
 import HeaderWithBack from "@/components/common/HeaderWithBack";
 import useAxios from "@/hooks/useAxios";
 import SkeletonTestOrderDetails from "@/components/skeletons/SkeletonTestOrderDetails";
+import OrderStatusSteps from "@/components/common/OrderStatusSteps";
 
 const Card = ({ title, children }) => (
   <View className="bg-white rounded-2xl p-4 border border-gray-100">
@@ -193,6 +194,9 @@ export default function TestOrderDetailsScreen() {
                   type={getBadgeType(orderStatus)}
                 />
               </View>
+            </Card>
+            <Card title={"Order Status"}>
+              <OrderStatusSteps currentStatus={orderStatus} type="pathology" />
             </Card>
           </View>
         )}
