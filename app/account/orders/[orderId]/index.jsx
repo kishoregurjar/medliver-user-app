@@ -24,7 +24,7 @@ function Section({ title, children }) {
 function KeyValueRow({ label, value }) {
   return (
     <View className="flex-row justify-between mb-1">
-      <Text className="text-sm text-gray-500">{label}</Text>
+      <Text className="text-sm font-lexend text-gray-500">{label}</Text>
       <Text className="text-sm font-lexend-medium text-gray-800">{value}</Text>
     </View>
   );
@@ -57,8 +57,10 @@ export default function ViewOrderScreen() {
   const renderAddress = (address) =>
     address && (
       <>
-        <Text className="text-sm text-gray-700">{address.street}</Text>
-        <Text className="text-sm text-gray-700">
+        <Text className="text-sm font-lexend text-gray-700">
+          {address.street}
+        </Text>
+        <Text className="text-sm font-lexend text-gray-700">
           {address.city}, {address.state} - {address.pincode}
         </Text>
       </>
@@ -101,7 +103,9 @@ export default function ViewOrderScreen() {
           </View>
         ) : !order ? (
           <View className="flex-1 justify-center items-center">
-            <Text className="text-base text-gray-500">Order not found.</Text>
+            <Text className="text-base font-lexend text-gray-500">
+              Order not found.
+            </Text>
           </View>
         ) : (
           <>
@@ -195,7 +199,7 @@ export default function ViewOrderScreen() {
                         <Text className="text-sm font-lexend-semibold text-gray-800">
                           {item.medicineName}
                         </Text>
-                        <Text className="text-xs text-gray-500">
+                        <Text className="text-xs font-lexend text-gray-500">
                           Qty: {item.quantity}
                         </Text>
                       </View>
@@ -205,7 +209,9 @@ export default function ViewOrderScreen() {
                     </View>
                   ))
                 ) : (
-                  <Text className="text-sm text-gray-500">No items found.</Text>
+                  <Text className="text-sm font-lexend text-gray-500">
+                    No items found.
+                  </Text>
                 )}
               </Section>
 
