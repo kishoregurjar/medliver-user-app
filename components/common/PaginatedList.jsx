@@ -54,7 +54,7 @@ export default function PaginatedList({
     <View className="gap-4">
       {/* Sticky Search */}
       {showSearch && (
-        <View className="bg-white">
+        <View className="bg-white pb-4">
           <TextInput
             placeholder={searchPlaceholder}
             value={searchTerm}
@@ -111,7 +111,7 @@ export default function PaginatedList({
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={ItemSeparatorComponent}
           ListHeaderComponent={renderCombinedHeader()}
-          stickyHeaderIndices={showSearch ? [0] : undefined}
+          // stickyHeaderIndices={showSearch ? [0] : undefined}
           ListFooterComponent={renderFooter()}
           ListEmptyComponent={
             data.length === 0 && ListEmptyComponent ? ListEmptyComponent : null
