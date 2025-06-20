@@ -163,12 +163,13 @@ export default function TrackOrderScreen() {
         authRequired: true,
       });
 
-      if (error || data?.status !== 200 || !data.data?.order) {
+      if (error || data?.status !== 200 || !data?.data) {
         console.error("Failed to fetch order data:", error || "Invalid data");
         return;
       }
 
-      const order = data.data.order;
+      const order = data.data;
+
       setOrderDetails(order);
 
       const drop = {

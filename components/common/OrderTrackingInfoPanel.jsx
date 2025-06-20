@@ -19,15 +19,19 @@ export default function OrderTrackingInfoPanel({
     >
       <View className="flex-row justify-evenly items-center bg-gray-100 p-4 rounded-2xl mb-3">
         <View>
-          <Text className="text-sm font-semibold text-gray-600">
+          <Text className="text-sm font-lexend-semibold text-gray-600">
             Estimated Time
           </Text>
-          <Text className="text-base text-gray-900">{eta}</Text>
+          <Text className="text-base font-lexend text-gray-900">{eta}</Text>
         </View>
         <View className="h-8 w-0.5 bg-gray-400" />
         <View>
-          <Text className="text-sm font-semibold text-gray-600">Distance</Text>
-          <Text className="text-base text-gray-900">{distance}</Text>
+          <Text className="text-sm font-lexend-semibold text-gray-600">
+            Distance
+          </Text>
+          <Text className="text-base font-lexend text-gray-900">
+            {distance}
+          </Text>
         </View>
       </View>
 
@@ -37,7 +41,7 @@ export default function OrderTrackingInfoPanel({
           size={24}
           color="#B31F24"
         />
-        <Text className="text-xl font-semibold text-gray-900">
+        <Text className="text-xl font-lexend-bold text-gray-900">
           {pharmacyName}
         </Text>
       </View>
@@ -47,7 +51,9 @@ export default function OrderTrackingInfoPanel({
           onPress={() => setExpanded(!expanded)}
           className="flex-row justify-between items-center mb-1"
         >
-          <Text className="text-base font-semibold">Items</Text>
+          <Text className="text-base font-lexend-semibold text-gray-900">
+            Items
+          </Text>
           <MaterialCommunityIcons
             name={expanded ? "chevron-up" : "chevron-down"}
             size={20}
@@ -61,10 +67,10 @@ export default function OrderTrackingInfoPanel({
               key={index}
               className="flex-row justify-between items-center px-2"
             >
-              <Text className="text-base text-gray-800">
+              <Text className="text-base font-lexend text-gray-800">
                 {item.quantity} x {item.name}
               </Text>
-              <Text className="text-base text-gray-700">₹{item.price}</Text>
+              <Text className="text-base font-lexend text-gray-700">₹{item.price}</Text>
             </View>
           ))}
       </View>
@@ -72,10 +78,10 @@ export default function OrderTrackingInfoPanel({
       <View className="h-0.5 w-full bg-gray-200 my-3" />
 
       <View className="flex-row justify-between items-center">
-        <Text className="text-xl font-semibold text-gray-900">
+        <Text className="text-xl font-lexend-bold text-gray-900">
           Total Amount
         </Text>
-        <Text className="text-xl font-semibold text-gray-900">
+        <Text className="text-xl font-lexend-bold text-gray-900">
           {totalAmount}
         </Text>
       </View>

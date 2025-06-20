@@ -7,9 +7,8 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import dayjs from "dayjs";
 import LoadingDots from "@/components/common/LoadingDots";
 import { useCart } from "@/contexts/CartContext"; // if you have it
-import CTAButton from "@/components/common/CTAButton";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import OrderStatusSteps from "@/components/common/OrderStatusSteps";
+import CTAButton from "@/components/common/CTAButton";
 
 function Section({ title, children }) {
   return (
@@ -65,33 +64,6 @@ export default function ViewOrderScreen() {
       </>
     );
 
-  const handleTrackOrder = () => {
-    router.push(`/account/orders/${orderId}/track-order`);
-  };
-
-  const handleReorder = () => {
-    Alert.alert("Reorder", "Reorder feature coming soon!");
-  };
-
-  const handleRepeatOrder = () => {
-    if (!order?.items?.length) return;
-    order.items.forEach((item) => {
-      addToCart?.({
-        productId: item.medicineId,
-        quantity: item.quantity,
-      });
-    });
-    Alert.alert("Items added", "Items have been added to your cart.");
-  };
-
-  const ORDER_STATUS_STEPS = [
-    { key: "order_received", label: "Order Received" },
-    { key: "order_accepted", label: "Order Accepted" },
-    { key: "assigned_to_delivery_partner", label: "Out for Delivery" },
-    { key: "delivered", label: "Delivered" },
-    { key: "cancelled", label: "Cancelled" }, // Optional
-  ];
-
   return (
     <AppLayout scroll={false}>
       <HeaderWithBack title="Order Details" showBackButton />
@@ -125,6 +97,17 @@ export default function ViewOrderScreen() {
                   currentStatus={order.orderStatus}
                   type="pharmacy"
                 />
+
+                {console.log(order.orderStatus)}
+
+                {order.orderStatus === "out_for_delivery" && (
+                  <CTAButton
+                    label="Track Order"
+                    onPress={() => {
+                      router.push(`/account/orders/${orderId}/track-order`);
+                    }}
+                  />
+                )}
               </Section>
 
               <Section title="Ordered Items">
