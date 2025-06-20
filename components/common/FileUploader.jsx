@@ -45,6 +45,9 @@ export default function FileUploader({
   maxFiles = 5,
   onSuccess,
   onError,
+  extraPayload = null, // ✅ Pass here
+  shouldEnableUploadButton = false,
+  onFilesSelected,
 }) {
   const {
     uploadFile,
@@ -63,11 +66,17 @@ export default function FileUploader({
     fieldName,
     maxFileSize,
     maxFiles,
+    extraPayload, // ✅ Pass here
   });
 
   const { authUser } = useAuthUser();
 
   const [previewImage, setPreviewImage] = useState(null);
+
+  const shouldShowUploadButton =
+    typeof shouldEnableUploadButton === "function"
+      ? shouldEnableUploadButton(selectedFiles)
+      : shouldEnableUploadButton ?? true;
 
   const handlePickFile = useCallback(async () => {
     try {
@@ -88,7 +97,9 @@ export default function FileUploader({
 
         const valid = await validateFiles([file]);
         if (valid) {
+          const updatedFiles = [...selectedFiles, file];
           setSelectedFiles((prev) => [...prev, file]);
+          onFilesSelected?.(updatedFiles);
         }
       }
     } catch (err) {
@@ -98,7 +109,7 @@ export default function FileUploader({
   }, [allowedTypes, validateFiles, setSelectedFiles]);
 
   const handleUpload = useCallback(async () => {
-    if (!authUser.isAuthenticated ) {
+    if (!authUser.isAuthenticated) {
       Alert.alert("Unauthorized", "You must be logged in to upload.");
       return;
     }
@@ -150,21 +161,23 @@ export default function FileUploader({
 
       {/* Upload & Clear Actions */}
       <View className="flex-row justify-center items-center mt-4 gap-4">
-        <TouchableOpacity
-          disabled={loading || selectedFiles.length === 0}
-          onPress={handleUpload}
-          className={`py-3 px-5 rounded-lg ${
-            loading || selectedFiles.length === 0
-              ? "bg-gray-400"
-              : "bg-brand-primary"
-          }`}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text className="text-white font-lexend-semibold">Upload</Text>
-          )}
-        </TouchableOpacity>
+        {shouldShowUploadButton && (
+          <TouchableOpacity
+            disabled={loading || selectedFiles.length === 0}
+            onPress={handleUpload}
+            className={`py-3 px-5 rounded-lg ${
+              loading || selectedFiles.length === 0
+                ? "bg-gray-400"
+                : "bg-brand-primary"
+            }`}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text className="text-white font-lexend-semibold">Upload</Text>
+            )}
+          </TouchableOpacity>
+        )}
 
         {selectedFiles.length > 0 && (
           <TouchableOpacity

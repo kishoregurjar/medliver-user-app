@@ -59,6 +59,8 @@ export default function EditAddressScreen() {
 
       const address = data.data;
 
+      console.log("address", address);
+
       reset({
         address_type: address.address_type,
         house_number: address.house_number,
@@ -69,6 +71,10 @@ export default function EditAddressScreen() {
         pincode: address.pincode,
         country: address.country,
         is_default: address?.is_default || false,
+        location: address?.location || {
+          lat: null,
+          long: null,
+        },
       });
     };
 
@@ -114,6 +120,8 @@ export default function EditAddressScreen() {
         long: location?.longitude || null,
       },
     };
+
+    console.log("payload", payload);
 
     const { data, error } = await updateAddress({
       url: "/user/edit-address",

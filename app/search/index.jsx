@@ -6,6 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Alert,
+  ToastAndroid,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AppLayout from "@/components/layouts/AppLayout";
@@ -16,11 +18,16 @@ import SkeletonPharmacyProductCard from "@/components/skeletons/SkeletonPharmacy
 import FileUploader from "@/components/common/FileUploader";
 import CTAButton from "@/components/common/CTAButton";
 import ROUTE_PATH from "@/routes/route.constants";
+import SelectAddressModal from "@/components/modals/SelectAddressModal";
 
 export default function SearchMedicineScreen() {
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState([]);
   const [isSearching, setIsSearching] = useState(false); // NEW
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [showAddressModal, setShowAddressModal] = useState(false);
+
   const router = useRouter();
 
   const { request: searchMedicines, loading: isLoading } = useAxios();
@@ -147,16 +154,46 @@ export default function SearchMedicineScreen() {
               doorstep.
             </Text>
             <View className="p-2">
+              {showAddressModal && (
+                <SelectAddressModal
+                  onSelect={(address) => {
+                    setSelectedAddress(address);
+                    setShowAddressModal(false);
+                    handleUpload(selectedFiles, address); // 🟢 Actual upload
+                  }}
+                />
+              )}
+
               <FileUploader
                 url="/user/upload-prescription"
                 allowedTypes={["image/png", "image/jpeg", "application/pdf"]}
                 maxFileSize={5}
                 maxFiles={5}
+                shouldEnableUploadButton={(files) => files.length > 0}
+                onFilesSelected={(files) => {
+                  setPendingFiles(files); // store selected files
+                  setShowAddressModal(true); // open modal
+                }}
                 onSuccess={(data) => {
                   if (__DEV__) console.log("File Upload Success:", data);
                 }}
                 onError={(err) => {
                   if (__DEV__) console.log("File Upload Error:", err);
+                  Alert.alert("Warning", err.message, [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    },
+                    {
+                      text: "Add Address",
+                      onPress: () =>
+                        router.push(ROUTE_PATH.APP.ACCOUNT.ADD_ADDRESS),
+                    },
+                  ]);
+                  // ToastAndroid.show(err.message, 3000);
+                }}
+                extraPayload={{
+                  deliveryAddressId: selectedAddress,
                 }}
               />
             </View>

@@ -11,6 +11,7 @@ export default function useFileUpload({
   fieldName = "files",
   maxFileSize = 5,
   maxFiles = 5,
+  extraPayload = null,
 }) {
   const { authUser } = useAuthUser?.() ?? {};
   const [loading, setLoading] = useState(false);
@@ -57,6 +58,29 @@ export default function useFileUpload({
     return true;
   };
 
+  const appendFormDataRecursive = (formData, data, parentKey = "") => {
+    if (data === null || data === undefined) {
+      return;
+    }
+
+    if (typeof data === "object" && !(data instanceof File)) {
+      if (Array.isArray(data)) {
+        data.forEach((item, index) => {
+          const key = `${parentKey}[${index}]`;
+          appendFormDataRecursive(formData, item, key);
+        });
+      } else {
+        Object.entries(data).forEach(([key, value]) => {
+          const fullKey = parentKey ? `${parentKey}.${key}` : key;
+          appendFormDataRecursive(formData, value, fullKey);
+        });
+      }
+    } else {
+      // Convert booleans, numbers, etc. to string
+      formData.append(parentKey, String(data));
+    }
+  };
+
   const uploadFile = async () => {
     if (selectedFiles.length === 0) {
       Alert.alert("No Files", "Please select files to upload.");
@@ -68,6 +92,8 @@ export default function useFileUpload({
 
     try {
       const formData = new FormData();
+
+      // Append files
       selectedFiles.forEach((file) => {
         formData.append(fieldName, {
           uri: file.uri,
@@ -75,6 +101,13 @@ export default function useFileUpload({
           name: file.name,
         });
       });
+
+      // Append extra payload
+      if (extraPayload && typeof extraPayload === "object") {
+        appendFormDataRecursive(formData, extraPayload);
+      }
+
+      console.log("formData", formData);
 
       const response = await axios.post(
         `${
@@ -101,13 +134,13 @@ export default function useFileUpload({
         clearFiles();
         return { data: response.data, error: null };
       } else {
+        if (__DEV__) console.error("Upload failed:", response.data.message);
         Alert.alert("Error", response.data.message);
-        return { data: null, error: response.data.message };
+        return { data: null, error: response.data };
       }
     } catch (err) {
-      const message = err.response?.data?.message || "Upload failed";
-      Alert.alert("Upload Error", message);
-      return { data: null, error: message };
+      if (__DEV__) console.error("Error uploading files:", err?.response?.data);
+      return { data: null, error: err?.response?.data };
     } finally {
       setLoading(false);
       setProgress(0);
