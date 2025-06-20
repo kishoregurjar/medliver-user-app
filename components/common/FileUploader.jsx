@@ -181,7 +181,10 @@ export default function FileUploader({
 
         {selectedFiles.length > 0 && (
           <TouchableOpacity
-            onPress={clearFiles}
+            onPress={() => {
+              clearFiles();
+              onFilesSelected?.([]);
+            }}
             className="border border-gray-400 py-3 px-5 rounded-lg"
           >
             <Text className="text-text-muted font-lexend-semibold">Clear</Text>
