@@ -13,15 +13,8 @@ import { VStack } from "@/components/ui/vstack";
 import { HStack } from "@/components/ui/hstack";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import {
-  Pressable,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Image,
-} from "react-native";
+import { Pressable, TouchableOpacity, View, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import useAxios from "@/hooks/useAxios";
 import { useAuthUser } from "@/contexts/AuthContext";
 import { useAppToast } from "@/hooks/useAppToast";
 import { useCart } from "@/contexts/CartContext";
@@ -29,6 +22,7 @@ import { useCart } from "@/contexts/CartContext";
 export default function AddToCartModalButton({ product, variant = "button" }) {
   const [isOpen, setIsOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const quantityInputRef = useRef(null);
 
   const { authUser } = useAuthUser();
@@ -38,8 +32,6 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
     getLastQuantityForProduct,
     setLastQuantityForProduct,
   } = useCart();
-
-  const { request: addToCart, loading: isLoading } = useAxios();
 
   // Load last selected quantity from cart context
   useEffect(() => {
@@ -59,6 +51,7 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
   };
 
   const handleAddToCart = async () => {
+    setIsLoading(true);
     if (!authUser?.isAuthenticated) {
       try {
         await addToCartItem(product._id, quantity, {
@@ -69,14 +62,18 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
         onClose();
       } catch (err) {
         showToast("error", "Failed to add to guest cart");
+      } finally {
+        setIsLoading(false);
       }
       return;
     }
 
     const { data, error } = await addToCartItem(product._id, quantity);
     if (error) {
+      setIsLoading(false);
       showToast("error", error || "Failed to add item to cart");
     } else {
+      setIsLoading(false);
       showToast("success", data?.message || "Item added to cart");
       setLastQuantityForProduct(product._id, quantity);
       onClose();
@@ -87,11 +84,6 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
   const decreaseQty = () => setQuantity((prev) => Math.max(prev - 1, 1));
 
   const openModal = () => {
-    // if (authUser?.isAuthenticated) {
-    //   setIsOpen(true);
-    // } else {
-    //   showToast("warning", "Login to add items to cart");
-    // }
     setIsOpen(true);
   };
 
@@ -198,25 +190,9 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
                     />
                   </Pressable>
 
-                  <TextInput
-                    ref={quantityInputRef}
-                    value={quantity.toString()}
-                    onChangeText={(val) => {
-                      const num = parseInt(val, 10);
-                      if (!isNaN(num)) {
-                        setQuantity(Math.max(1, Math.min(num, 20)));
-                      } else if (val === "") {
-                        setQuantity("");
-                      }
-                    }}
-                    keyboardType="numeric"
-                    inputMode="numeric"
-                    maxLength={2}
-                    accessibilityLabel="Quantity input"
-                    className="w-24 h-10 text-center border border-gray-300 rounded-md px-2 py-1 text-base text-typography-900 font-lexend-semibold"
-                    placeholder="1"
-                    placeholderTextColor="#A0A0A0"
-                  />
+                  <Text className="text-base font-lexend-semibold text-typography-900">
+                    {quantity} Qty.
+                  </Text>
 
                   <Pressable
                     onPress={increaseQty}
@@ -251,7 +227,9 @@ export default function AddToCartModalButton({ product, variant = "button" }) {
               </Button>
               <Button
                 onPress={handleAddToCart}
-                className="bg-brand-primary"
+                className={`${
+                  isLoading ? "bg-brand-primary/50" : "bg-brand-primary"
+                }`}
                 disabled={isLoading}
               >
                 <ButtonText className="text-white font-lexend-semibold">
