@@ -38,7 +38,7 @@ export default function CartItemCard({
           <TouchableOpacity
             onPress={onRemove}
             activeOpacity={0.8}
-            className="bg-brand-primary flex-row items-center px-4 py-2 rounded-full shadow-sm"
+            className="bg-brand-primary flex-row items-center px-4 py-2 rounded-xl"
           >
             <Ionicons name="trash-outline" size={18} color="#fff" />
             <Text className="ml-2 text-white text-sm font-lexend-medium">

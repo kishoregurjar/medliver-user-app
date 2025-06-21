@@ -114,7 +114,7 @@ export default function SelectAddressModal({ onSelect }) {
                     onPress={() => handleSelect(address)}
                     className={`relative rounded-2xl px-4 py-5 mb-3 border bg-white ${
                       selected?._id === address._id
-                        ? "border-gray-200 border-r-[6px] border-r-brand-primary shadow-md"
+                        ? "border-gray-200 border-r-[6px] border-r-brand-primary"
                         : "border-gray-200"
                     }`}
                   >
