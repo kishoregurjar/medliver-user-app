@@ -12,8 +12,8 @@ const IconButton = ({ icon, onPress, badgeCount = 0 }) => (
     <View className="relative">
       {icon}
       {badgeCount > 0 && (
-        <View className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 justify-center items-center">
-          <Text className="text-white text-xs font-bold">
+        <View className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-brand-primary justify-center items-center">
+          <Text className="text-white text-xs font-lexend-bold">
             {badgeCount > 99 ? "99+" : badgeCount}
           </Text>
         </View>
