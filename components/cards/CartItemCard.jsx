@@ -6,7 +6,7 @@ export default function CartItemCard({
   quantity,
   onRemove,
   onQuantityChange,
-}) {  
+}) {
   return (
     <View className="bg-white p-4 my-1 rounded-xl flex-row items-start gap-4">
       <View className="w-1/4 h-24 bg-gray-100 rounded-lg overflow-hidden">
@@ -37,33 +37,36 @@ export default function CartItemCard({
         <View className="flex-row justify-between items-center mt-3">
           <TouchableOpacity
             onPress={onRemove}
-            className="bg-brand-primary/90 p-2 rounded-lg flex-row items-center"
+            activeOpacity={0.8}
+            className="bg-brand-primary flex-row items-center px-4 py-2 rounded-full shadow-sm"
           >
-            <Ionicons name="trash-outline" size={16} color="white" />
-            <Text className="text-white text-xs ml-1">Remove</Text>
+            <Ionicons name="trash-outline" size={18} color="#fff" />
+            <Text className="ml-2 text-white text-sm font-lexend-medium">
+              Remove
+            </Text>
           </TouchableOpacity>
 
-          <View className="flex-row items-center bg-text-muted/20 rounded-lg px-2 py-1">
+          <View className="flex-row items-center bg-text-muted/20 border border-gray-200 rounded-lg p-2">
             <TouchableOpacity
               onPress={() => onQuantityChange(Math.max(1, quantity - 1))}
-              className="p-1 rounded-full border border-text-muted"
+              activeOpacity={0.7}
+              className="w-8 h-8 rounded-full border border-text-muted justify-center items-center"
             >
-              <Ionicons name="remove" size={14} color="black" />
+              <Ionicons name="remove" size={18} color="#B31F24" />
             </TouchableOpacity>
 
-            <TextInput
-              value={String(quantity)}
-              onChangeText={(text) => onQuantityChange(parseInt(text) || 1)}
-              keyboardType="numeric"
-              maxLength={2}
-              className="w-10 text-center text-sm text-text-muted"
-            />
+            <View className="mx-3 min-w-[32px] items-center justify-center">
+              <Text className="text-base font-lexend-semibold text-text-muted">
+                {quantity}
+              </Text>
+            </View>
 
             <TouchableOpacity
               onPress={() => onQuantityChange(quantity + 1)}
-              className="p-1 rounded-full border border-text-muted"
+              activeOpacity={0.7}
+              className="w-8 h-8 rounded-full border border-text-muted justify-center items-center"
             >
-              <Ionicons name="add" size={14} color="black" />
+              <Ionicons name="add" size={18} color="#B31F24" />
             </TouchableOpacity>
           </View>
         </View>
